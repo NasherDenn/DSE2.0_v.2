@@ -41,8 +41,7 @@ logging.basicConfig(level=logging.INFO,
 logger = logging.getLogger()
 logger_with_user = logging.LoggerAdapter(logger, {'user': uname})
 
-logger_with_user.info('------------------------------------------------------------------------------------------------\n'
-                      'Запуск программы')
+logger_with_user.info('Запуск программы')
 
 # создаём приложение
 app = QApplication(sys.argv)
@@ -133,8 +132,8 @@ line_search_unit.setCursorMoveStyle(Qt.LogicalMoveStyle)
 line_search_unit.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_unit.setFocusPolicy(Qt.StrongFocus)
-line_search_unit.setText('2')
-# line_search_unit.setText('')
+# line_search_unit.setText('2')
+line_search_unit.setText('')
 
 # создаём однострочное поле для ввода номера локации
 line_search_item_description = QLineEdit(window)
@@ -177,8 +176,8 @@ line_search_number_report.setCursorMoveStyle(Qt.LogicalMoveStyle)
 line_search_number_report.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_number_report.setFocusPolicy(Qt.StrongFocus)
-# line_search_number_report.setText('112')
-line_search_number_report.setText('206')
+line_search_number_report.setText('')
+# line_search_number_report.setText('206')
 
 # создаём кнопку "Поиск"
 button_search = QPushButton('Поиск', window)
@@ -209,6 +208,8 @@ button_print.setFont(font_button_print)
 button_print.setFocusPolicy(Qt.ClickFocus)
 # включаем переход фокуса по кнопке Tab
 button_print.setFocusPolicy(Qt.TabFocus)
+# временно, пока не напишу
+button_print.setEnabled(False)
 
 # создаём кнопку "Добавить"
 button_add = QPushButton('Добавить', window)
@@ -280,6 +281,8 @@ font_button_faq = QFont()
 font_button_faq.setFamily(u"Arial")
 font_button_faq.setPointSize(12)
 button_faq.setFont(font_button_faq)
+# временно, опка не напишу
+button_faq.setEnabled(False)
 
 # создаём однострочное поле для ввода логина
 line_login = QLineEdit(window)
@@ -535,6 +538,8 @@ checkBox_of.setObjectName(u"checkBox_of")
 checkBox_of.setGeometry(QRect(60, 25, 42, 20))
 # указываем текст чек-бокса
 checkBox_of.setText('OF')
+# временно, пока не загрузятся другие локации
+checkBox_of.setEnabled(False)
 
 # создаём радио-кнопку локации 'OS'
 checkBox_os = QCheckBox(groupBox_location)
@@ -543,6 +548,8 @@ checkBox_os.setObjectName(u"checkBox_os")
 checkBox_os.setGeometry(QRect(110, 25, 42, 20))
 # указываем текст чек-бокса
 checkBox_os.setText('OS')
+# временно, пока не загрузятся другие локации
+checkBox_os.setEnabled(False)
 
 # создаём группу из чек-боксов методов контроля
 groupBox_ndt = QGroupBox(window)
@@ -596,6 +603,8 @@ checkBox_2023.setObjectName(u"checkBox_2023")
 checkBox_2023.setGeometry(QRect(10, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2023.setText('2023')
+# временно, пока не загрузятся другие локации
+checkBox_2023.setEnabled(False)
 
 # создаём чек-бокс года '2022'
 checkBox_2022 = QCheckBox(groupBox_year)
@@ -614,6 +623,8 @@ checkBox_2021.setObjectName(u"checkBox_2021")
 checkBox_2021.setGeometry(QRect(150, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2021.setText('2021')
+# временно, пока не загрузятся другие локации
+checkBox_2021.setEnabled(False)
 
 # создаём чек-бокс года '2020'
 checkBox_2020 = QCheckBox(groupBox_year)
@@ -622,6 +633,8 @@ checkBox_2020.setObjectName(u"checkBox_2020")
 checkBox_2020.setGeometry(QRect(220, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2020.setText('2020')
+# временно, пока не загрузятся другие локации
+checkBox_2020.setEnabled(False)
 
 # создаём чек-бокс года '2019'
 checkBox_2019 = QCheckBox(groupBox_year)
@@ -630,6 +643,8 @@ checkBox_2019.setObjectName(u"checkBox_2019")
 checkBox_2019.setGeometry(QRect(290, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2019.setText('2019')
+# временно, пока не загрузятся другие локации
+checkBox_2019.setEnabled(False)
 
 # метка авторизации
 authorization = False
