@@ -2,12 +2,9 @@
 
 import datetime
 import itertools
-import os
-import re
 
 from utilities_db import *
 from utilities_add_reports import *
-# import logging
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -136,8 +133,13 @@ def sort_date(list_date):
             sort_list_date.append(datetime.datetime.strptime(date, '%d.%B.%Y').isoformat()[:-9])
             i[datetime.datetime.strptime(date, '%d.%B.%Y').isoformat()[:-9]] = old_date
         else:
-            sort_list_date.append(datetime.datetime.strptime(date, '%d.%m.%Y').isoformat()[:-9])
-            i[datetime.datetime.strptime(date, '%d.%m.%Y').isoformat()[:-9]] = old_date
+            try:
+                sort_list_date.append(datetime.datetime.strptime(date, '%d.%m.%Y').isoformat()[:-9])
+                i[datetime.datetime.strptime(date, '%d.%m.%Y').isoformat()[:-9]] = old_date
+            except ValueError:
+                logger_with_user.error(f'Ошибка в формате даты:\n'
+                                       f'{date}\n'
+                                       f'{traceback.format_exc()}')
     return i
 
 
@@ -163,7 +165,6 @@ def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization):
     position_y1 = []
     # список новых координат таблиц
     position_y2 = []
-    # global list_button_for_table_true
     # обнуляем список нажатых кнопок
     list_button_for_table_true = []
     # список отжатых кнопок
@@ -206,13 +207,12 @@ def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization):
     # делаем таблицы видимыми или скрываем их в зависимости от статуса
     for b in list_button_for_table_true:
         l_b_t[b].move(x1, position_y1[b])
-        l_t_v[b].setGeometry((QRect(0, position_y2[b], 1460, l_h_t_v[b])))
+        l_t_v[b].setGeometry((QRect(0, position_y2[b], 1640, l_h_t_v[b])))
         # делаем таблицу из списка видимой
         l_t_v[b].setVisible(True)
         if l_ch_b[b]:
             # передвигаем флажок
             l_ch_b[b].move(0, position_y2[b] - 20)
-
     for bb in list_button_for_table_false:
         # передвигаем кнопку репорта
         l_b_t[bb].move(x1, position_y1[bb])

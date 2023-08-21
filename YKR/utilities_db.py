@@ -30,7 +30,8 @@ def write_report_in_db(clear_report: dict, number_report: dict, name_db: str, fi
     cur = conn.cursor()
     # создаём таблицу master со столбцами из clear_rep_number, количества таблиц, списка таблиц ЕСЛИ ещё не существует
     if not cur.execute('''SELECT * FROM sqlite_master WHERE type="table" AND name="master"''').fetchall():
-        cur.execute('''CREATE TABLE IF NOT EXISTS master (unit, report_number, report_date, work_order, one_of, list_table_report)''')
+        cur.execute('''CREATE TABLE IF NOT EXISTS master (unit, report_number, report_date, work_order, one_of, 
+        list_table_report)''')
         conn.commit()
         # создаём индекс
         cur.execute('''CREATE INDEX id ON master (unit, report_number)''')
@@ -99,7 +100,8 @@ def write_rep_number_in_master(number_report: dict, count_table: list, name_tabl
         # если номер unit такой же, то обновляем строчку с записью в master
         if unit == cur.execute('''SELECT unit FROM master WHERE report_number = "{}"'''.format(number_report['report_number'])).fetchall()[0][0]:
             # пересчитываем и переписываем one_of и дописываем list_table_report номером новой таблицы
-            old_one_of = cur.execute('''SELECT one_of FROM master WHERE report_number = "{}"'''.format(number_report['report_number'])).fetchall()[0][0]
+            old_one_of = cur.execute('''SELECT one_of FROM master WHERE report_number = "{}"'''.format(number_report['report_number'])).fetchall()[0][
+                0]
             index_slash_old_one_of = old_one_of.find('/')
             old_one_of_left_slash = int(old_one_of[:index_slash_old_one_of])
             new_one_of_left_slash = str(old_one_of_left_slash + 1)
@@ -157,15 +159,11 @@ def look_up_data(db_for_search: list, values_for_search: dict):
 
             # если заполнено только поле unit или number_report
             if values_for_search['number_report'] != '' or values_for_search['unit'] != '':
-                # print('notnot')
                 # находим названия таблиц
                 find_tables_by_unit_or_report_number = cur.execute('''SELECT "list_table_report", "report_date" FROM master WHERE "{}" LIKE "%{}%"'''.
                                                                    format(place_for_search, unit_or_number_report_for_search)).fetchall()
                 # преобразуем найденные названия таблиц в вид, в котором они записаны в БД
                 list_table = transform_name_table(find_tables_by_unit_or_report_number)
-                # print(list_table)
-                # # получаем список дат каждого репорта
-                # list_date = take_date_from_search(find_tables_by_unit_or_report_number)
                 find_data[name_db] = list_table
                 place_for_search = ''
                 values = ''
@@ -173,18 +171,10 @@ def look_up_data(db_for_search: list, values_for_search: dict):
 
             # если заполнено одно поле, кроме unit или номера репорта
             else:
-                # print('start')
                 # находим названия таблиц
                 find_tables_by_unit_or_report_number = cur.execute('''SELECT "list_table_report", "report_date" FROM master''').fetchall()
                 # преобразуем найденные названия таблиц в вид, в котором они записаны в БД
-                # print('from master up:')
-                # print(find_tables_by_unit_or_report_number)
                 list_table = transform_name_table(find_tables_by_unit_or_report_number)
-                # # получаем список дат каждого репорта
-                # list_date = take_date_from_search(find_tables_by_unit_or_report_number)
-                # print('transform_name_table up:')
-                # for tt in list_table.keys():
-                    # print(tt, ': ', list_table[tt])
                 find_data[name_db] = list_table
                 # определяем какое поле заполнено
                 if values_for_search['line'] != '':
@@ -209,8 +199,6 @@ def look_up_data(db_for_search: list, values_for_search: dict):
                     format(values_for_search['unit'], values_for_search['number_report'])).fetchall()
                 # преобразуем найденные названия таблиц в вид, в котором они записаны в БД
                 list_table = transform_name_table(find_tables_by_unit_or_report_number)
-                # # получаем список дат каждого репорта
-                # list_date = take_date_from_search(find_tables_by_unit_or_report_number)
                 find_data[name_db] = list_table
                 place_for_search = ''
                 values = ''
@@ -226,13 +214,11 @@ def look_up_data(db_for_search: list, values_for_search: dict):
                     place_for_search = 'report_number'
                 # находим названия таблиц
                 find_tables_by_unit_or_report_number = cur.execute(
-                    '''SELECT "list_table_report", "report_date" FROM master WHERE "{}"="{}"'''.format(place_for_search, unit_or_number_report_for_search)). \
+                    '''SELECT "list_table_report", "report_date" FROM master WHERE "{}"="{}"'''.format(place_for_search,
+                                                                                                       unit_or_number_report_for_search)). \
                     fetchall()
                 # преобразуем найденные названия таблиц в вид, в котором они записаны в БД
                 list_table = transform_name_table(find_tables_by_unit_or_report_number)
-                # # получаем список дат каждого репорта
-                # list_date = take_date_from_search(find_tables_by_unit_or_report_number)
-
                 find_data[name_db] = list_table
                 place_for_search = ''
                 # формируем условия для конечного поиска, в зависимости от количества полей и какие именно поля заполнены
@@ -246,8 +232,6 @@ def look_up_data(db_for_search: list, values_for_search: dict):
                 find_tables_by_unit_or_report_number = cur.execute('''SELECT "list_table_report", "report_date" FROM master''').fetchall()
                 # преобразуем найденные названия таблиц в вид, в котором они записаны в БД
                 list_table = transform_name_table(find_tables_by_unit_or_report_number)
-                # # получаем список дат каждого репорта
-                # list_date = take_date_from_search(find_tables_by_unit_or_report_number)
                 find_data[name_db] = list_table
                 place_for_search = ''
                 # формируем условия для конечного поиска, в зависимости от количества полей и какие именно поля заполнены
@@ -255,12 +239,7 @@ def look_up_data(db_for_search: list, values_for_search: dict):
                 values = conversion_to_accumulation(values_for_search, comma_or_and)[:-5]
                 path = 3
         cur.close()
-    # sort_find_data(find_data)
-    # print(find_data)
-    # print(dict(sorted(find_data['reports_db_ON_UTT_22.sqlite'].items())))
-    # print(SortedDict(find_data['reports_db_ON_UTT_22.sqlite']).items())
     return find_data, path, place_for_search, values
-    # return find_data, path, place_for_search, values, list_date
 
 
 # преобразуем найденные названия таблиц в вид, в котором они записаны в БД
@@ -331,7 +310,6 @@ def data_master(db):
     cur = conn.cursor()
     # получаем все данные (кроме столбца unit) из таблицы master и сортируем по номеру репорта
     myself_data = cur.execute("SELECT * FROM master ORDER BY report_number DESC").fetchall()
-    # myself_data = cur.execute("SELECT report_number, report_date, work_order, one_of, list_table_report FROM master ORDER BY report_number DESC").fetchall()
     cur.close()
     return myself_data
 
@@ -364,6 +342,8 @@ def delete_table_from_db(list_table_and_db_for_delete):
             cur.close()
     else:
         return
+
+
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!при удалении происходит повторный поиск для обновления данных и выводится
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!сообщение, что ничего не найдено если это была последняя таблица из отчёта
 
