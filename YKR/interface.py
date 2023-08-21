@@ -110,8 +110,8 @@ line_search_drawing.setCursorMoveStyle(Qt.LogicalMoveStyle)
 line_search_drawing.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_drawing.setFocusPolicy(Qt.StrongFocus)
-# line_search_drawing.setText('KE01-A1-330-PG-P-DI-1049-009')
-line_search_drawing.setText('')
+line_search_drawing.setText('0080')
+# line_search_drawing.setText('')
 
 
 # создаём однострочное поле для ввода номера unit
@@ -133,8 +133,8 @@ line_search_unit.setCursorMoveStyle(Qt.LogicalMoveStyle)
 line_search_unit.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_unit.setFocusPolicy(Qt.StrongFocus)
-# line_search_unit.setText('2')
-line_search_unit.setText('')
+line_search_unit.setText('300')
+# line_search_unit.setText('')
 
 # создаём однострочное поле для ввода номера локации
 line_search_item_description = QLineEdit(window)
@@ -349,7 +349,7 @@ font_label_password.setItalic(True)
 label_password.setFont(font_label_password)
 
 # устанавливаем надпись "Линия"
-label_line = QLabel('Номер линии', window)
+label_line = QLabel('Линия, сосуд', window)
 # присваиваем уникальное объектное имя надписи "Линия"
 label_line.setObjectName(u"label_line")
 # устанавливаем положение и размер поля для надписи "Линия" в родительском окне (window)
@@ -505,8 +505,8 @@ scroll_area.setObjectName(u'Scroll_Area')
 scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 # задаём размер области с полосой прокрутки
-# scroll_area.setGeometry(20, 245, 1700, 650)
 scroll_area.setGeometry(20, 245, 1680, 650)
+# scroll_area.setGeometry(20, 245, 1680, 650)
 
 # создаём группу из чек-бокса 'ON', 'OF', 'OS'
 groupBox_location = QGroupBox(window)
@@ -926,7 +926,8 @@ def search():
                     table_height_for_data_output = count_row_in_table * 25 + 25
                     table_index.hide()
                     y1 += 20
-                    table_index.setGeometry(QRect(0, y1, 1700, table_height_for_data_output))
+                    table_index.setGeometry(QRect(0, y1, 2500, table_height_for_data_output))
+                    # table_index.setGeometry(QRect(0, y1, 1700, table_height_for_data_output))
                     if sqm.rowCount() != 0:
                         list_sqm.append(sqm)
                         button_for_table = table_name_buttons(frame_for_table, y1, authorization, table, unsort[key_date], language)
@@ -962,7 +963,7 @@ def search():
                         table_height_for_data_output = count_row_in_table * 25 + 25
                         table_index.hide()
                         y1 += 20
-                        table_index.setGeometry(QRect(0, y1, 1680, table_height_for_data_output))
+                        table_index.setGeometry(QRect(0, y1, 2500, table_height_for_data_output))
                         button_for_table = table_name_buttons(frame_for_table, y1, authorization, table, unsort[key_date], language)
                         check_box = check_box_name_buttons(frame_for_table, y1, authorization)
                         list_table_view.append(table_index)
@@ -992,7 +993,7 @@ def search():
                         table_height_for_data_output = count_row_in_table * 25 + 25
                         table_index.hide()
                         y1 += 20
-                        table_index.setGeometry(QRect(0, y1, 1680, table_height_for_data_output))
+                        table_index.setGeometry(QRect(0, y1, 2500, table_height_for_data_output))
                         button_for_table = table_name_buttons(frame_for_table, y1, authorization, table, unsort[key_date], language)
                         check_box = check_box_name_buttons(frame_for_table, y1, authorization)
                         list_table_view.append(table_index)
@@ -1028,7 +1029,7 @@ def ru():
     button_ru.setChecked(True)
     button_en.setCheckable(False)
     button_kz.setCheckable(False)
-    label_line.setText('Номер линии')
+    label_line.setText('Линия, сосуд')
     label_drawing.setText('Номер чертежа')
     label_unit.setText('Юнит')
     label_item_description.setText('Номер локации')
@@ -1073,7 +1074,7 @@ def en():
     button_en.setCheckable(True)
     button_en.setChecked(True)
     button_kz.setCheckable(False)
-    label_line.setText('Line')
+    label_line.setText('Line, vessel')
     label_drawing.setText('Drawing')
     label_unit.setText('Unit')
     label_item_description.setText('Item description')
@@ -1118,7 +1119,7 @@ def kz():
     button_en.setCheckable(False)
     button_kz.setCheckable(True)
     button_kz.setChecked(True)
-    label_line.setText('Жол нөмірі')
+    label_line.setText('Сызық, ыдыс')
     label_drawing.setText('Сызба нөмірі')
     label_unit.setText('Бірлік')
     label_item_description.setText('Орын нөмірі')
@@ -1205,20 +1206,37 @@ def print_report():
 def faq():
     faq_window = QDialog()
     faq_window.setWindowTitle('Frequently Asked Questions')
-    faq_window.setFixedSize(1000, 800)
-    # текст внутри
-    faq_window_text = QLabel(faq_text, faq_window)
+    faq_window.setFixedSize(1300, 800)
+    if button_ru.isChecked():
+        # faq_text_ru - текст внутри на русском языке
+        faq_window_text = QLabel(faq_text_ru, faq_window)
+    if button_en.isChecked():
+        # faq_text_en - текст внутри на английском языке
+        faq_window_text = QLabel(faq_text_en, faq_window)
+    if button_kz.isChecked():
+        # faq_text_kz - текст внутри на казахском языке
+        faq_window_text = QLabel(faq_text_kz, faq_window)
     font_faq_window_text = QFont()
     font_faq_window_text.setFamily(u"Arial")
     font_faq_window_text.setPointSize(11)
     faq_window_text.setFont(font_faq_window_text)
-    faq_window_text.setGeometry(QRect(10, 0, 990, 720))
+    faq_window_text.setGeometry(QRect(10, 0, 1290, 760))
     faq_window_text.setWordWrap(True)
-    # кнопка "Понятно" для закрытия окна "FAQ"
-    button_close_faq = QPushButton('Понятно', faq_window)
-    button_close_faq.setGeometry(450, 730, 100, 50)
+    # текс в "FAQ" в зависимости от выбранного языка
+    if button_ru.isChecked():
+        # faq_text_ru - текст внутри на русском языке
+        button_close_faq = QPushButton('Понятно', faq_window)
+        button_close_faq.setGeometry(600, 730, 100, 50)
+    if button_en.isChecked():
+        # faq_text_en - текст внутри на английском языке
+        button_close_faq = QPushButton('It\'s clear', faq_window)
+        button_close_faq.setGeometry(600, 730, 100, 50)
+    if button_kz.isChecked():
+        # faq_text_kz - текст внутри на казахском языке
+        button_close_faq = QPushButton('Ол түсінікті', faq_window)
+        button_close_faq.setGeometry(575, 730, 150, 50)
     # присваиваем уникальное объектное имя кнопке "Понятно"
-    button_close_faq.setObjectName(u"pushButton_search")
+    button_close_faq.setObjectName(u"pushButton_all_clear")
     # задаём параметры стиля и оформления кнопки "Понятно"
     font_button_close_faq = QFont()
     font_button_close_faq.setFamily(u"Arial")
