@@ -16,6 +16,7 @@ from openpyxl.styles import PatternFill
 from YKR.utilities_interface import *
 from YKR.utilities_db import *
 from YKR.add_reports import *
+from YKR.props import *
 
 # получаем имя машины с которой был осуществлён вход в программу
 uname = os.environ.get('USERNAME')
@@ -281,8 +282,8 @@ font_button_faq = QFont()
 font_button_faq.setFamily(u"Arial")
 font_button_faq.setPointSize(12)
 button_faq.setFont(font_button_faq)
-# временно, опка не напишу
-button_faq.setEnabled(False)
+# временно, пока не напишу
+# button_faq.setEnabled(False)
 
 # создаём однострочное поле для ввода логина
 line_login = QLineEdit(window)
@@ -1204,9 +1205,18 @@ def print_report():
 def faq():
     faq_window = QDialog()
     faq_window.setWindowTitle('Frequently Asked Questions')
-    faq_window.setFixedSize(1000, 500)
+    faq_window.setFixedSize(1000, 800)
+    # текст внутри
+    faq_window_text = QLabel(faq_text, faq_window)
+    font_faq_window_text = QFont()
+    font_faq_window_text.setFamily(u"Arial")
+    font_faq_window_text.setPointSize(11)
+    faq_window_text.setFont(font_faq_window_text)
+    faq_window_text.setGeometry(QRect(10, 0, 990, 720))
+    faq_window_text.setWordWrap(True)
+    # кнопка "Понятно" для закрытия окна "FAQ"
     button_close_faq = QPushButton('Понятно', faq_window)
-    button_close_faq.setGeometry(450, 450, 100, 50)
+    button_close_faq.setGeometry(450, 730, 100, 50)
     # присваиваем уникальное объектное имя кнопке "Понятно"
     button_close_faq.setObjectName(u"pushButton_search")
     # задаём параметры стиля и оформления кнопки "Понятно"
@@ -1214,8 +1224,6 @@ def faq():
     font_button_close_faq.setFamily(u"Arial")
     font_button_close_faq.setPointSize(14)
     button_close_faq.setFont(font_button_close_faq)
-    # текст внутри
-
 
     # закрытие окна FAQ
     def close_faq():
