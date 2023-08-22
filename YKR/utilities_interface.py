@@ -59,16 +59,16 @@ def define_db_for_search(data_filter_for_search: dict) -> list:
 
 
 # формируем кнопки названий найденных таблиц
-def table_name_buttons(frame_for_table, y1, authorization, table, find_date, language):
+def table_name_buttons(frame_for_table, y1, authorization, table, find_date, language, line_for_table_name_buttons):
     # задаём название кнопки по номеру репорта и помещаем внутрь frame
-    button_for_table = QPushButton(second_underlining(table, find_date, language), frame_for_table)
+    button_for_table = QPushButton(second_underlining(table, find_date, language, line_for_table_name_buttons), frame_for_table)
     # координата отступа от левого края (меняется, когда происходит авторизация пользователя - появляется check box)
     if authorization:
         x1 = 20
     else:
         x1 = 0
     # задаём размеры и место расположения кнопки во frame
-    button_for_table.setGeometry(QRect(x1, y1, 600, 20))
+    button_for_table.setGeometry(QRect(x1, y1, 800, 20))
     # задаём стиль шрифта
     font_button_for_table = QFont()
     font_button_for_table.setFamily(u"Calibri")
@@ -96,15 +96,15 @@ def check_box_name_buttons(frame_for_table, y1, authorization):
 
 
 # формируем название кнопки для отображаемой таблицы
-def second_underlining(table: str, find_date: str, language: str) -> str:
+def second_underlining(table: str, find_date: str, language: str, line_for_table_name_buttons: str) -> str:
     number_report = table.replace('_', '-')[1:]
     date = find_date
     if language == 'ru':
-        name_button = f'номер отчёта: {number_report}, дата: {date}'
+        name_button = f'номер отчёта: {number_report}, дата: {date}, объект контроля: {line_for_table_name_buttons}'
     if language == 'en':
-        name_button = f'report number: {number_report}, date: {date}'
+        name_button = f'report number: {number_report}, date: {date}, object of control: {line_for_table_name_buttons}'
     if language == 'kz':
-        name_button = f'есеп нөмірі: {number_report}, күні: {date}'
+        name_button = f'есеп нөмірі: {number_report}, күні: {date}, бақылау объектісі: {line_for_table_name_buttons}'
     return name_button
 
 

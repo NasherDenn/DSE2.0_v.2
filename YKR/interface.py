@@ -895,7 +895,6 @@ def search():
                     logger_with_user.error('Отсутствует соединение с базой данных')
                     sys.exit()
                 con.open()
-
                 # задаём поле для вывода данных из базы данных, размещённую в области с полосой прокрутки
                 table_index = QTableView(frame_for_table)
                 # создаём модель
@@ -927,10 +926,12 @@ def search():
                     table_index.hide()
                     y1 += 20
                     table_index.setGeometry(QRect(0, y1, 2500, table_height_for_data_output))
-                    # table_index.setGeometry(QRect(0, y1, 1700, table_height_for_data_output))
                     if sqm.rowCount() != 0:
                         list_sqm.append(sqm)
-                        button_for_table = table_name_buttons(frame_for_table, y1, authorization, table, unsort[key_date], language)
+                        # номер линии, сосуда для кнопки названия таблицы
+                        line_for_table_name_buttons = sqm.query().value('line')
+                        button_for_table = table_name_buttons(frame_for_table, y1, authorization, table, unsort[key_date], language,
+                                                              line_for_table_name_buttons)
                         check_box = check_box_name_buttons(frame_for_table, y1, authorization)
                         list_table_view.append(table_index)
                         list_button_for_table.append(button_for_table)
@@ -940,12 +941,8 @@ def search():
                             lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization))
                         # перерисовываем кнопки
                         visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization)
-
                 # если заполнено одно поле, кроме unit или номера репорта
                 if find_data[1] == 2:
-                    # print(table)
-                    # print(find_data[2])
-                    # print(find_data[3])
                     # делаем запрос в модели
                     sqm.setQuery('''SELECT * FROM {} WHERE "{}" LIKE "%{}%"'''.format(table, find_data[2], find_data[3]))
                     # если не найдено ни одной строчки, то ничего не показываем
@@ -964,7 +961,10 @@ def search():
                         table_index.hide()
                         y1 += 20
                         table_index.setGeometry(QRect(0, y1, 2500, table_height_for_data_output))
-                        button_for_table = table_name_buttons(frame_for_table, y1, authorization, table, unsort[key_date], language)
+                        # номер линии, сосуда для кнопки названия таблицы
+                        line_for_table_name_buttons = sqm.query().value('line')
+                        button_for_table = table_name_buttons(frame_for_table, y1, authorization, table, unsort[key_date], language,
+                                                              line_for_table_name_buttons)
                         check_box = check_box_name_buttons(frame_for_table, y1, authorization)
                         list_table_view.append(table_index)
                         list_button_for_table.append(button_for_table)
@@ -994,7 +994,10 @@ def search():
                         table_index.hide()
                         y1 += 20
                         table_index.setGeometry(QRect(0, y1, 2500, table_height_for_data_output))
-                        button_for_table = table_name_buttons(frame_for_table, y1, authorization, table, unsort[key_date], language)
+                        # номер линии, сосуда для кнопки названия таблицы
+                        line_for_table_name_buttons = sqm.query().value('line')
+                        button_for_table = table_name_buttons(frame_for_table, y1, authorization, table, unsort[key_date], language,
+                                                              line_for_table_name_buttons)
                         check_box = check_box_name_buttons(frame_for_table, y1, authorization)
                         list_table_view.append(table_index)
                         list_button_for_table.append(button_for_table)
@@ -1004,7 +1007,6 @@ def search():
                             lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization))
                         # перерисовываем кнопки
                         visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization)
-
                 con.close()
     # сообщение о том, что ничего не найдено
     if not list_button_for_table:
@@ -1060,9 +1062,11 @@ def ru():
                 if 'number' in old_text:
                     new_text = old_text.replace('report number', 'номер отчёта')
                     new_text = new_text.replace('date', 'дата')
+                    new_text = new_text.replace('object of control', 'объект контроля')
                 if 'нөмірі' in old_text:
                     new_text = old_text.replace('есеп нөмірі', 'номер отчёта')
                     new_text = new_text.replace('күні', 'дата')
+                    new_text = new_text.replace('бақылау объектісі', 'объект контроля')
                 push_button.setText(new_text)
                 push_button.repaint()
     window.repaint()
@@ -1105,9 +1109,11 @@ def en():
                 if 'отчёт' in old_text:
                     new_text = old_text.replace('номер отчёта', 'report number')
                     new_text = new_text.replace('дата', 'date')
+                    new_text = new_text.replace('объект контроля', 'object of control')
                 if 'нөмірі' in old_text:
                     new_text = old_text.replace('есеп нөмірі', 'report number')
                     new_text = new_text.replace('күні', 'date')
+                    new_text = new_text.replace('бақылау объектісі', 'object of control')
                 push_button.setText(new_text)
                 push_button.repaint()
     window.repaint()
@@ -1150,9 +1156,11 @@ def kz():
                 if 'отчёт' in old_text:
                     new_text = old_text.replace('номер отчёта', 'есеп нөмірі')
                     new_text = new_text.replace('дата', 'күні')
+                    new_text = new_text.replace('объект контроля', 'бақылау объектісі')
                 if 'number' in old_text:
                     new_text = old_text.replace('report number', 'есеп нөмірі')
                     new_text = new_text.replace('date', 'күні')
+                    new_text = new_text.replace('object of control', 'бақылау объектісі')
                 push_button.setText(new_text)
                 push_button.repaint()
     window.repaint()
