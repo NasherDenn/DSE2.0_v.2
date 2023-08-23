@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5.QtSql import QSqlDatabase
-from PyQt5.QtSql import QSqlQueryModel, QSqlTableModel
+from PyQt5.QtSql import QSqlQueryModel
 
 from YKR.utilities_interface import *
 from YKR.add_reports import *
 from YKR.props import *
+
+import sys
+
 
 # получаем имя машины с которой был осуществлён вход в программу
 uname = os.environ.get('USERNAME')
@@ -166,7 +169,7 @@ line_search_number_report.setCursorMoveStyle(Qt.LogicalMoveStyle)
 line_search_number_report.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_number_report.setFocusPolicy(Qt.StrongFocus)
-line_search_number_report.setText('010')
+line_search_number_report.setText('')
 # line_search_number_report.setText('206')
 
 # создаём кнопку "Поиск"

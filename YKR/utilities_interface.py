@@ -3,8 +3,8 @@
 import datetime
 import itertools
 
-from utilities_db import *
-from utilities_add_reports import *
+from YKR.utilities_db import *
+from YKR.utilities_add_reports import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *

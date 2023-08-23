@@ -1,14 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import os
-import logging
-import sys
 import datetime
 
 from YKR.utilities_db import *
 from YKR.utilities_add_reports import *
 from PyQt5.QtWidgets import QFileDialog
-from PyQt5 import QtCore, QtGui, QtWidgets
 
 # получаем имя машины с которой был осуществлён вход в программу
 uname = os.environ.get('USERNAME')
