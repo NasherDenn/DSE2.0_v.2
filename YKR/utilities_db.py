@@ -3,9 +3,6 @@ import os
 import sqlite3
 import traceback
 
-# import sys
-# import re
-
 from PyQt5.QtWidgets import *
 
 # получаем имя машины с которой был осуществлён вход в программу

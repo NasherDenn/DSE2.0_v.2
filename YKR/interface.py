@@ -1,20 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import os
-import sys
-import logging
-import datetime
-
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
 from PyQt5.QtSql import QSqlDatabase
 from PyQt5.QtSql import QSqlQueryModel, QSqlTableModel
-from PyQt5.QtWidgets import *
-from openpyxl.styles import PatternFill
 
 from YKR.utilities_interface import *
-from YKR.utilities_db import *
 from YKR.add_reports import *
 from YKR.props import *
 
