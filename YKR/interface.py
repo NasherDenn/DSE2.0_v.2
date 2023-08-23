@@ -110,7 +110,7 @@ line_search_drawing.setCursorMoveStyle(Qt.LogicalMoveStyle)
 line_search_drawing.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_drawing.setFocusPolicy(Qt.StrongFocus)
-line_search_drawing.setText('0080')
+line_search_drawing.setText('')
 # line_search_drawing.setText('')
 
 
@@ -133,7 +133,7 @@ line_search_unit.setCursorMoveStyle(Qt.LogicalMoveStyle)
 line_search_unit.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_unit.setFocusPolicy(Qt.StrongFocus)
-line_search_unit.setText('300')
+line_search_unit.setText('')
 # line_search_unit.setText('')
 
 # создаём однострочное поле для ввода номера локации
@@ -177,7 +177,7 @@ line_search_number_report.setCursorMoveStyle(Qt.LogicalMoveStyle)
 line_search_number_report.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_number_report.setFocusPolicy(Qt.StrongFocus)
-line_search_number_report.setText('')
+line_search_number_report.setText('010')
 # line_search_number_report.setText('206')
 
 # создаём кнопку "Поиск"
@@ -209,8 +209,6 @@ button_print.setFont(font_button_print)
 button_print.setFocusPolicy(Qt.ClickFocus)
 # включаем переход фокуса по кнопке Tab
 button_print.setFocusPolicy(Qt.TabFocus)
-# временно, пока не напишу
-button_print.setEnabled(False)
 
 # создаём кнопку "Добавить"
 button_add = QPushButton('Добавить', window)
@@ -1207,7 +1205,81 @@ def delete_report():
 
 # печать репортов
 def print_report():
-    pass
+    wbb = openpyxl.Workbook()
+    # дата и время формирования файла Excel для печати
+    date_time_for_print = datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")
+    thin = Side(border_style="thin", color="000000")
+    if window.findChildren(QTableView):
+        open_scroll_area = window.findChildren(QScrollArea)
+        for scroll in open_scroll_area:
+            open_push_button = scroll.findChildren(QPushButton)
+            for index_push_button, push_button in enumerate(open_push_button):
+                # список найденных заполненных таблиц
+                full_sqm = []
+                # перебираем найденные таблицы, чтобы исключить нулевые
+                for find_table in list_sqm:
+                    if find_table.rowCount() != 0:
+                        # убираем повторы
+                        if find_table not in full_sqm:
+                            full_sqm.append(find_table)
+                # если таблица открыта, то выводим её на лист Excel
+                if push_button.isChecked():
+                    # название листа для таблицы
+                    name_table = name_table_for_excel_print(push_button.text())
+                    # создаём новый лист на каждую таблицу
+                    sheet_for_print = wbb.create_sheet(name_table)
+                    # вставляем в первую строку название кнопки по выбранной таблицу
+                    sheet_for_print.cell(row=1, column=1, value=str(push_button.text()))
+                    # выделяем её жирным
+                    sheet_for_print.cell(row=1, column=1).font = Font(bold=True)
+                    # объединяем в первой строке столбцы 'A:J'
+                    sheet_for_print.merge_cells('A1:J1')
+                    # вставляем во вторую строку названия столбцов
+                    # перебираем названия столбцов
+                    for index_column in range(full_sqm[index_push_button].columnCount()):
+                        sheet_for_print.cell(row=2, column=index_column + 1,
+                                             value=str(full_sqm[index_push_button].query().record().fieldName(index_column)))
+                        # выделяем её жирным
+                        sheet_for_print.cell(row=2, column=index_column + 1).font = Font(bold=True)
+                        # центрируем запись внутри
+                        sheet_for_print.cell(row=2, column=index_column + 1).alignment = Alignment(horizontal='center', vertical='center')
+                        # заполняем лист Excel
+                        for index_row in range(full_sqm[index_push_button].rowCount()):
+                            sheet_for_print.cell(row=index_row + 3, column=index_column + 1, value=str(full_sqm[index_push_button].record(index_row).value(index_column)))
+                            # выделяем основные данные границами
+                            sheet_for_print.cell(row=index_row + 3, column=index_column + 1).border = Border(top=thin, left=thin, right=thin, bottom=thin)
+                        # закрепляем первую строку с названием кнопки, по которой выбрана таблица, и вторую с названиями столбцов
+                        sheet_for_print.freeze_panes = "A3"
+                        # выделяем её границами
+                        sheet_for_print.cell(row=2, column=index_column + 1).border = Border(top=thin, left=thin, right=thin, bottom=thin)
+                    # ручной автоподбор ширины столбцов по содержимому
+                    ascii_range = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+                                   'S', 'T', 'V', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI',
+                                   'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR', 'AS', 'AT', 'AV', 'AX', 'AY', 'AZ']
+                    # перебираем все заполненные столбцы
+                    for collumn in range(1, full_sqm[index_push_button].columnCount() + 1):
+                        max_length_column = 0
+                        # перебираем все заполненные строки
+                        for roww in range(2, full_sqm[index_push_button].rowCount() + 1):
+                            if len(str(sheet_for_print.cell(row=roww, column=collumn).value)) > max_length_column:
+                                max_length_column = len(str(sheet_for_print.cell(row=roww, column=collumn).value))
+                        # устанавливаем ширину заполненных столбцов по их содержимому
+                        sheet_for_print.column_dimensions[ascii_range[collumn]].width = max_length_column + 2
+                # путь сохранения в папке с программой
+                new_path_for_print = os.path.abspath(os.getcwd()) + '\\Report for print\\' + date_time_for_print[:7] + '\\'
+                if not os.path.exists(new_path_for_print):
+                    # то создаём эту папку
+                    os.makedirs(new_path_for_print)
+                # переменная имени файла с расширением для сохранения и последующего открытия
+                name_for_print = str(date_time_for_print) + ' Report for print' + '.xlsx'
+                # Удаление листа, создаваемого по умолчанию, при создании документа
+            del wbb['Sheet']
+            # сохраняем файл
+            wbb.save(new_path_for_print + name_for_print)
+            wbb.close()
+            # и открываем его
+            os.startfile(new_path_for_print + name_for_print)
+            logger_with_user.info('Вывод на печать репорта(ов)\n' + new_path_for_print + name_for_print)
 
 
 # нажатие на кнопку "FAQ" в главном окне

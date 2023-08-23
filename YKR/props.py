@@ -159,8 +159,8 @@ faq_text_ru = '- Для чего эта программа?\n' \
            '- Как вывести на печать найденный отчёт?\n' \
            'На печать (на лист Excel) будет выведен отчёт, который развернули (кликнули по его названию). Для печати ' \
            'нескольких отчётов надо развернуть несколько интересующих отчётов. Каждый отчёт будет выведен на отдельный лист ' \
-           'Excel. Если не один отчёт не развёрнут, то на печать выведутся все найденные отчёты!\n' \
-           'По умолчанию отчёт сохраняется в папке "Reports for print".\n\n' \
+           'Excel. По умолчанию отчёт сохраняется в папке "Reports for print".\n' \
+           'Внимание!!! При печати репортов с длинным номером возможны предупреждения Excel - их можно игнорировать.\n\n' \
            '!!!Для администраторов!!!\n\n' \
            '- Как добавить данные?\n' \
            'Нажать на кнопку "Добавить" и выбрать один или несколько отчётов. При этом все поля и кнопки программы будут заблокированы, ' \
@@ -185,8 +185,8 @@ faq_text_en = '- What is this program for??\n' \
            '- How to print the found report?\n' \
            'A report will be printed (on an Excel sheet) that has been expanded (clicked on its name). For print ' \
            'several reports, you need to deploy several reports of interest. Each report will be displayed on a separate sheet ' \
-           'Excel. If more than one report is not deployed, then all found reports will be printed!\n' \
-           'By default, the report is saved in the "Reports for print" folder.\n\n' \
+           'Excel. By default, the report is saved in the "Reports for print" folder.\n' \
+           'Attention!!! When printing reports with a long number, Excel warnings are possible - they can be ignored.\n\n' \
            '!!!For administrators!!!\n\n' \
            '- How to add data?\n' \
            'Click on the "Add reports" button and select one or more reports. In this case, all fields and buttons of the program will be blocked, ' \
@@ -211,9 +211,9 @@ faq_text_kz = '- Бұл бағдарлама не үшін?\n' \
            'XXX пішімі (060).\n\n' \
            '- Табылған есепті қалай басып шығаруға болады?\n' \
            'Кеңейтілген есеп басып шығарылады (Excel парағында) (атын басыңыз). Басып шығару үшін бірнеше есептер болса, бірнеше ' \
-           'қызықты есептерді кеңейту қажет. Әрбір есеп жеке парақта көрсетіледі Excel. Бір есеп қолданбаса, қосулы барлық табылған есептерді ' \
-           'басып шығару көрсетіледі!\n' \
-           'Әдепкі бойынша есеп «Reports for print» қалтасында сақталады.\n\n' \
+           'қызықты есептерді кеңейту қажет. Әрбір есеп жеке парақта көрсетіледі Excel. Әдепкі бойынша есеп «Reports for print» қалтасында ' \
+           'сақталады.\n' \
+           'Назар аударыңыз!!! Ұзын саны бар есептерді басып шығару кезінде Excel ескертулері мүмкін - оларды елемеу мүмкін.\n\n' \
            '!!!Әкімшілер үшін!!!\n\n' \
            '- Деректерді қалай қосуға болады?\n' \
            '«Қосу» түймесін басып, бір немесе бірнеше есепті таңдаңыз. Бұл жағдайда бағдарламаның барлық өрістері мен түймелері блокталады, ' \

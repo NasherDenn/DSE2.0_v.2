@@ -374,3 +374,11 @@ def del_report(table_for_delete: list) -> dict:
                 list_table_for_delete_in_db.append(table)
                 check_db = db_for_delete
     return db_table_for_delete
+
+
+# формируем название закладки листа Excel для печати
+def name_table_for_excel_print(full_name_button: str) -> str:
+    check_since = full_name_button.index(':') + 2
+    check_to = full_name_button.index(',')
+    name = full_name_button[check_since:check_to]
+    return name
