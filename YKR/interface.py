@@ -741,14 +741,7 @@ def log_out():
             open_check_box = scroll.findChildren(QCheckBox)
             # скрываем флажки
             for check_box in open_check_box:
-                check_box.hide()
-
-    # # если перед выходом из авторизации показана НЕ статистика из master (check_statistic_master == 0),
-    # if check_statistic_master == 0:
-    #     # то скрываем флажки
-    #     if list_check_box:
-    #         for i in list_check_box:
-    #             i.hide()
+                check_box.setParent(None)
 
 
 # словарь выбранных фильтров (локация, метод, год) для поиска
@@ -804,13 +797,13 @@ def search():
     if window.findChildren(QTableView):
         open_tableview = window.findChildren(QTableView)
         for tableview in open_tableview:
-            tableview.hide()
+            tableview.setParent(None)
         open_scroll_area = window.findChildren(QScrollArea)
         for scroll in open_scroll_area:
             open_push_button = scroll.findChildren(QPushButton)
             for push_button in open_push_button:
                 # то сдвигаем вбок кнопки названий таблиц
-                push_button.hide()
+                push_button.setParent(None)
     # проверяем какой язык выбран
     if button_ru.isChecked():
         language = 'ru'
@@ -835,6 +828,13 @@ def search():
             buttons=QMessageBox.Ok
         )
         return
+
+    # замораживаем все кнопки и поля на время поиска данных
+    freeze_button()
+    search_picture = Searching()
+    search_picture.start_loading()
+    window.repaint()
+
     # собираем названия БД, по выбранным фильтрам, в которых надо искать данные
     db_for_search = define_db_for_search(data_filter_for_search)
     # получаем значения из полей для ввода
@@ -1011,6 +1011,11 @@ def search():
     # + количество таблиц * 20 (расстояние между таблицами в открытом виде)
     frame_height_for_data_output = all_count_row_in_search * 25 + all_count_table_in_search * 2 * 20 + 20 + all_count_table_in_search * 20
     frame_for_table.setGeometry(0, 0, 1680, frame_height_for_data_output)
+
+    # размораживаем все кнопки и поля на время поиска данных
+    unfreeze_button()
+    search_picture.stop_loading()
+    window.repaint()
     frame_for_table.show()
     scroll_area.show()
 
@@ -1328,6 +1333,19 @@ def faq():
 
 # запускаем добавление новых репортов, замораживаем все окна, поля для ввода и отображаем картинку "Loading"
 def start_add_table():
+    if window.findChildren(QTableView):
+        open_tableview = window.findChildren(QTableView)
+        for tableview in open_tableview:
+            tableview.setParent(None)
+        open_scroll_area = window.findChildren(QScrollArea)
+        for scroll in open_scroll_area:
+            open_push_button = scroll.findChildren(QPushButton)
+            for push_button in open_push_button:
+                # то сдвигаем вбок кнопки названий таблиц
+                push_button.setParent(None)
+            open_check_box = scroll.findChildren(QCheckBox)
+            for check_box in open_check_box:
+                check_box.setParent(None)
     freeze_button()
     loading = Loading()
     loading.start_loading()
@@ -1356,6 +1374,19 @@ class Loading():
     # скрываем "Loading"
     def stop_loading(self):
         self.load.hide()
+
+
+# класс для отображения и скрытия изображения "Search"
+class Searching(Loading):
+    def __init__(self):
+
+        self.load = QLabel(scroll_area)
+        self.load.setGeometry(0, 0, 1660, 630)
+        self.load.setAlignment(Qt.AlignCenter)
+        self.load.setPixmap(QPixmap(u"searching.png"))
+
+        super().start_loading()
+        super().stop_loading()
 
 
 # заморозка кнопок и полей для ввода на время загрузки новых репортов
