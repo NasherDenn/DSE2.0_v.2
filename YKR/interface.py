@@ -1206,6 +1206,8 @@ def print_report():
     # дата и время формирования файла Excel для печати
     date_time_for_print = datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")
     thin = Side(border_style="thin", color="000000")
+    # активатор отсутствия хотя бы одной открытой таблицы
+    no_one_open_table = True
     if window.findChildren(QTableView):
         open_scroll_area = window.findChildren(QScrollArea)
         for scroll in open_scroll_area:
@@ -1221,6 +1223,7 @@ def print_report():
                             full_sqm.append(find_table)
                 # если таблица открыта, то выводим её на лист Excel
                 if push_button.isChecked():
+                    no_one_open_table = False
                     # название листа для таблицы
                     name_table = name_table_for_excel_print(push_button.text())
                     # создаём новый лист на каждую таблицу
@@ -1271,7 +1274,15 @@ def print_report():
                     os.makedirs(new_path_for_print)
                 # переменная имени файла с расширением для сохранения и последующего открытия
                 name_for_print = str(date_time_for_print) + ' Report for print' + '.xlsx'
-                # Удаление листа, создаваемого по умолчанию, при создании документа
+            # если ни одна таблица не открыта
+            if no_one_open_table:
+                QMessageBox.information(
+                    window,
+                    'Эй',
+                    'Вы ничего не выбрали (не открыли) для вывода на печать!'
+                )
+                return
+            # Удаление листа, создаваемого по умолчанию, при создании документа
             del wbb['Sheet']
             # сохраняем файл
             wbb.save(new_path_for_print + name_for_print)
