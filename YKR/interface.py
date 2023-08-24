@@ -340,11 +340,11 @@ font_label_password.setItalic(True)
 label_password.setFont(font_label_password)
 
 # устанавливаем надпись "Линия"
-label_line = QLabel('Линия, сосуд', window)
+label_line = QLabel('Линия/Ёмкость', window)
 # присваиваем уникальное объектное имя надписи "Линия"
 label_line.setObjectName(u"label_line")
 # устанавливаем положение и размер поля для надписи "Линия" в родительском окне (window)
-label_line.setGeometry(QRect(20, 25, 151, 26))
+label_line.setGeometry(QRect(15, 25, 156, 26))
 # задаём параметры стиля и оформления поля для надписи "Линия"
 font_label_line = QFont()
 font_label_line.setFamily(u"Arial")
@@ -514,26 +514,26 @@ groupBox_location.setStyleSheet('''QGroupBox {border: 0.5px solid grey;};
                                    padding: 0 3px 0 3px;
                                 }''')
 
-# создаём радио-кнопку локации 'ON'
+# создаём чек-бокс локации 'ON'
 checkBox_on = QCheckBox(groupBox_location)
 checkBox_on.setObjectName(u"checkBox_on")
 # устанавливаем положение внутри группы
-checkBox_on.setGeometry(QRect(10, 25, 42, 20))
+checkBox_on.setGeometry(QRect(10, 25, 45, 20))
 # указываем текст чек-бокса
 checkBox_on.setText('ON')
 checkBox_on.setChecked(True)
 
-# создаём радио-кнопку локации 'OF'
+# создаём чек-бокс локации 'OF'
 checkBox_of = QCheckBox(groupBox_location)
 checkBox_of.setObjectName(u"checkBox_of")
 # устанавливаем положение внутри группы
-checkBox_of.setGeometry(QRect(60, 25, 42, 20))
+checkBox_of.setGeometry(QRect(61, 25, 42, 20))
 # указываем текст чек-бокса
 checkBox_of.setText('OF')
 # временно, пока не загрузятся другие локации
 checkBox_of.setEnabled(False)
 
-# создаём радио-кнопку локации 'OS'
+# создаём чек-бокс локации 'OS'
 checkBox_os = QCheckBox(groupBox_location)
 checkBox_os.setObjectName(u"checkBox_os")
 # устанавливаем положение внутри группы
@@ -1026,7 +1026,7 @@ def ru():
     button_ru.setChecked(True)
     button_en.setCheckable(False)
     button_kz.setCheckable(False)
-    label_line.setText('Линия, сосуд')
+    label_line.setText('Линия/Ёмкость')
     label_drawing.setText('Номер чертежа')
     label_unit.setText('Юнит')
     label_item_description.setText('Номер локации')
@@ -1073,7 +1073,7 @@ def en():
     button_en.setCheckable(True)
     button_en.setChecked(True)
     button_kz.setCheckable(False)
-    label_line.setText('Line, vessel')
+    label_line.setText('Line/Equipment')
     label_drawing.setText('Drawing')
     label_unit.setText('Unit')
     label_item_description.setText('Item description')
@@ -1120,7 +1120,7 @@ def kz():
     button_en.setCheckable(False)
     button_kz.setCheckable(True)
     button_kz.setChecked(True)
-    label_line.setText('Сызық, ыдыс')
+    label_line.setText('Сызық/Cыйымд.')
     label_drawing.setText('Сызба нөмірі')
     label_unit.setText('Бірлік')
     label_item_description.setText('Орын нөмірі')
