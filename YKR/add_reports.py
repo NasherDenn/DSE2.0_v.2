@@ -5,6 +5,7 @@ import datetime
 from YKR.utilities_db import *
 from YKR.utilities_add_reports import *
 from PyQt5.QtWidgets import QFileDialog
+import sys
 
 # получаем имя машины с которой был осуществлён вход в программу
 uname = os.environ.get('USERNAME')
@@ -17,26 +18,29 @@ def add_table():
     logger_with_user.info(f'\n\nНачало загрузки данных\n\n')
     # для продакшн
     # проверяем наличие всех БД (с 2019 по 2026 года) во всех вариациях в папке "DB"
-    # no_db_in_folder = db_in_folder()
-    # if no_db_in_folder:
-    #     for i in no_db_in_folder:
-    #         logger_with_user.error(f'В папке "DB" нет базы данных {i}')
-    #     sys.exit('В папке "DB" нет базы данных ')
-
+    no_db_in_folder = db_in_folder()
+    if no_db_in_folder:
+        for i in no_db_in_folder:
+            logger_with_user.error(f'В папке "DB" нет базы данных {i}')
+        sys.exit(f'В папке "DB" нет базы данных {i}')
     # тест, надо будет поменять
     # путь к файлам для загрузки из диалогового окна выбора
-    # dir_files = 'C:/Users/Андрей/Documents/NDT/NDT UTT/REPORTS 2022/+UTT\+ON/'
+    # dir_files = 'C:/Users/Andrei/Documents/NDT/NDT UTT/REPORTS 2022/+PAUT/'
     # dir_files = 'C:/Users/Андрей/Documents/NDT/Тестовые данные/'
 
     # для продакшн
-    # name_dir = []
-    dir_files = QFileDialog.getOpenFileNames(None, 'Выбрать папку', '/home', "docx(*.docx)")
+    dir_files = QFileDialog.getOpenFileNames(None, 'Выбрать папку', 'C:/Users/Andrei/Documents/NDT/NDT UTT/REPORTS 2021/UT/ON', "docx(*.docx)")
+    # dir_files = QFileDialog.getOpenFileNames(None, 'Выбрать папку', '/home', "docx(*.docx)")
 
     # список путей и названий репортов для дальнейшей обработки
-    # list_name_reports_for_future_work = get_name_dir(dir_files, name_dir)
     list_name_reports_for_future_work = dir_files[:-1]
     # выбор только репортов в названиях которых есть "04-YKR"
     list_files_for_work = change_only_ykr_reports(list_name_reports_for_future_work[0])
+
+    if not list_files_for_work:
+        stop_loading = True
+        return stop_loading
+
     # начинаем перебирать репорты, прошедшие предварительную выборку
     for report in list_files_for_work:
         # переменная для перехода к следующему репорту, в случае выявленной ошибки
@@ -79,8 +83,8 @@ def add_table():
             else:
                 report_number_for_logger = clear_rep_number['report_number']
                 logger_with_user.warning(
-                    f'В репорте {report_number_for_logger} нет ключевого слова "Nominal thickness" или первая таблица с рабочей информацией не отделена '
-                    f'от таблиц(ы) с данными!')
+                    f'В репорте {report_number_for_logger} нет ключевого слова "Nominal thickness" или первая таблица с рабочей информацией не '
+                    f'отделена от таблиц(ы) с данными!')
             # список номеров таблиц, которые прошли все очистки, для дальнейшего переименования порядковых номеров таблиц для записи в БД
             finish_list_number_table = take_finish_list_number_table(first_actual_table, data_report_without_trash)
             # переименование номеров таблиц в обычную нумерацию, начиная с 1
@@ -190,14 +194,14 @@ def add_table():
             # определение номера unit
             unit = unit_definition(pure_data_table, clear_rep_number['report_number'])
             if unit == True:
-                print('ok')
                 continue
             # записываем очищенный репорт в базу данных
             # передаём очищенные таблицы, номер репорта, имя БД для записи, номер таблицы в репорте для записи, unit
-
             write_report_in_db(pure_data_table, clear_rep_number, name_reports_db, first_actual_table, unit)
 
     logger_with_user.info(f'Загрузка данных завершена\n')
+    stop_add_reports = True
+    return stop_add_reports
 
 
 def main():

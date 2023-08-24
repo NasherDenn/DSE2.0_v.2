@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import time
 
 from PyQt5.QtSql import QSqlDatabase
 from PyQt5.QtSql import QSqlQueryModel
@@ -8,7 +9,7 @@ from YKR.add_reports import *
 from YKR.props import *
 
 import sys
-
+from PyQt5.QtCore import QThread, Qt, pyqtSignal
 
 # получаем имя машины с которой был осуществлён вход в программу
 uname = os.environ.get('USERNAME')
@@ -789,7 +790,6 @@ def on_button_clicked_year():
 for button in groupBox_year.findChildren(QCheckBox):
     button.clicked.connect(on_button_clicked_year)
 
-
 # список найденных данных
 list_sqm = []
 
@@ -1237,9 +1237,11 @@ def print_report():
                         sheet_for_print.cell(row=2, column=index_column + 1).alignment = Alignment(horizontal='center', vertical='center')
                         # заполняем лист Excel
                         for index_row in range(full_sqm[index_push_button].rowCount()):
-                            sheet_for_print.cell(row=index_row + 3, column=index_column + 1, value=str(full_sqm[index_push_button].record(index_row).value(index_column)))
+                            sheet_for_print.cell(row=index_row + 3, column=index_column + 1,
+                                                 value=str(full_sqm[index_push_button].record(index_row).value(index_column)))
                             # выделяем основные данные границами
-                            sheet_for_print.cell(row=index_row + 3, column=index_column + 1).border = Border(top=thin, left=thin, right=thin, bottom=thin)
+                            sheet_for_print.cell(row=index_row + 3, column=index_column + 1).border = Border(top=thin, left=thin, right=thin,
+                                                                                                             bottom=thin)
                         # закрепляем первую строку с названием кнопки, по которой выбрана таблица, и вторую с названиями столбцов
                         sheet_for_print.freeze_panes = "A3"
                         # выделяем её границами
@@ -1324,6 +1326,103 @@ def faq():
     faq_window.exec_()
 
 
+# запускаем добавление новых репортов, замораживаем все окна, поля для ввода и отображаем картинку "Loading"
+def start_add_table():
+    freeze_button()
+    loading = Loading()
+    loading.start_loading()
+    stop_loading = add_table()
+    while not stop_loading:
+        time.sleep(0.5)
+    else:
+        unfreeze_button()
+        loading.stop_loading()
+
+
+# класс для отображения и скрытия изображения "Loading"
+class Loading():
+    def __init__(self):
+        super().__init__()
+
+        self.load = QLabel(scroll_area)
+        self.load.setGeometry(0, 0, 1660, 630)
+        self.load.setAlignment(Qt.AlignCenter)
+        self.load.setPixmap(QPixmap(u"loading.png"))
+
+    # отображаем "Loading"
+    def start_loading(self):
+        self.load.show()
+
+    # скрываем "Loading"
+    def stop_loading(self):
+        self.load.hide()
+
+
+# заморозка кнопок и полей для ввода на время загрузки новых репортов
+def freeze_button():
+    button_search.setDisabled(True)
+    button_print.setDisabled(True)
+    button_add.setDisabled(True)
+    button_delete.setDisabled(True)
+    button_statistic_master.setDisabled(True)
+    button_exit.setDisabled(True)
+    button_faq.setDisabled(True)
+    button_log_in.setDisabled(True)
+    button_log_out.setDisabled(True)
+    button_ru.setDisabled(True)
+    button_en.setDisabled(True)
+    button_kz.setDisabled(True)
+    line_search_line.setDisabled(True)
+    line_search_drawing.setDisabled(True)
+    line_search_unit.setDisabled(True)
+    line_search_item_description.setDisabled(True)
+    line_login.setDisabled(True)
+    line_password.setDisabled(True)
+    line_search_number_report.setDisabled(True)
+    checkBox_on.setDisabled(True)
+    checkBox_os.setDisabled(True)
+    checkBox_of.setDisabled(True)
+    checkBox_utt.setDisabled(True)
+    checkBox_paut.setDisabled(True)
+    checkBox_2023.setDisabled(True)
+    checkBox_2022.setDisabled(True)
+    checkBox_2021.setDisabled(True)
+    checkBox_2020.setDisabled(True)
+    checkBox_2019.setDisabled(True)
+
+
+# разморозка кнопок и полей для ввода
+def unfreeze_button():
+    button_search.setDisabled(False)
+    button_print.setDisabled(False)
+    button_add.setDisabled(False)
+    button_delete.setDisabled(False)
+    button_statistic_master.setDisabled(False)
+    button_exit.setDisabled(False)
+    button_faq.setDisabled(False)
+    button_log_in.setDisabled(False)
+    button_log_out.setDisabled(False)
+    button_ru.setDisabled(False)
+    button_en.setDisabled(False)
+    button_kz.setDisabled(False)
+    line_search_line.setDisabled(False)
+    line_search_drawing.setDisabled(False)
+    line_search_unit.setDisabled(False)
+    line_search_item_description.setDisabled(False)
+    line_login.setDisabled(False)
+    line_password.setDisabled(False)
+    line_search_number_report.setDisabled(False)
+    checkBox_on.setDisabled(False)
+    checkBox_os.setDisabled(False)
+    checkBox_of.setDisabled(False)
+    checkBox_utt.setDisabled(False)
+    checkBox_paut.setDisabled(False)
+    checkBox_2023.setDisabled(False)
+    checkBox_2022.setDisabled(False)
+    checkBox_2021.setDisabled(False)
+    checkBox_2020.setDisabled(False)
+    checkBox_2019.setDisabled(False)
+
 
 # нажатие кнопки "Войти"
 button_log_in.clicked.connect(log_in)
@@ -1358,7 +1457,11 @@ button_print.clicked.connect(print_report)
 button_faq.clicked.connect(faq)
 
 # нажатие на кнопку "Добавить"
-button_add.clicked.connect(add_table)
+# button_add.clicked.connect(lambda: (freeze_button, add_table))
+button_add.clicked.connect(start_add_table)
+
+
+# button_add.clicked.connect(add_table)
 
 
 def main():
