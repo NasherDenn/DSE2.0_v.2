@@ -63,7 +63,7 @@ tuple_utt_name_column_for_search = (
 utt_name_column = {'Line': ['LINE', 'TAG', 'CONTR', 'OBJ'],
                    'Drawing': ['DRAW', 'ISOM'],
                    'Item_description': ['ITEM', 'DESCR'],
-                   'Diameter': ['ETER', 'INCH', 'ДИАМЕ', ],
+                   'Diameter': ['ETER', 'INCH', 'ДИАМЕ', 'Día'.upper()],
                    'Nominal_thickness': ['NOM', 'THICK'],
                    'North': ['NOR'],
                    'South': ['SOU'],

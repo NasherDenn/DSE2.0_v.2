@@ -5,6 +5,7 @@ from PyQt5.QtSql import QSqlDatabase
 from PyQt5.QtSql import QSqlQueryModel
 
 from YKR.utilities_interface import *
+from YKR.utilities_db import *
 from YKR.add_reports import *
 from YKR.props import *
 
@@ -455,6 +456,23 @@ button_delete.setFocusPolicy(Qt.ClickFocus)
 # делаем неактивной кнопку "Удалить" до авторизации
 button_delete.setDisabled(True)
 
+# создаём кнопку "Верификация"
+button_verification = QPushButton('Верификация', window)
+# устанавливаем положение и размер кнопки "Верификация" в родительском окне (window)
+button_verification.setGeometry(QRect(300, 904, 171, 41))
+# присваиваем уникальное объектное имя кнопке "Верификация"
+button_verification.setObjectName(u"pushButton_verification")
+# задаём параметры стиля и оформления кнопки "Верификация"
+font_button_verification = QFont()
+font_button_verification.setFamily(u"Arial")
+font_button_verification.setPointSize(14)
+button_verification.setFont(font_button_verification)
+# дополнительные параметры
+button_verification.setFocusPolicy(Qt.ClickFocus)
+# делаем неактивной кнопку "Верификация" до авторизации
+# button_verification.setDisabled(False)
+button_verification.setDisabled(True)
+
 # создаём кнопку "Сводные данные"
 button_statistic_master = QPushButton('Сводные данные', window)
 # устанавливаем положение и размер кнопки "Сводные данные" в родительском окне (window)
@@ -675,11 +693,12 @@ def log_in():
             'Попытка авторизоваться - Не заполнено поле "Пароль", указан логин - "{}"'.format(line_login.text()))
     # если правильно введён логин и пароль
     elif line_login.text() == 'admin' and line_password.text() == 'admin':
-        # делаем активными кнопки "Добавить", "Удалить", "Выйти", "Сводные данные"
+        # делаем активными кнопки "Добавить", "Удалить", "Выйти", "Сводные данные", "Верификация"
         button_delete.setDisabled(False)
         button_log_out.setDisabled(False)
         button_add.setDisabled(False)
         button_statistic_master.setDisabled(False)
+        button_verification.setDisabled(False)
         # очищаем поле ввода логина и пароля
         line_login.clear()
         line_password.clear()
@@ -1043,6 +1062,7 @@ def ru():
     button_statistic_master.setText('Сводные данные')
     button_statistic_master.setGeometry(QRect(761, 904, 200, 41))
     button_exit.setText('Выход')
+    button_verification.setText('Верификация')
     groupBox_location.setTitle('Локация')
     groupBox_ndt.setTitle('Метод контроля')
     groupBox_year.setTitle('Год контроля')
@@ -1090,6 +1110,7 @@ def en():
     button_statistic_master.setText('Summary data')
     button_statistic_master.setGeometry(QRect(761, 904, 200, 41))
     button_exit.setText('Exit')
+    button_verification.setText('Verification')
     groupBox_location.setTitle('Location')
     groupBox_ndt.setTitle('Method of control')
     groupBox_year.setTitle('Year of control')
@@ -1137,6 +1158,7 @@ def kz():
     button_statistic_master.setText('Жиынтық деректер')
     button_statistic_master.setGeometry(QRect(736, 904, 250, 41))
     button_exit.setText('Шығу')
+    button_verification.setText('Тексеру')
     groupBox_location.setTitle('Орналасқан жері')
     groupBox_ndt.setTitle('Бақылау әдісі')
     groupBox_year.setTitle('Бақылау жылы')
@@ -1400,6 +1422,18 @@ class Searching(Loading):
         super().stop_loading()
 
 
+class Verification(Searching):
+    def __init__(self):
+
+        self.load = QLabel(scroll_area)
+        self.load.setGeometry(0, 0, 1660, 630)
+        self.load.setAlignment(Qt.AlignCenter)
+        self.load.setPixmap(QPixmap(u"verification.png"))
+
+        super().start_loading()
+        super().stop_loading()
+
+
 # заморозка кнопок и полей для ввода на время загрузки новых репортов
 def freeze_button():
     button_search.setDisabled(True)
@@ -1408,6 +1442,7 @@ def freeze_button():
     button_delete.setDisabled(True)
     button_statistic_master.setDisabled(True)
     button_exit.setDisabled(True)
+    button_verification.setDisabled(True)
     button_faq.setDisabled(True)
     button_log_in.setDisabled(True)
     button_log_out.setDisabled(True)
@@ -1443,6 +1478,7 @@ def unfreeze_button():
         button_delete.setDisabled(False)
         button_statistic_master.setDisabled(False)
         button_exit.setDisabled(False)
+        button_verification.setDisabled(False)
         button_faq.setDisabled(False)
         button_log_out.setDisabled(False)
         button_ru.setDisabled(False)
@@ -1494,6 +1530,31 @@ def unfreeze_button():
         checkBox_2019.setDisabled(False)
 
 
+def verification_data():
+    if window.findChildren(QTableView):
+        open_tableview = window.findChildren(QTableView)
+        for tableview in open_tableview:
+            tableview.setParent(None)
+        open_scroll_area = window.findChildren(QScrollArea)
+        for scroll in open_scroll_area:
+            open_push_button = scroll.findChildren(QPushButton)
+            for push_button in open_push_button:
+                # то сдвигаем вбок кнопки названий таблиц
+                push_button.setParent(None)
+            open_check_box = scroll.findChildren(QCheckBox)
+            for check_box in open_check_box:
+                check_box.setParent(None)
+    freeze_button()
+    verificat = Verification()
+    verificat.start_loading()
+    window.repaint()
+    # все таблицы в репортах загружены
+    ver(define_db_for_search(data_filter_for_search))
+    unfreeze_button()
+    verificat.stop_loading()
+    window.repaint()
+
+
 # нажатие кнопки "Войти"
 button_log_in.clicked.connect(log_in)
 
@@ -1527,11 +1588,11 @@ button_print.clicked.connect(print_report)
 button_faq.clicked.connect(faq)
 
 # нажатие на кнопку "Добавить"
-# button_add.clicked.connect(lambda: (freeze_button, add_table))
 button_add.clicked.connect(start_add_table)
 
 
-# button_add.clicked.connect(add_table)
+# нажатие на кнопку "Верификация"
+button_verification.clicked.connect(verification_data)
 
 
 def main():
