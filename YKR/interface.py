@@ -698,7 +698,7 @@ def log_in():
         button_log_out.setDisabled(False)
         button_add.setDisabled(False)
         button_statistic_master.setDisabled(False)
-        button_verification.setDisabled(False)
+        # button_verification.setDisabled(False)
         # очищаем поле ввода логина и пароля
         line_login.clear()
         line_password.clear()
@@ -1422,16 +1422,16 @@ class Searching(Loading):
         super().stop_loading()
 
 
-class Verification(Searching):
-    def __init__(self):
-
-        self.load = QLabel(scroll_area)
-        self.load.setGeometry(0, 0, 1660, 630)
-        self.load.setAlignment(Qt.AlignCenter)
-        self.load.setPixmap(QPixmap(u"verification.png"))
-
-        super().start_loading()
-        super().stop_loading()
+# class Verification(Searching):
+#     def __init__(self):
+#
+#         self.load = QLabel(scroll_area)
+#         self.load.setGeometry(0, 0, 1660, 630)
+#         self.load.setAlignment(Qt.AlignCenter)
+#         self.load.setPixmap(QPixmap(u"verification.png"))
+#
+#         super().start_loading()
+#         super().stop_loading()
 
 
 # заморозка кнопок и полей для ввода на время загрузки новых репортов
@@ -1530,29 +1530,29 @@ def unfreeze_button():
         checkBox_2019.setDisabled(False)
 
 
-def verification_data():
-    if window.findChildren(QTableView):
-        open_tableview = window.findChildren(QTableView)
-        for tableview in open_tableview:
-            tableview.setParent(None)
-        open_scroll_area = window.findChildren(QScrollArea)
-        for scroll in open_scroll_area:
-            open_push_button = scroll.findChildren(QPushButton)
-            for push_button in open_push_button:
-                # то сдвигаем вбок кнопки названий таблиц
-                push_button.setParent(None)
-            open_check_box = scroll.findChildren(QCheckBox)
-            for check_box in open_check_box:
-                check_box.setParent(None)
-    freeze_button()
-    verificat = Verification()
-    verificat.start_loading()
-    window.repaint()
-    # все таблицы в репортах загружены
-    ver(define_db_for_search(data_filter_for_search))
-    unfreeze_button()
-    verificat.stop_loading()
-    window.repaint()
+# def verification_data():
+#     if window.findChildren(QTableView):
+#         open_tableview = window.findChildren(QTableView)
+#         for tableview in open_tableview:
+#             tableview.setParent(None)
+#         open_scroll_area = window.findChildren(QScrollArea)
+#         for scroll in open_scroll_area:
+#             open_push_button = scroll.findChildren(QPushButton)
+#             for push_button in open_push_button:
+#                 # то сдвигаем вбок кнопки названий таблиц
+#                 push_button.setParent(None)
+#             open_check_box = scroll.findChildren(QCheckBox)
+#             for check_box in open_check_box:
+#                 check_box.setParent(None)
+#     freeze_button()
+#     verificat = Verification()
+#     verificat.start_loading()
+#     window.repaint()
+#     # все таблицы в репортах загружены
+#     ver(define_db_for_search(data_filter_for_search))
+#     unfreeze_button()
+#     verificat.stop_loading()
+#     window.repaint()
 
 
 # нажатие кнопки "Войти"
@@ -1592,7 +1592,7 @@ button_add.clicked.connect(start_add_table)
 
 
 # нажатие на кнопку "Верификация"
-button_verification.clicked.connect(verification_data)
+# button_verification.clicked.connect(verification_data)
 
 
 def main():

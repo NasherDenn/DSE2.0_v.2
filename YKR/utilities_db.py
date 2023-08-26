@@ -47,6 +47,8 @@ def write_report_in_db(clear_report: dict, number_report: dict, name_db: str, fi
                 conn.commit()
             except sqlite3.OperationalError:
                 logger_with_user.error(f'В репорте {number_report["report_number"]} таблице {name_table_for_write} какая-то ошибка! А именно:\n'
+                                       f'{number_report["report_number"]}\n'
+                                       f'{name_table_for_write}\n'
                                        f'{traceback.format_exc()}')
                 continue
             for values in clear_report[number_table][1]:
@@ -56,6 +58,7 @@ def write_report_in_db(clear_report: dict, number_report: dict, name_db: str, fi
                     can_write_rep_number_in_master = True
                 except sqlite3.OperationalError:
                     logger_with_user.error(f'В репорте {number_report["report_number"]} таблице {name_table_for_write} какая-то ошибка! А именно:\n'
+                                           f'{values}'
                                            f'{traceback.format_exc()}')
                     continue
         # если таблица удачно записана в БД, то записываем номер репорта, wo, дату в таблицу master
@@ -377,72 +380,89 @@ def update_master_by_delete(table, db):
     cur.close()
 
 
-def ver(list_db: list):
-    logger_with_user.info(f'Начало верификации данных\n')
-    for db in list_db:
-        # подключаемся в базе данных
-        conn = sqlite3.connect(f'{os.path.abspath(os.getcwd())}\\DB\\{db}')
-        cur = conn.cursor()
-        list_report_number_one_of = cur.execute('''SELECT report_number, one_of FROM master''').fetchall()
-        conn.close()
-
-        # все ли таблицы в репортах загружены
-        for one_of in list_report_number_one_of:
-            index_slash = one_of[1].index('/')
-            one = one_of[1][:index_slash]
-            of = one_of[1][index_slash + 1:]
-            if int(one) < int(of):
-                logger_with_user.info(f'Не все таблицы {one}/{of} загружены в репорте {one_of[0]}')
-                print(f'Не все таблицы {one}/{of} загружены в репорте {one_of[0]}')
-            if int(one) > int(of):
-                logger_with_user.info(f'{one}/{of} - Такого не может быть {one_of[0]}')
-                print(f'{one}/{of} - Такого не может быть {one_of[0]}')
-
-        # уникальны ли номера репортов
-        uniq_report_number_one_of = []
-        for report_number_one_of in list_report_number_one_of:
-            if report_number_one_of[0] not in uniq_report_number_one_of:
-                uniq_report_number_one_of.append(report_number_one_of[0])
-            else:
-                logger_with_user.info(f'Есть повторяющиеся номера репортов {report_number_one_of[0]}!')
-                print(f'Есть повторяющиеся номера репортов {report_number_one_of[0]}!')
-
-        # все ли номера репортов в Daily
-        year = ''
-        for i in db:
-            if i.isdigit():
-                year += i
-        path_master_daily = f'{os.path.abspath(os.getcwd())}\\Master Daily\\Master Daily Activities 20{year}.xlsx'
-        wb = openpyxl.load_workbook(path_master_daily)
-        sheets = wb.sheetnames
-        # список PAUT репортов
-        reports_paut =[]
-        # список UTT репортов
-        reports_utt = []
-        print(db)
-        for month in month_alpha.keys():
-            for month_sheets in sheets:
-                if month_alpha[month] in month_sheets.upper():
-                    # потом проверка на "дырки" и сопоставление с report_number_one_of[0]
-                    ws = wb[month_sheets]
-                    # перебираем столбец "NDT"
-                    for row_cell in range(2, 2000):
-                        if ws.cell(row=row_cell, column=2).value == 'PAUT':
-                            if ws.cell(row=row_cell, column=3).value[-3:].isdigit():
-                                reports_paut.append(int(ws.cell(row=row_cell, column=3).value[-3:]))
-                        if ws.cell(row=row_cell, column=2).value == 'UTT':
-                            if ws.cell(row=row_cell, column=3).value[-3:].isdigit():
-                                reports_utt.append(int(ws.cell(row=row_cell, column=3).value[-3:]))
-        # убираем повторы и сортируем в порядке возрастания номера
-        sort_reports_paut = sorted((list(set(reports_paut))))
-        sort_reports_utt = sorted((list(set(reports_utt))))
-        # список отсутствующих репортов в БД
-        missing_in_db = []
-        for report_number_one_of in list_report_number_one_of:
-            for sort_number_reports_paut in sort_reports_paut:
-                if not report_number_one_of[0][-3:] == sort_number_reports_paut:
-                    missing_in_db.append(f'PAUT {sort_number_reports_paut}')
-            for sort_number_reports_utt in sort_reports_utt:
-                if not report_number_one_of[0][-3:] == sort_number_reports_utt:
-                    missing_in_db.append(f'UTT {sort_number_reports_utt}')
-        print(missing_in_db)
+# def ver(list_db: list):
+#     logger_with_user.info(f'Начало верификации данных\n')
+#     for db in list_db:
+#         # подключаемся в базе данных
+#         conn = sqlite3.connect(f'{os.path.abspath(os.getcwd())}\\DB\\{db}')
+#         cur = conn.cursor()
+#         list_report_number_one_of = cur.execute('''SELECT report_number, one_of FROM master''').fetchall()
+#         conn.close()
+#
+#         # все ли таблицы в репортах загружены
+#         for one_of in list_report_number_one_of:
+#             index_slash = one_of[1].index('/')
+#             one = one_of[1][:index_slash]
+#             of = one_of[1][index_slash + 1:]
+#             if int(one) < int(of):
+#                 logger_with_user.info(f'Не все таблицы {one}/{of} загружены в репорте {one_of[0]}')
+#                 print(f'Не все таблицы {one}/{of} загружены в репорте {one_of[0]}')
+#             if int(one) > int(of):
+#                 logger_with_user.info(f'{one}/{of} - Такого не может быть {one_of[0]}')
+#                 print(f'{one}/{of} - Такого не может быть {one_of[0]}')
+#
+#         # уникальны ли номера репортов
+#         uniq_report_number_one_of = []
+#         for report_number_one_of in list_report_number_one_of:
+#             if report_number_one_of[0] not in uniq_report_number_one_of:
+#                 uniq_report_number_one_of.append(report_number_one_of[0])
+#             else:
+#                 logger_with_user.info(f'Есть повторяющиеся номера репортов {report_number_one_of[0]}!')
+#                 print(f'Есть повторяющиеся номера репортов {report_number_one_of[0]}!')
+#
+#         # все ли номера репортов в Daily
+#         year = ''
+#         for i in db:
+#             if i.isdigit():
+#                 year += i
+#         path_master_daily = f'{os.path.abspath(os.getcwd())}\\Master Daily\\Master Daily Activities 20{year}.xlsx'
+#         wb = openpyxl.load_workbook(path_master_daily)
+#         sheets = wb.sheetnames
+#         # список PAUT репортов
+#         reports_paut =[]
+#         # список UTT репортов
+#         reports_utt = []
+#         print(db)
+#         for month in month_alpha.keys():
+#             for month_sheets in sheets:
+#                 if month_alpha[month] in month_sheets.upper():
+#                     # потом проверка на "дырки" и сопоставление с report_number_one_of[0]
+#                     ws = wb[month_sheets]
+#                     # перебираем столбец "NDT"
+#                     for row_cell in range(2, 2000):
+#                         if ws.cell(row=row_cell, column=2).value == 'PAUT':
+#                             if ws.cell(row=row_cell, column=3).value[-3:].isdigit():
+#                                 reports_paut.append(ws.cell(row=row_cell, column=3).value[-3:])
+#                         if ws.cell(row=row_cell, column=2).value == 'UTT':
+#                             if ws.cell(row=row_cell, column=3).value[-3:].isdigit():
+#                                 reports_utt.append(ws.cell(row=row_cell, column=3).value[-3:])
+#         # убираем повторы и сортируем в порядке возрастания номера
+#         sort_reports_paut = sorted((list(set(reports_paut))))
+#         sort_reports_utt = sorted((list(set(reports_utt))))
+#         # список отсутствующих репортов в БД
+#         missing_paut_in_db = sort_reports_paut.copy()
+#         missing_utt_in_db = sort_reports_utt.copy()
+#         print(f'list_report_number_one_of {list_report_number_one_of}')
+#         print(f'sort_reports_paut {sort_reports_paut}')
+#         print(f'sort_reports_paut {sort_reports_utt}')
+#         for report_number_one_of in list_report_number_one_of:
+#             for sort_number_reports_paut in sort_reports_paut:
+#                 table_paut_in_file = False
+#                 # print(f'report_number_one_of[0][-3:] {report_number_one_of[0][-3:]}')
+#                 # print(f'sort_number_reports_paut {sort_number_reports_paut}')
+#                 if report_number_one_of[0][-3:] in sort_number_reports_paut:
+#                     table_paut_in_file = True
+#                     table_paut = report_number_one_of[0][-3:]
+#             if table_paut_in_file:
+#                 missing_paut_in_db.remove(table_paut)
+#             for sort_number_reports_utt in sort_reports_utt:
+#                 table_utt_in_file = False
+#                 if report_number_one_of[0][-3:] not in sort_number_reports_utt:
+#                     table_utt_in_file = True
+#                     table_utt = report_number_one_of[0][-3:]
+#             if table_utt_in_file:
+#                 print(table_utt)
+#                 missing_utt_in_db.remove(table_utt)
+#         print(missing_paut_in_db)
+#         print(missing_utt_in_db)
+#     pass
