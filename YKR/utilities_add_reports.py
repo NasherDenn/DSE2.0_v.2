@@ -210,10 +210,8 @@ def first_clear_table_nominal_thickness(first_dirty_table: dict or list, number_
     project_is = False
     # активатор наличия одного значения из списка (North, South, East, Row, West, Extrados, Intrados, Central и т.д.)
     name_column_is = False
-    # one_of_name_column = ['NORTH', 'SOUTH', 'WEST', 'EAST', 'SECT', 'EXTRADOS', 'INTRADOS', 'ROW', 'COLUMN', 'SPOT', 'ISOM', 'P&ID', 'S/NO', 'O\'CLOCK',
-    #                       'CENTER', 'LOC', 'CONTR']
-
-    utt_one_of_name_column = ['NORTH', 'SOUTH', 'WEST', 'EAST', 'SECT', 'EXTRADOS', 'INTRADOS', 'ROW', 'COLUMN', 'SPOT', 'ISOM', 'P&ID', 'S/NO', 'O\'CLOCK',
+    utt_one_of_name_column = ['NORTH', 'SOUTH', 'WEST', 'EAST', 'SECT', 'EXTRADOS', 'INTRADOS', 'ROW', 'COLUMN', 'SPOT', 'ISOM', 'P&ID', 'S/NO',
+                              'O\'CLOCK',
                               'CENTER', 'LOC', 'CONTR']
     paut_one_of_name_column = ['START X', 'END X', 'AVERAGE']
 
@@ -473,7 +471,7 @@ def search_number_row_name_column(table: list, method: str) -> int:
             for column in row:
                 # дополнить перебор возможными словами
                 if 'LINE' in column.upper() or 'ITEM' in column.upper() or 'NORTH' in column.upper() or 'TOP' in column.upper() \
-                        or 'INTRADOS' in column.upper() or 'O\'CLOCK' in column.upper() or 'S/N' in column.upper() or 'START' in column.upper()\
+                        or 'INTRADOS' in column.upper() or 'O\'CLOCK' in column.upper() or 'S/N' in column.upper() or 'START' in column.upper() \
                         or 'END' in column.upper():
                     line_in_row = True
                     continue

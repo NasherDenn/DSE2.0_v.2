@@ -5,12 +5,11 @@ from PyQt5.QtSql import QSqlDatabase
 from PyQt5.QtSql import QSqlQueryModel
 
 from YKR.utilities_interface import *
-from YKR.utilities_db import *
 from YKR.add_reports import *
 from YKR.props import *
 
 import sys
-from PyQt5.QtCore import QThread, Qt, pyqtSignal
+from PyQt5.QtCore import Qt
 
 # получаем имя машины с которой был осуществлён вход в программу
 uname = os.environ.get('USERNAME')
@@ -171,8 +170,7 @@ line_search_number_report.setCursorMoveStyle(Qt.LogicalMoveStyle)
 line_search_number_report.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_number_report.setFocusPolicy(Qt.StrongFocus)
-line_search_number_report.setText('')
-# line_search_number_report.setText('206')
+line_search_number_report.setText('010')
 
 # создаём кнопку "Поиск"
 button_search = QPushButton('Поиск', window)
@@ -950,6 +948,7 @@ def search():
                             lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization))
                         # перерисовываем кнопки
                         visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization)
+
                 # если заполнено одно поле, кроме unit или номера репорта
                 if find_data[1] == 2:
                     # делаем запрос в модели
@@ -983,7 +982,6 @@ def search():
                             lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization))
                         # перерисовываем кнопки
                         visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization)
-
                 # если заполнен номер unit или report_number и любая(-ые) другие данные (номер линии, номер чертежа, номер локации)
                 if find_data[1] == 3:
                     # делаем запрос в модели
@@ -1029,8 +1027,8 @@ def search():
     # * 2 (кнопка номера репорта и строка названий столбцов) * 20 (высота одной строки) + 20 (высота первой строки с номером первого репорта)
     # + количество таблиц * 20 (расстояние между таблицами в открытом виде)
     frame_height_for_data_output = all_count_row_in_search * 25 + all_count_table_in_search * 2 * 20 + 20 + all_count_table_in_search * 20
+    # frame_for_table.setGeometry(0, 0, 1680, 650)
     frame_for_table.setGeometry(0, 0, 1680, frame_height_for_data_output)
-
     # размораживаем все кнопки и поля на время поиска данных
     unfreeze_button()
     search_picture.stop_loading()

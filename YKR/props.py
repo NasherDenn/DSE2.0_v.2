@@ -148,6 +148,7 @@ month_numeric = {'JANUARY': '01',
                  'NOVEMBER': '11',
                  'DECEMBER': '12'}
 
+# FAQ на русском языке
 faq_text_ru = '- Для чего эта программа?\n' \
            'Для быстрого поиска измеренных значений и чертежей UTT и PAUT начиная с 2019 года.\n\n' \
            '- Как искать данные?\n' \
@@ -174,6 +175,7 @@ faq_text_ru = '- Для чего эта программа?\n' \
            '- Как удалять данные?\n' \
            'Удалять можно только таблицы целиком. Для этого поставьте флажок напротив интересующей таблицы и нажмите кнопку "Удалить".'
 
+# FAQ на английском языке
 faq_text_en = '- What is this program for??\n' \
            'For quick search of measured values and drawings UTT and PAUT from 2019.\n\n' \
            '- How to search for data?\n' \
@@ -200,6 +202,7 @@ faq_text_en = '- What is this program for??\n' \
            '- How to delete data?\n' \
            'You can only delete entire tables. To do this, check the box next to the table of interest and click the "Delete" button.'
 
+# FAQ на казахском языке
 faq_text_kz = '- Бұл бағдарлама не үшін?\n' \
            'Өлшенген мәндерді және UTT және PAUT сызбаларын жылдам алу үшін 2019 жылдан бастап\n\n' \
            '- Деректерді қалай іздеу керек?\n' \

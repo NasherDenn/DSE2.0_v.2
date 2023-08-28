@@ -99,6 +99,7 @@ def check_box_name_buttons(frame_for_table, y1, authorization):
 def second_underlining(table: str, find_date: str, language: str, line_for_table_name_buttons: str) -> str:
     number_report = table.replace('_', '-')[1:]
     date = find_date
+    name_button = ''
     if language == 'ru':
         name_button = f'номер отчёта: {number_report}, дата: {date}, объект контроля: {line_for_table_name_buttons}'
     if language == 'en':
@@ -149,7 +150,6 @@ def sort_date(list_date):
 # y_1 - координата строки (кнопки) с номером репорта
 # y_2 = y_1 + 20 - координата таблицы (20 - высота строки с номером репорта)
 # l_h_t_v = list_height_table_view = список высот таблиц (строка с названием колонок + все строки таблицы)
-# def visible_table_view():
 def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization):
     # x1 - координата кнопки
     if authorization:

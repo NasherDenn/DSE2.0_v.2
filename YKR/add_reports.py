@@ -40,9 +40,9 @@ def add_table():
     if not list_files_for_work:
         stop_loading = True
         return stop_loading
-
     # начинаем перебирать репорты, прошедшие предварительную выборку
     for report in list_files_for_work:
+        # print(report)
         # переменная для перехода к следующему репорту, в случае выявленной ошибки
         break_break = True
         # получаем из первого верхнего колонтитула репорта неочищенные номер репорта, номер work order и дату
@@ -66,7 +66,8 @@ def add_table():
                 # выбираем только словари (таблицы) с данными
                 # первый отбор по наличию в словаре (таблице) ключевого слова "Nominal thickness"
                 first_actual_table.append(
-                    first_clear_table_nominal_thickness(dirty_data_report[number_dirty_table], number_dirty_table, clear_rep_number['report_number'], method))
+                    first_clear_table_nominal_thickness(dirty_data_report[number_dirty_table], number_dirty_table, clear_rep_number['report_number'],
+                                                        method))
             # убираем None из первого отбора
             val = None
             first_actual_table = [i for i in first_actual_table if i != val]
@@ -130,8 +131,7 @@ def add_table():
                 continue
             # записываем очищенный репорт в базу данных
             # передаём очищенные таблицы, номер репорта, имя БД для записи, номер таблицы в репорте для записи, unit
-
-            write_report_in_db(pure_data_table, clear_rep_number, name_reports_db, first_actual_table, unit)
+            write_report_in_db(pure_data_table, clear_rep_number, name_reports_db, first_actual_table, unit, report)
 
         if '-PAUT-' in clear_rep_number['report_number']:
             method = 'paut'
@@ -140,7 +140,8 @@ def add_table():
                 # выбираем только словари (таблицы) с данными
                 # первый отбор по наличию в словаре (таблице) ключевого слова "Nominal thickness"
                 first_actual_table.append(
-                    first_clear_table_nominal_thickness(dirty_data_report[number_dirty_table], number_dirty_table, clear_rep_number['report_number'], method))
+                    first_clear_table_nominal_thickness(dirty_data_report[number_dirty_table], number_dirty_table, clear_rep_number['report_number'],
+                                                        method))
             # убираем None из первого отбора
             val = None
             first_actual_table = [i for i in first_actual_table if i != val]
@@ -157,8 +158,8 @@ def add_table():
             else:
                 report_number_for_logger = clear_rep_number['report_number']
                 logger_with_user.warning(
-                    f'В репорте {report_number_for_logger} нет ключевого слова "Nominal thickness" или первая таблица с рабочей информацией не отделена '
-                    f'от таблиц(ы) с данными!')
+                    f'В репорте {report_number_for_logger} нет ключевого слова "Nominal thickness" или первая таблица с рабочей информацией не '
+                    f'отделена от таблиц(ы) с данными!')
             # список номеров таблиц, которые прошли все очистки, для дальнейшего переименования порядковых номеров таблиц для записи в БД
             finish_list_number_table = take_finish_list_number_table(first_actual_table, data_report_without_trash)
             # переименование номеров таблиц в обычную нумерацию, начиная с 1
@@ -190,15 +191,13 @@ def add_table():
                 pure_data_table = line_from_top_to_general_data(dirty_data_report, pure_data_table, clear_rep_number['report_number'])
 
             # ЗДЕСЬ ИТОГОВЫЕ ДАННЫЕ ДЛЯ ЗАПИСИ В БД - pure_data_table
-
             # определение номера unit
             unit = unit_definition(pure_data_table, clear_rep_number['report_number'])
             if unit == True:
                 continue
             # записываем очищенный репорт в базу данных
             # передаём очищенные таблицы, номер репорта, имя БД для записи, номер таблицы в репорте для записи, unit
-            write_report_in_db(pure_data_table, clear_rep_number, name_reports_db, first_actual_table, unit)
-
+            write_report_in_db(pure_data_table, clear_rep_number, name_reports_db, first_actual_table, unit, report)
     logger_with_user.info(f'Загрузка данных завершена\n')
     stop_add_reports = True
     return stop_add_reports

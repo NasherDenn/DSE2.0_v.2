@@ -1,12 +1,15 @@
 import logging
 import os
+import shutil
 import sqlite3
 import traceback
-import openpyxl
-from collections import Counter
-
+import zipfile
+import aspose.words as aw
 from PyQt5.QtWidgets import *
 from YKR.props import *
+import PIL
+from PIL import Image
+import imagehash
 
 # получаем имя машины с которой был осуществлён вход в программу
 uname = os.environ.get('USERNAME')
@@ -20,7 +23,7 @@ logger_with_user = logging.LoggerAdapter(logger, {'user': uname})
 # number_report - номер репорта
 # name_db - имя БД для записи
 # first_actual_table - номер таблицы в репорте для записи
-def write_report_in_db(clear_report: dict, number_report: dict, name_db: str, first_actual_table: list, unit: str):
+def write_report_in_db(clear_report: dict, number_report: dict, name_db: str, first_actual_table: list, unit: str, report: str):
     # меняем все "-" на "_" что бы записать в БД
     true_number_report = number_report['report_number'].replace('-', '_')
     true_number_report = true_number_report.replace('.', '_')
@@ -67,12 +70,12 @@ def write_report_in_db(clear_report: dict, number_report: dict, name_db: str, fi
         # name_table_for_write - имя таблицы
         # name_db - имя БД для записи
         if can_write_rep_number_in_master:
-            write_rep_number_in_master(number_report, first_actual_table, name_table_for_write, name_db, unit)
+            write_rep_number_in_master(number_report, first_actual_table, name_table_for_write, name_db, unit, report)
     cur.close()
 
 
 # запись в таблицу master unit, номера репорта, wo, даты, количества таблиц в репорте
-def write_rep_number_in_master(number_report: dict, count_table: list, name_table: str, name_db: str, unit: str):
+def write_rep_number_in_master(number_report: dict, count_table: list, name_table: str, name_db: str, unit: str, report: str):
     # форматируем номер таблицы для лучшей визуализации (меняем "_" на "-")
     name_table = name_table.replace("_", "-")[1:]
     # подключаемся к БД
@@ -84,7 +87,7 @@ def write_rep_number_in_master(number_report: dict, count_table: list, name_tabl
         conn.commit()
         # создаём индекс
         # conn.commit()
-    # если в master нет такого номера репорта, то записываем его первым со значение one_of (1/...) и номером таблицы
+    # если в master нет такого номера репорта, то записываем его первым с значение one_of (1/...) и номером таблицы
     if not cur.execute('''SELECT * FROM master WHERE report_number="{}"'''.format(number_report['report_number'])).fetchone():
         try:
             cur.execute('INSERT INTO master VALUES (?, ?, ?, ?, ?, ?)',
@@ -133,6 +136,68 @@ def write_rep_number_in_master(number_report: dict, count_table: list, name_tabl
                 logger_with_user.error(f'Проверь данные для записи в репорте {number_report}.\n'
                                        f'{traceback.format_exc()}')
     cur.close()
+    # сохраняем чертежи из репорта
+    extract_drawing(name_db, report, number_report['report_number'])
+
+
+# сохраняем чертежи из репорта
+def extract_drawing(name_db, report, number_report):
+    # определяем название папки для чертежей по номеру репорта
+    drawing_number_report = number_report
+    name_folder = name_db[:-7].replace('reports', 'drawings')
+    # создаём папку для них
+    if not os.path.exists(f'{os.path.abspath(os.getcwd())}\\Drawings\\{name_folder}\\{drawing_number_report}'):
+        os.makedirs(f'{os.path.abspath(os.getcwd())}\\Drawings\\{name_folder}\\{drawing_number_report}')
+        # сохраняем в неё фигуры с изображениями из репорта
+        doc = aw.Document(report)
+        shapes = doc.get_child_nodes(aw.NodeType.SHAPE, True)
+        imageIndex = 0
+        for shape in shapes:
+            shape = shape.as_shape()
+            if shape.has_image:
+                imageFileName = f'{os.path.abspath(os.getcwd())}\\Drawings\\{name_folder}\\{drawing_number_report}\\Image.ExportImages.{imageIndex}_{aw.FileFormatUtil.image_type_to_extension(shape.image_data.image_type)}'
+                shape.image_data.save(imageFileName)
+                imageIndex += 1
+        # # сохраняем в неё изображения из репорта
+        archive = zipfile.ZipFile(report)
+        for file in archive.filelist:
+            new_path = f'{os.path.abspath(os.getcwd())}\\Drawings\\{name_folder}\\{drawing_number_report}'.replace('\\', '/')
+            if file.filename.startswith('word/media/'):
+                archive.extract(file, path=new_path)
+    # удаляем ненужные изображения
+    delete_unnecessary_drawing(f'{os.path.abspath(os.getcwd())}\\Drawings\\{name_folder}\\{drawing_number_report}')
+
+
+# удаляем ненужные файлы
+def delete_unnecessary_drawing(path):
+    # перемещаем файлы из word/media/
+    if os.path.isdir(f'{path}\\word\\media\\'):
+        file_dir = os.listdir(f'{path}\\word\\media\\')
+        for file in file_dir:
+            os.replace(f'{path}\\word\\media\\{file}', f'{path}\\{file}')
+        # удаляем папки "word" и 'media"
+        shutil.rmtree(f'{path}\\word\\media')
+        shutil.rmtree(f'{path}\\word')
+    # удаляем изображения размером менее 100 кБ
+    files_image = os.listdir(f'{path}\\')
+    for image in files_image:
+        # если файл не PNG, JPEG, BMP
+        if not image.endswith('.png') and not image.endswith('.jpg') and not image.endswith('.jpeg') and not image.endswith('.bmp'):
+            os.remove(f'{path}\\{image}')
+            continue
+        # если размер файла меньше, чем 50 кБ
+        if os.path.getsize(f'{path}\\{image}') < 50000:
+            os.remove(f'{path}\\{image}')
+    # удаляем стандартные изображения, которые не являются чертежами
+    new_files_image = os.listdir(f'{path}\\')
+    for new_image in new_files_image:
+        stop_remove = False
+        for wrong_image in os.listdir(f'{os.path.abspath(os.getcwd())}\\Drawings\\wrong drawings'):
+            path_image = f'{path}\\{new_image}'
+            if not stop_remove:
+                if imagehash.dhash(Image.open(path_image)) == imagehash.dhash(Image.open(f'{os.path.abspath(os.getcwd())}\\Drawings\\wrong drawings\\{wrong_image}')):
+                    os.remove(f'{path}/{new_image}')
+                    stop_remove = True
 
 
 # ищем данные в БД
@@ -378,7 +443,6 @@ def update_master_by_delete(table, db):
         variable_report_for_delete_from_master_new, variable))
     conn.commit()
     cur.close()
-
 
 # def ver(list_db: list):
 #     logger_with_user.info(f'Начало верификации данных\n')
