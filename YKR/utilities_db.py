@@ -10,6 +10,7 @@ from YKR.props import *
 import PIL
 from PIL import Image
 import imagehash
+import re
 
 # получаем имя машины с которой был осуществлён вход в программу
 uname = os.environ.get('USERNAME')
@@ -168,36 +169,53 @@ def extract_drawing(name_db, report, number_report):
     delete_unnecessary_drawing(f'{os.path.abspath(os.getcwd())}\\Drawings\\{name_folder}\\{drawing_number_report}')
 
 
-# удаляем ненужные файлы
+# удаляем ненужные изображения
 def delete_unnecessary_drawing(path):
     # перемещаем файлы из word/media/
     if os.path.isdir(f'{path}\\word\\media\\'):
         file_dir = os.listdir(f'{path}\\word\\media\\')
         for file in file_dir:
-            os.replace(f'{path}\\word\\media\\{file}', f'{path}\\{file}')
+            shutil.move(f'{path}\\word\\media\\{file}', f'{path}\\{file}')
         # удаляем папки "word" и 'media"
         shutil.rmtree(f'{path}\\word\\media')
         shutil.rmtree(f'{path}\\word')
-    # удаляем изображения размером менее 100 кБ
+
+    # удаляем изображения размером менее 50 кБ
     files_image = os.listdir(f'{path}\\')
     for image in files_image:
         # если файл не PNG, JPEG, BMP
-        if not image.endswith('.png') and not image.endswith('.jpg') and not image.endswith('.jpeg') and not image.endswith('.bmp'):
+        if not image.endswith('.png') and not image.endswith('.jpg') and not image.endswith('.jpeg') and not image.endswith('.bmp')\
+                and not image.endswith('.PNG') and not image.endswith('.JPG') and not image.endswith('.JPEG') and not image.endswith('.BMP'):
             os.remove(f'{path}\\{image}')
             continue
         # если размер файла меньше, чем 50 кБ
         if os.path.getsize(f'{path}\\{image}') < 50000:
             os.remove(f'{path}\\{image}')
-    # удаляем стандартные изображения, которые не являются чертежами
+
+    # удаляем стандартные изображения (папка "wrong drawings"), которые не являются чертежами
     new_files_image = os.listdir(f'{path}\\')
     for new_image in new_files_image:
         stop_remove = False
         for wrong_image in os.listdir(f'{os.path.abspath(os.getcwd())}\\Drawings\\wrong drawings'):
             path_image = f'{path}\\{new_image}'
             if not stop_remove:
-                if imagehash.dhash(Image.open(path_image)) == imagehash.dhash(Image.open(f'{os.path.abspath(os.getcwd())}\\Drawings\\wrong drawings\\{wrong_image}')):
+                if imagehash.dhash(Image.open(path_image)) == imagehash.dhash(
+                        Image.open(f'{os.path.abspath(os.getcwd())}\\Drawings\\wrong drawings\\{wrong_image}')):
                     os.remove(f'{path}/{new_image}')
                     stop_remove = True
+
+    # удаляем повторяющиеся изображения
+    # список порядковых номеров повторяющихся изображений
+    index_image_for_delete = []
+    # список оставшихся изображений
+    files_image_for_delete = os.listdir(f'{path}\\')
+    for index_image in range(len(files_image_for_delete) - 1):
+        if imagehash.dhash(Image.open(f'{path}\\{files_image_for_delete[index_image]}')) == imagehash.dhash(
+                Image.open(f'{path}\\{files_image_for_delete[index_image + 1]}')):
+            index_image_for_delete.append(index_image)
+    # перебираем и удаляем повторяющиеся изображения
+    for index in index_image_for_delete:
+        os.remove(f'{path}\\{files_image_for_delete[index]}')
 
 
 # ищем данные в БД
@@ -444,36 +462,102 @@ def update_master_by_delete(table, db):
     conn.commit()
     cur.close()
 
-# def ver(list_db: list):
-#     logger_with_user.info(f'Начало верификации данных\n')
-#     for db in list_db:
-#         # подключаемся в базе данных
-#         conn = sqlite3.connect(f'{os.path.abspath(os.getcwd())}\\DB\\{db}')
-#         cur = conn.cursor()
-#         list_report_number_one_of = cur.execute('''SELECT report_number, one_of FROM master''').fetchall()
-#         conn.close()
-#
-#         # все ли таблицы в репортах загружены
-#         for one_of in list_report_number_one_of:
-#             index_slash = one_of[1].index('/')
-#             one = one_of[1][:index_slash]
-#             of = one_of[1][index_slash + 1:]
-#             if int(one) < int(of):
-#                 logger_with_user.info(f'Не все таблицы {one}/{of} загружены в репорте {one_of[0]}')
-#                 print(f'Не все таблицы {one}/{of} загружены в репорте {one_of[0]}')
-#             if int(one) > int(of):
-#                 logger_with_user.info(f'{one}/{of} - Такого не может быть {one_of[0]}')
-#                 print(f'{one}/{of} - Такого не может быть {one_of[0]}')
-#
-#         # уникальны ли номера репортов
-#         uniq_report_number_one_of = []
-#         for report_number_one_of in list_report_number_one_of:
-#             if report_number_one_of[0] not in uniq_report_number_one_of:
-#                 uniq_report_number_one_of.append(report_number_one_of[0])
-#             else:
-#                 logger_with_user.info(f'Есть повторяющиеся номера репортов {report_number_one_of[0]}!')
-#                 print(f'Есть повторяющиеся номера репортов {report_number_one_of[0]}!')
-#
+
+# верификация данных
+def ver(list_db: list):
+    logger_with_user.info(f'Начало верификации данных\n')
+    for db in list_db:
+        # подключаемся в базе данных
+        conn = sqlite3.connect(f'{os.path.abspath(os.getcwd())}\\DB\\{db}')
+        cur = conn.cursor()
+        list_report_number_one_of = cur.execute('''SELECT report_number, one_of FROM master''').fetchall()
+
+        # все ли таблицы в репортах загружены
+        for one_of in list_report_number_one_of:
+            index_slash = one_of[1].index('/')
+            one = one_of[1][:index_slash]
+            of = one_of[1][index_slash + 1:]
+            if int(one) < int(of):
+                logger_with_user.info(f'Не все таблицы {one}/{of} загружены в репорте {one_of[0]}')
+            if int(one) > int(of):
+                logger_with_user.info(f'{one}/{of} - Такого не может быть {one_of[0]}')
+
+        # уникальны ли номера репортов
+        uniq_report_number_one_of = []
+        for report_number_one_of in list_report_number_one_of:
+            if report_number_one_of[0] not in uniq_report_number_one_of:
+                uniq_report_number_one_of.append(report_number_one_of[0])
+            else:
+                logger_with_user.info(f'Есть повторяющиеся номера репортов {report_number_one_of[0]}!')
+
+        # есть ли в таблице столбцы "Line" и "Drawing" и все ли они заполнены
+        # получаем имена всех таблиц в БД
+        all_table = cur.execute('''SELECT name FROM main.sqlite_master WHERE type="table"''').fetchall()
+        # перебираем их
+        for table in all_table:
+            line_in_table = ''
+            drawing_in_table = ''
+            if table[0] != 'master':
+                # определяем номер столбцов "Line" и "Drawing
+                list_name_column = conn.execute(f'select * from {table[0]}').description
+                for row_name_column in list_name_column:
+                    if row_name_column[0] == 'Line':
+                        line_in_table = cur.execute(f'''SELECT Line FROM {table[0]}''').fetchall()
+                    if row_name_column[0] == 'Drawing':
+                        drawing_in_table = cur.execute(f'''SELECT Drawing FROM {table[0]}''').fetchall()
+                # проверяем столбец "Line"
+                if line_in_table:
+                    for line_value in line_in_table:
+                        # если прочерк
+                        if line_value[0] == '-':
+                            logger_with_user.info(f'Ошибка в указании номера линии в таблице {table[0]} - знак "-"!')
+                            break
+                        # если не совпадает с шаблоном
+                        if not re.findall('\D\d-\d{3,4}\D?-\D{2}-\d{3}', line_value[0]):
+                            logger_with_user.info(f'Ошибка в указании номера линии в таблице {table[0]} - не похож на номер линии или сосуда!')
+                            break
+                # если в таблице НЕТ столбца "Line"
+                else:
+                    logger_with_user.info(f'В таблице {table[0]} нет столбца с номером линии!')
+                # проверяем столбец "Drawing"
+                if drawing_in_table:
+                    for drawing_value in drawing_in_table:
+                        # если прочерк
+                        if drawing_value[0] == '-':
+                            logger_with_user.info(f'Ошибка в указании номера чертежа в таблице {table[0]} - знак "-"!')
+                            break
+                        # если не совпадает с шаблоном
+                        if not re.findall('\D{2}\d{2}-\D\d-\d{3,4}\D?-\D{2}', drawing_value[0]):
+                            logger_with_user.info(f'Ошибка в указании номера чертежа в таблице {table[0]} - не похож на номер чертежа!')
+                            break
+                # если в таблице НЕТ столбца "Drawing"
+                else:
+                    logger_with_user.info(f'В таблице {table[0]} нет столбца с номером чертежа!')
+        conn.close()
+
+        # совпадает ли количество папок с чертежами с количеством загруженных репортов
+        # получаем список папок с чертежами
+        # имя БД с чертежами
+        name_folder_drawing = db[:-7].replace('reports', 'drawings')
+        # путь к папке с чертежами
+        path_dir_drawing = f'{os.path.abspath(os.getcwd())}\\Drawings\\{name_folder_drawing}\\'
+        # список папок с чертежами
+        list_dir_drawing = os.listdir(f'{path_dir_drawing}')
+        for number_report in list_report_number_one_of:
+            # активатор наличия папки с чертежами для загруженного репорта
+            drawing_dir_equal_number_report = False
+            for number_dir_drawing in list_dir_drawing:
+                if number_report[0] == number_dir_drawing:
+                    drawing_dir_equal_number_report = True
+                    # есть ли в папке с чертежами сами чертежи
+                    lll = os.listdir(f'{path_dir_drawing}{number_report[0]}')
+                    if len(lll) == 0:
+                        logger_with_user.info(f'В БД чертежей {name_folder_drawing} в папке {number_report[0]} отсутствует чертежи!')
+                        print(f'В БД чертежей {name_folder_drawing} в папке {number_report[0]} отсутствует чертежи!')
+            if not drawing_dir_equal_number_report:
+                logger_with_user.info(f'В БД чертежей {name_folder_drawing} отсутствует папка с чертежами для репорта {number_report[0]}!')
+                print(f'В БД чертежей {name_folder_drawing} отсутствует папка с чертежами для репорта {number_report[0]}!')
+
 #         # все ли номера репортов в Daily
 #         year = ''
 #         for i in db:

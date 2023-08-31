@@ -20,7 +20,6 @@ def get_name_dir(dir_files: str, name_dir_files: list) -> list:
     name_dir_docx = []
     for i in name_dir_files:
         name_dir_docx.append(f'{dir_files}{i}')
-    print(name_dir_docx)
     return name_dir_docx
 
 
@@ -32,11 +31,8 @@ def db_in_folder():
         name_dir_db.extend(filenames)
     # полученный список БД
     list_db_for_check = get_name_dir(path_db, name_dir_db)
-
     # список баз данных, которых нет в папке "DB"
-    # return list(set(list_db) - set(list_db_for_check))
     return list(set(list_db) - set(list_db_for_check))
-    # return list(set(props.list_db) - set(list_db_for_check))
 
 
 def get_dirty_data_report(path_to_report: str, report_number: str) -> dict:
@@ -73,6 +69,11 @@ def number_report_wo_date(path_to_report: str) -> dict:
     doc = Document(path_to_report)
     # получаем неочищенные данные из первого верхнего колонтитула
     head_paragraph = doc.sections[0].header.tables
+    # активатор, если для первого листа установлен отдельный колонтитул
+    must_check_head_paragraph = False
+    # если колонтитул для первого листа отдельный
+    if doc.sections[0].different_first_page_header_footer:
+        must_check_head_paragraph = True
     # создаем пустой словарь под данные верхнего колонтитула
     data_header = {i: None for i in range(0, len(head_paragraph))}
     for i, table in enumerate(head_paragraph):
@@ -82,7 +83,7 @@ def number_report_wo_date(path_to_report: str) -> dict:
         for j, row in enumerate(table.rows):
             for cell in row.cells:
                 data_header[i][j].append(cell.text)
-    return get_number_report_wo_date(data_header)
+    return get_number_report_wo_date(data_header), must_check_head_paragraph
 
 
 # получение фактического номера репорта, номера work order и даты
@@ -135,7 +136,7 @@ def get_number_report_wo_date(data_header: dict) -> dict:
 
 
 # очистка номера репорта, даты репорта, номера Work Order от лишних, повторяющихся символов
-def clear_data_rep_number(data: dict) -> dict:
+def clear_data_rep_number(data: dict, must_check: bool) -> dict:
     # удаление любых пробельных символов в номере репорта
     data['report_number'] = re.sub('\\s+', '', data['report_number'])
     # замена повторяющегося символа "-" на единичный в номере репорта
@@ -153,6 +154,10 @@ def clear_data_rep_number(data: dict) -> dict:
         # то добавляем "Rev." через знак "_"
         index_rev = data['report_number'].find('ev')
         data['report_number'] = '_'.join([data['report_number'][:index_rev - 1], data['report_number'][index_rev - 1:]])
+    if must_check:
+        num_rep = data['report_number']
+        logger_with_user.info(f'Проверь верхние колонтитулы всех листов отчёта {num_rep}, т.к. установлена опция "Особый колонтитул для первой '
+                              f'страницы". Номера отчётов на страницах могут отличаться!')
     return data
 
 
@@ -793,7 +798,7 @@ def clean_up_end(pure_data_table: dict) -> dict:
 
 # определение номера unit
 def unit_definition(pure_data_table: dict, number_report: str) -> str:
-    print(pure_data_table)
+    # print(pure_data_table)
     # список линий и чертежей
     line = list()
     drawing = list()

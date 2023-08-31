@@ -170,7 +170,7 @@ line_search_number_report.setCursorMoveStyle(Qt.LogicalMoveStyle)
 line_search_number_report.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_number_report.setFocusPolicy(Qt.StrongFocus)
-line_search_number_report.setText('010')
+line_search_number_report.setText('009')
 
 # создаём кнопку "Поиск"
 button_search = QPushButton('Поиск', window)
@@ -696,7 +696,7 @@ def log_in():
         button_log_out.setDisabled(False)
         button_add.setDisabled(False)
         button_statistic_master.setDisabled(False)
-        # button_verification.setDisabled(False)
+        button_verification.setDisabled(False)
         # очищаем поле ввода логина и пароля
         line_login.clear()
         line_password.clear()
@@ -734,11 +734,12 @@ def log_in():
 
 # нажатие кнопки "Выйти"
 def log_out():
-    # делаем НЕ активными кнопки "Добавить", "Редактировать", "Удалить", "Выйти", "Сводные данные", "Выйти"
+    # делаем НЕ активными кнопки "Добавить", "Удалить", "Выйти", "Сводные данные", "Выйти", "Верификация"
     button_delete.setDisabled(True)
     button_log_out.setDisabled(True)
     button_add.setDisabled(True)
     button_statistic_master.setDisabled(True)
+    button_verification.setDisabled(True)
     # разблокируем кнопку "Войти"
     button_log_in.setDisabled(False)
     logger_with_user.info('Пользователь вышел')
@@ -878,6 +879,7 @@ def search():
     list_table_view = []
     # список
     list_button_for_table = []
+
     list_height_table_view = []
     list_check_box = []
     # find_data[0] - основные данные
@@ -932,6 +934,10 @@ def search():
                     table_height_for_data_output = count_row_in_table * 25 + 25
                     table_index.hide()
                     y1 += 20
+
+                    # list_button_for_drawing = []
+
+
                     table_index.setGeometry(QRect(0, y1, 2500, table_height_for_data_output))
                     if sqm.rowCount() != 0:
                         list_sqm.append(sqm)
@@ -939,15 +945,50 @@ def search():
                         line_for_table_name_buttons = sqm.query().value('line')
                         button_for_table = table_name_buttons(frame_for_table, y1, authorization, table, unsort[key_date], language,
                                                               line_for_table_name_buttons)
+
+                        # папка с чертежами для данного репорта
+                        dir_with_drawing = table.replace('_', '-')[3:]
+                        # print(dir_with_drawing)
+                        dir_drawings_db = db.replace('reports', 'drawings')[:-7]
+                        # путь, где лежат чертежи для репорта
+                        path_drawing = f'{os.path.abspath(os.getcwd())}\\Drawings\\{dir_drawings_db}\\{dir_with_drawing}'
+                        # список чертежей для данного репорта
+                        list_drawing_button = os.listdir(path_drawing)
+                        # print(list_drawing_button)
+                        # print(count_drawing_button)
+                        # выставляем координату от левого края
+                        # если авторизовались
+                        # if authorization:
+                        #     x11 = 820
+                        # # если нет
+                        # else:
+                        #     x11 = 800
+                        # # итерируемся по количеству чертежей для создания нужного количества кнопок номеров чертежей
+                        # # print(button_for_table.text())
+                        # for index, draw in enumerate(list_drawing_button):
+                        #     # print(f'index {index}')
+                        #     # print(f'чертёж {draw}')
+                        #     # создаём кнопку для чертежа
+                        #     button_for_drawing = drawing_name_buttons(frame_for_table, y1, x11, language, index)
+                        #     x11 += 100
+                        #     # print(button_for_drawing.text())
+                        #     list_button_for_drawing.append(button_for_drawing)
+                        #     button_for_drawing.clicked.connect(lambda: show_drawing(path_drawing, draw))
+                        #     # print(button_for_drawing.text())
                         check_box = check_box_name_buttons(frame_for_table, y1, authorization)
                         list_table_view.append(table_index)
                         list_button_for_table.append(button_for_table)
+                        # print(type(button_for_table.text()))
+                        #
+                        # print(list_button_for_drawing)
                         list_height_table_view.append(table_height_for_data_output)
                         list_check_box.append(check_box)
                         button_for_table.clicked.connect(
                             lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization))
+                            # lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, list_button_for_drawing))
                         # перерисовываем кнопки
                         visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization)
+                        # visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, list_button_for_drawing)
 
                 # если заполнено одно поле, кроме unit или номера репорта
                 if find_data[1] == 2:
@@ -1035,6 +1076,21 @@ def search():
     window.repaint()
     frame_for_table.show()
     scroll_area.show()
+
+
+# открытие чертежа по нажатию на кнопку для таблицы
+def show_drawing(path_drawing, draw):
+    # if window.findChildren(QTableView):
+    #     open_scroll_area = window.findChildren(QScrollArea)
+    #     for scroll in open_scroll_area:
+    #         open_push_button = scroll.findChildren(QPushButton)
+    #         for push_button in open_push_button:
+    #             if push_button.text().startswith('чертёж') or push_button.text().startswith('drawing') or push_button.text().startswith('сурет салу'):
+    #                 print(push_button.text())
+    #
+    #                 if push_button.isChecked():
+    #                     print(push_button.text())
+    Image.open(f'{path_drawing}\\{draw}').show()
 
 
 # установка языка RU
@@ -1420,16 +1476,16 @@ class Searching(Loading):
         super().stop_loading()
 
 
-# class Verification(Searching):
-#     def __init__(self):
-#
-#         self.load = QLabel(scroll_area)
-#         self.load.setGeometry(0, 0, 1660, 630)
-#         self.load.setAlignment(Qt.AlignCenter)
-#         self.load.setPixmap(QPixmap(u"verification.png"))
-#
-#         super().start_loading()
-#         super().stop_loading()
+class Verification(Searching):
+    def __init__(self):
+
+        self.load = QLabel(scroll_area)
+        self.load.setGeometry(0, 0, 1660, 630)
+        self.load.setAlignment(Qt.AlignCenter)
+        self.load.setPixmap(QPixmap(u"verification.png"))
+
+        super().start_loading()
+        super().stop_loading()
 
 
 # заморозка кнопок и полей для ввода на время загрузки новых репортов
@@ -1528,29 +1584,28 @@ def unfreeze_button():
         checkBox_2019.setDisabled(False)
 
 
-# def verification_data():
-#     if window.findChildren(QTableView):
-#         open_tableview = window.findChildren(QTableView)
-#         for tableview in open_tableview:
-#             tableview.setParent(None)
-#         open_scroll_area = window.findChildren(QScrollArea)
-#         for scroll in open_scroll_area:
-#             open_push_button = scroll.findChildren(QPushButton)
-#             for push_button in open_push_button:
-#                 # то сдвигаем вбок кнопки названий таблиц
-#                 push_button.setParent(None)
-#             open_check_box = scroll.findChildren(QCheckBox)
-#             for check_box in open_check_box:
-#                 check_box.setParent(None)
-#     freeze_button()
-#     verificat = Verification()
-#     verificat.start_loading()
-#     window.repaint()
-#     # все таблицы в репортах загружены
-#     ver(define_db_for_search(data_filter_for_search))
-#     unfreeze_button()
-#     verificat.stop_loading()
-#     window.repaint()
+def verification_data():
+    if window.findChildren(QTableView):
+        open_tableview = window.findChildren(QTableView)
+        for tableview in open_tableview:
+            tableview.setParent(None)
+        open_scroll_area = window.findChildren(QScrollArea)
+        for scroll in open_scroll_area:
+            open_push_button = scroll.findChildren(QPushButton)
+            for push_button in open_push_button:
+                # то сдвигаем вбок кнопки названий таблиц
+                push_button.setParent(None)
+            open_check_box = scroll.findChildren(QCheckBox)
+            for check_box in open_check_box:
+                check_box.setParent(None)
+    freeze_button()
+    verificat = Verification()
+    verificat.start_loading()
+    window.repaint()
+    ver(define_db_for_search(data_filter_for_search))
+    unfreeze_button()
+    verificat.stop_loading()
+    window.repaint()
 
 
 # нажатие кнопки "Войти"
@@ -1590,7 +1645,7 @@ button_add.clicked.connect(start_add_table)
 
 
 # нажатие на кнопку "Верификация"
-# button_verification.clicked.connect(verification_data)
+button_verification.clicked.connect(verification_data)
 
 
 def main():
