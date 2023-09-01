@@ -29,7 +29,7 @@ def add_table():
     # dir_files = 'C:/Users/Андрей/Documents/NDT/Тестовые данные/'
 
     # для продакшн
-    dir_files = QFileDialog.getOpenFileNames(None, 'Выбрать папку', 'C:/Users/Andrei/Documents/NDT/NDT UTT/REPORTS 2022/UTT/ON', "docx(*.docx)")
+    dir_files = QFileDialog.getOpenFileNames(None, 'Выбрать папку', 'C:/Users/Andrei/Documents/NDT/NDT UTT/REPORTS 2021/UT/OS', "docx(*.docx)")
     # dir_files = QFileDialog.getOpenFileNames(None, 'Выбрать папку', '/home', "docx(*.docx)")
 
     # список путей и названий репортов для дальнейшей обработки
@@ -51,9 +51,9 @@ def add_table():
         # dirty_rep_number[1] - активатор "Особого колонтитула для первой страницы"
         clear_rep_number = clear_data_rep_number(dirty_rep_number[0], dirty_rep_number[1])
         # проверяем номер репорта в отчёте и имени файла
-        if clear_rep_number['report_number'] not in report:
-            repp_numm = clear_rep_number['report_number']
-            logger_with_user.info(f'Проверь номер отчёта {repp_numm} в файле (верхний колонтитул) и название самого файла. Возможна ошибка!')
+        # if clear_rep_number['report_number'] not in report:
+        #     repp_numm = clear_rep_number['report_number']
+        #     logger_with_user.info(f'Проверь номер отчёта {repp_numm} в файле (верхний колонтитул) и название самого файла. Возможна ошибка!')
         # получаем название БД с локацией (ON, OF, OS), методом контроля (UTT, PAUT), годом контроля (18, 19, 20, 21, 22, 23, 24, 25, 26)
         name_reports_db, break_break = reports_db(clear_rep_number['report_number'], break_break)
         # если невозможно получить название БД из номера репорта, то переходим к следующему репорту с записью в Log File

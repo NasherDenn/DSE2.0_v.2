@@ -464,100 +464,119 @@ def update_master_by_delete(table, db):
 
 
 # верификация данных
-def ver(list_db: list):
+def ver(list_db: list, all_reports_loading, duplicate_report, column_in_the_table, drawings_uploaded, unit_column):
     logger_with_user.info(f'Начало верификации данных\n')
     for db in list_db:
         # подключаемся в базе данных
         conn = sqlite3.connect(f'{os.path.abspath(os.getcwd())}\\DB\\{db}')
         cur = conn.cursor()
-        list_report_number_one_of = cur.execute('''SELECT report_number, one_of FROM master''').fetchall()
+        list_report_number_one_of = cur.execute('''SELECT report_number, one_of, unit FROM master''').fetchall()
 
         # все ли таблицы в репортах загружены
-        for one_of in list_report_number_one_of:
-            index_slash = one_of[1].index('/')
-            one = one_of[1][:index_slash]
-            of = one_of[1][index_slash + 1:]
-            if int(one) < int(of):
-                logger_with_user.info(f'Не все таблицы {one}/{of} загружены в репорте {one_of[0]}')
-            if int(one) > int(of):
-                logger_with_user.info(f'{one}/{of} - Такого не может быть {one_of[0]}')
+        if all_reports_loading:
+            for one_of in list_report_number_one_of:
+                index_slash = one_of[1].index('/')
+                one = one_of[1][:index_slash]
+                of = one_of[1][index_slash + 1:]
+                if int(one) < int(of):
+                    logger_with_user.info(f'Не все таблицы {one}/{of} загружены в репорте {one_of[0]}')
+                if int(one) > int(of):
+                    logger_with_user.info(f'{one}/{of} - Такого не может быть {one_of[0]}')
 
         # уникальны ли номера репортов
-        uniq_report_number_one_of = []
-        for report_number_one_of in list_report_number_one_of:
-            if report_number_one_of[0] not in uniq_report_number_one_of:
-                uniq_report_number_one_of.append(report_number_one_of[0])
-            else:
-                logger_with_user.info(f'Есть повторяющиеся номера репортов {report_number_one_of[0]}!')
+        if duplicate_report:
+            uniq_report_number_one_of = []
+            for report_number_one_of in list_report_number_one_of:
+                if report_number_one_of[0] not in uniq_report_number_one_of:
+                    uniq_report_number_one_of.append(report_number_one_of[0])
+                else:
+                    logger_with_user.info(f'Есть повторяющиеся номера репортов {report_number_one_of[0]}!')
 
         # есть ли в таблице столбцы "Line" и "Drawing" и все ли они заполнены
-        # получаем имена всех таблиц в БД
-        all_table = cur.execute('''SELECT name FROM main.sqlite_master WHERE type="table"''').fetchall()
-        # перебираем их
-        for table in all_table:
-            line_in_table = ''
-            drawing_in_table = ''
-            if table[0] != 'master':
-                # определяем номер столбцов "Line" и "Drawing
-                list_name_column = conn.execute(f'select * from {table[0]}').description
-                for row_name_column in list_name_column:
-                    if row_name_column[0] == 'Line':
-                        line_in_table = cur.execute(f'''SELECT Line FROM {table[0]}''').fetchall()
-                    if row_name_column[0] == 'Drawing':
-                        drawing_in_table = cur.execute(f'''SELECT Drawing FROM {table[0]}''').fetchall()
-                # проверяем столбец "Line"
-                if line_in_table:
-                    for line_value in line_in_table:
-                        # если прочерк
-                        if line_value[0] == '-':
-                            logger_with_user.info(f'Ошибка в указании номера линии в таблице {table[0]} - знак "-"!')
-                            break
-                        # если не совпадает с шаблоном
-                        if not re.findall('\D\d-\d{3,4}\D?-\D{2}-\d{3}', line_value[0]):
-                            logger_with_user.info(f'Ошибка в указании номера линии в таблице {table[0]} - не похож на номер линии или сосуда!')
-                            break
-                # если в таблице НЕТ столбца "Line"
-                else:
-                    logger_with_user.info(f'В таблице {table[0]} нет столбца с номером линии!')
-                # проверяем столбец "Drawing"
-                if drawing_in_table:
-                    for drawing_value in drawing_in_table:
-                        # если прочерк
-                        if drawing_value[0] == '-':
-                            logger_with_user.info(f'Ошибка в указании номера чертежа в таблице {table[0]} - знак "-"!')
-                            break
-                        # если не совпадает с шаблоном
-                        if not re.findall('\D{2}\d{2}-\D\d-\d{3,4}\D?-\D{2}', drawing_value[0]):
-                            logger_with_user.info(f'Ошибка в указании номера чертежа в таблице {table[0]} - не похож на номер чертежа!')
-                            break
-                # если в таблице НЕТ столбца "Drawing"
-                else:
-                    logger_with_user.info(f'В таблице {table[0]} нет столбца с номером чертежа!')
-        conn.close()
+        if column_in_the_table:
+            # получаем имена всех таблиц в БД
+            all_table = cur.execute('''SELECT name FROM main.sqlite_master WHERE type="table"''').fetchall()
+            # перебираем их
+            for table in all_table:
+                line_in_table = ''
+                drawing_in_table = ''
+                if table[0] != 'master':
+                    # определяем номер столбцов "Line" и "Drawing
+                    list_name_column = conn.execute(f'select * from {table[0]}').description
+                    for row_name_column in list_name_column:
+                        if row_name_column[0] == 'Line':
+                            line_in_table = cur.execute(f'''SELECT Line FROM {table[0]}''').fetchall()
+                            if not line_in_table:
+                                logger_with_user.warning(f'В таблице {table[0]} отсутствуют данные!')
+                        if row_name_column[0] == 'Drawing':
+                            drawing_in_table = cur.execute(f'''SELECT Drawing FROM {table[0]}''').fetchall()
+                    # проверяем столбец "Line"
+                    if line_in_table:
+                        for line_value in line_in_table:
+                            # если прочерк
+                            if line_value[0] == '-':
+                                logger_with_user.warning(f'Ошибка в указании номера линии в таблице {table[0]} - знак "-"!')
+                                break
+                            # если не совпадает с шаблоном или
+                            if not re.findall('\D\d-\d{3,4}\D?-\D{2}-(\d{3}|\D{2})', line_value[0]):
+                                if 'FRACK' not in line_value[0].upper():
+                                    if 'TANK' not in line_value[0].upper():
+                                        logger_with_user.warning(f'Ошибка в указании номера линии ({line_value[0]}) в таблице {table[0]} - не похож '
+                                                              f'на номер линии или сосуда или пропущены буквы/цифры!')
+                                        break
+
+                    # если в таблице НЕТ столбца "Line"
+                    else:
+                        logger_with_user.warning(f'В таблице {table[0]} нет столбца с номером линии!')
+                    # проверяем столбец "Drawing"
+                    if drawing_in_table:
+                        for drawing_value in drawing_in_table:
+                            # если прочерк
+                            if drawing_value[0] == '-':
+                                logger_with_user.warning(f'Ошибка в указании номера чертежа в таблице {table[0]} - знак "-"!')
+                                break
+                            # если не совпадает с шаблоном
+                            if not re.findall('\D{2}\d{2}-\D\d-\d{3,4}\D?-\D{2}', drawing_value[0]):
+                                logger_with_user.warning(f'Ошибка в указании номера чертежа ({drawing_value[0]}) в таблице {table[0]} - не похож '
+                                                      f'на номер чертежа или пропущены буквы/цифры!')
+                                break
 
         # совпадает ли количество папок с чертежами с количеством загруженных репортов
-        # получаем список папок с чертежами
-        # имя БД с чертежами
-        name_folder_drawing = db[:-7].replace('reports', 'drawings')
-        # путь к папке с чертежами
-        path_dir_drawing = f'{os.path.abspath(os.getcwd())}\\Drawings\\{name_folder_drawing}\\'
-        # список папок с чертежами
-        list_dir_drawing = os.listdir(f'{path_dir_drawing}')
-        for number_report in list_report_number_one_of:
-            # активатор наличия папки с чертежами для загруженного репорта
-            drawing_dir_equal_number_report = False
-            for number_dir_drawing in list_dir_drawing:
-                if number_report[0] == number_dir_drawing:
-                    drawing_dir_equal_number_report = True
-                    # есть ли в папке с чертежами сами чертежи
-                    lll = os.listdir(f'{path_dir_drawing}{number_report[0]}')
-                    if len(lll) == 0:
-                        logger_with_user.info(f'В БД чертежей {name_folder_drawing} в папке {number_report[0]} отсутствует чертежи!')
-                        print(f'В БД чертежей {name_folder_drawing} в папке {number_report[0]} отсутствует чертежи!')
-            if not drawing_dir_equal_number_report:
-                logger_with_user.info(f'В БД чертежей {name_folder_drawing} отсутствует папка с чертежами для репорта {number_report[0]}!')
-                print(f'В БД чертежей {name_folder_drawing} отсутствует папка с чертежами для репорта {number_report[0]}!')
+        if drawings_uploaded:
+            # получаем список папок с чертежами
+            # имя БД с чертежами
+            name_folder_drawing = db[:-7].replace('reports', 'drawings')
+            # путь к папке с чертежами
+            path_dir_drawing = f'{os.path.abspath(os.getcwd())}\\Drawings\\{name_folder_drawing}\\'
+            # список папок с чертежами
+            list_dir_drawing = os.listdir(f'{path_dir_drawing}')
+            for number_report in list_report_number_one_of:
+                # активатор наличия папки с чертежами для загруженного репорта
+                drawing_dir_equal_number_report = False
+                for number_dir_drawing in list_dir_drawing:
+                    if number_report[0] == number_dir_drawing:
+                        drawing_dir_equal_number_report = True
+                        # есть ли в папке с чертежами сами чертежи
+                        lll = os.listdir(f'{path_dir_drawing}{number_report[0]}')
+                        if len(lll) == 0:
+                            logger_with_user.info(f'В БД чертежей {name_folder_drawing} в папке {number_report[0]} отсутствуют чертежи!')
+                if not drawing_dir_equal_number_report:
+                    logger_with_user.info(f'В БД чертежей {name_folder_drawing} отсутствует папка с чертежами для репорта {number_report[0]}!')
 
+        # верно ли заполнен столбец unit в таблице master
+        if unit_column:
+            for index_unit, unit in enumerate(list_report_number_one_of):
+                if unit[2] == '-':
+                    logger_with_user.warning(f'Не указан номер юнита ({unit[2]}) в отчёте {unit[0]} в сводных данных БД {db}!')
+                elif len(unit[2]) < 3:
+                    logger_with_user.warning(f'Не полный номер юнита ({unit[2]}) в отчёте {unit[0]} в сводных данных БД {db}!')
+                if 'FRACK' not in unit[2].upper():
+                    for letter in unit[2]:
+                        if not letter.isdigit():
+                            logger_with_user.warning(f'В номере юнита ({unit[2]}) не должно быть букв, отчёт {unit[0]} в сводных данных БД {db}!')
+                            break
+
+        conn.close()
 #         # все ли номера репортов в Daily
 #         year = ''
 #         for i in db:

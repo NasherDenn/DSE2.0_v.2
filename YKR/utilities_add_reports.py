@@ -154,10 +154,10 @@ def clear_data_rep_number(data: dict, must_check: bool) -> dict:
         # то добавляем "Rev." через знак "_"
         index_rev = data['report_number'].find('ev')
         data['report_number'] = '_'.join([data['report_number'][:index_rev - 1], data['report_number'][index_rev - 1:]])
-    if must_check:
-        num_rep = data['report_number']
-        logger_with_user.info(f'Проверь верхние колонтитулы всех листов отчёта {num_rep}, т.к. установлена опция "Особый колонтитул для первой '
-                              f'страницы". Номера отчётов на страницах могут отличаться!')
+    # if must_check:
+    #     num_rep = data['report_number']
+    #     logger_with_user.info(f'Проверь верхние колонтитулы всех листов отчёта {num_rep}, т.к. установлена опция "Особый колонтитул для первой '
+    #                           f'страницы". Номера отчётов на страницах могут отличаться!')
     return data
 
 

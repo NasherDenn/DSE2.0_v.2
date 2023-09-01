@@ -80,7 +80,6 @@ line_search_line.setCursorMoveStyle(Qt.LogicalMoveStyle)
 line_search_line.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_line.setFocusPolicy(Qt.StrongFocus)
-# line_search_line.setText('A1-331-VN-104')
 line_search_line.setText('')
 line_search_line.setFocus()
 
@@ -104,7 +103,6 @@ line_search_drawing.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_drawing.setFocusPolicy(Qt.StrongFocus)
 line_search_drawing.setText('')
-# line_search_drawing.setText('')
 
 
 # создаём однострочное поле для ввода номера unit
@@ -127,7 +125,6 @@ line_search_unit.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_unit.setFocusPolicy(Qt.StrongFocus)
 line_search_unit.setText('')
-# line_search_unit.setText('')
 
 # создаём однострочное поле для ввода номера локации
 line_search_item_description = QLineEdit(window)
@@ -148,7 +145,6 @@ line_search_item_description.setCursorMoveStyle(Qt.LogicalMoveStyle)
 line_search_item_description.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_item_description.setFocusPolicy(Qt.StrongFocus)
-# line_search_item_description.setText('TML-001_(Elbow)')
 line_search_item_description.setText('')
 
 # создаём однострочное поле для ввода номера репорта
@@ -170,7 +166,7 @@ line_search_number_report.setCursorMoveStyle(Qt.LogicalMoveStyle)
 line_search_number_report.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_number_report.setFocusPolicy(Qt.StrongFocus)
-line_search_number_report.setText('009')
+line_search_number_report.setText('')
 
 # создаём кнопку "Поиск"
 button_search = QPushButton('Поиск', window)
@@ -557,7 +553,7 @@ checkBox_os.setGeometry(QRect(110, 25, 42, 20))
 # указываем текст чек-бокса
 checkBox_os.setText('OS')
 # временно, пока не загрузятся другие локации
-checkBox_os.setEnabled(False)
+checkBox_os.setEnabled(True)
 
 # создаём группу из чек-боксов методов контроля
 groupBox_ndt = QGroupBox(window)
@@ -632,7 +628,7 @@ checkBox_2021.setGeometry(QRect(150, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2021.setText('2021')
 # временно, пока не загрузятся другие локации
-checkBox_2021.setEnabled(False)
+checkBox_2021.setEnabled(True)
 
 # создаём чек-бокс года '2020'
 checkBox_2020 = QCheckBox(groupBox_year)
@@ -1388,17 +1384,14 @@ def faq():
     faq_window_text.setFont(font_faq_window_text)
     faq_window_text.setGeometry(QRect(10, 0, 1290, 760))
     faq_window_text.setWordWrap(True)
-    # текс в "FAQ" в зависимости от выбранного языка
+    # текст кнопки "Понятно" в зависимости от выбранного языка
     if button_ru.isChecked():
-        # faq_text_ru - текст внутри на русском языке
         button_close_faq = QPushButton('Понятно', faq_window)
         button_close_faq.setGeometry(600, 730, 100, 50)
     if button_en.isChecked():
-        # faq_text_en - текст внутри на английском языке
         button_close_faq = QPushButton('It\'s clear', faq_window)
         button_close_faq.setGeometry(600, 730, 100, 50)
     if button_kz.isChecked():
-        # faq_text_kz - текст внутри на казахском языке
         button_close_faq = QPushButton('Ол түсінікті', faq_window)
         button_close_faq.setGeometry(575, 730, 150, 50)
     # присваиваем уникальное объектное имя кнопке "Понятно"
@@ -1584,7 +1577,9 @@ def unfreeze_button():
         checkBox_2019.setDisabled(False)
 
 
+# создание окна выбора опций верификаций
 def verification_data():
+    # закрываем все открытые frame, scroll area, кнопки
     if window.findChildren(QTableView):
         open_tableview = window.findChildren(QTableView)
         for tableview in open_tableview:
@@ -1598,14 +1593,134 @@ def verification_data():
             open_check_box = scroll.findChildren(QCheckBox)
             for check_box in open_check_box:
                 check_box.setParent(None)
-    freeze_button()
-    verificat = Verification()
-    verificat.start_loading()
-    window.repaint()
-    ver(define_db_for_search(data_filter_for_search))
-    unfreeze_button()
-    verificat.stop_loading()
-    window.repaint()
+    # создаём окно с выбором опций
+    ver_window = QDialog()
+    ver_window.setWindowTitle('Verification')
+    ver_window.setFixedSize(805, 256)
+
+    # создаем checkbox с опциями
+    checkbox_all_reports_loading = QCheckBox(ver_window)
+    checkbox_all_reports_loading.setObjectName(u"checkBox_all_reports_loading")
+    checkbox_all_reports_loading.setGeometry(QRect(20, 20, 461, 28))
+
+    # создаем checkbox с опциями
+    checkbox_duplicate_report = QCheckBox(ver_window)
+    checkbox_duplicate_report.setObjectName(u"checkbox_duplicate_report")
+    checkbox_duplicate_report.setGeometry(QRect(20, 53, 461, 28))
+
+    # создаем checkbox с опциями
+    checkbox_column_in_the_table = QCheckBox(ver_window)
+    checkbox_column_in_the_table.setObjectName(u"checkbox_column_in_the_table")
+    checkbox_column_in_the_table.setGeometry(QRect(20, 86, 765, 28))
+
+    # создаем checkbox с опциями
+    checkbox_drawings_uploaded = QCheckBox(ver_window)
+    checkbox_drawings_uploaded.setObjectName(u"checkbox_drawings_uploaded")
+    checkbox_drawings_uploaded.setGeometry(QRect(20, 119, 321, 28))
+
+    # создаем checkbox с опциями
+    checkbox_unit_column = QCheckBox(ver_window)
+    checkbox_unit_column.setObjectName(u"checkbox_unit_column")
+    checkbox_unit_column.setGeometry(QRect(20, 152, 601, 28))
+
+    # указываем текст чек-боксов
+    if button_ru.isChecked():
+        button_start_ver = QPushButton('Начать', ver_window)
+        checkbox_all_reports_loading.setText('Все ли таблицы в отчётах загружены?')
+        checkbox_duplicate_report.setText('Есть ли повторяющиеся номера отчётов?')
+        checkbox_column_in_the_table.setText('Есть ли в таблицах столбцы "Line" и "Drawing" и все ли они заполнены?')
+        checkbox_drawings_uploaded.setText('Все ли чертежи загружены?')
+        checkbox_unit_column.setText('Верно ли заполнен столбец "Unit" в сводных данных?')
+    if button_en.isChecked():
+        button_start_ver = QPushButton('Begin', ver_window)
+        checkbox_all_reports_loading.setText('Are all tables in reports loaded?')
+        checkbox_duplicate_report.setText('Are there duplicate report numbers?')
+        checkbox_column_in_the_table.setText('Are there "Line" and "Drawing" columns in the tables and are they all filled?')
+        checkbox_drawings_uploaded.setText('Are all drawings uploaded?')
+        checkbox_unit_column.setText('Is the "Unit" column filled in correctly in the summary?')
+    if button_kz.isChecked():
+        button_start_ver = QPushButton('БАСТА', ver_window)
+        checkbox_all_reports_loading.setText('Есептердегі барлық кестелер жүктелді ме?')
+        checkbox_duplicate_report.setText('Қайталанатын есеп нөмірлері бар ма?')
+        checkbox_column_in_the_table.setText('Кестелерде «Сызық» және «Сызу» бағандары бар ма және олардың барлығы толтырылған ба?')
+        checkbox_drawings_uploaded.setText('Барлық сызбалар жүктелді ме?')
+        checkbox_unit_column.setText('Қорытындыда «Бірлік» бағанасы дұрыс толтырылған ба?')
+
+    checkbox_all_reports_loading.setChecked(True)
+    checkbox_duplicate_report.setChecked(True)
+    checkbox_column_in_the_table.setChecked(True)
+    checkbox_drawings_uploaded.setChecked(True)
+    checkbox_unit_column.setChecked(True)
+
+    # задаём положение и форму кнопки начала верификации
+    button_start_ver.setGeometry(340, 195, 90, 41)
+    # присваиваем уникальное объектное имя кнопке "Начать"
+    button_start_ver.setObjectName(u"pushButton_begin")
+    # задаём параметры стиля и оформления кнопки "Начать"
+    font_button_start_ver = QFont()
+    font_button_start_ver.setFamily(u"Arial")
+    font_button_start_ver.setPointSize(14)
+    button_start_ver.setFont(font_button_start_ver)
+    # задаём параметры стиля и оформления check_box 'Все ли таблицы в репортах загружены?'
+    font_checkbox_all_reports_loading = QFont()
+    font_checkbox_all_reports_loading.setFamily(u"Arial")
+    font_checkbox_all_reports_loading.setPointSize(13)
+    checkbox_all_reports_loading.setFont(font_checkbox_all_reports_loading)
+    # задаём параметры стиля и оформления check_box 'Есть повторяющиеся номера отчётов?'
+    font_checkbox_duplicate_report = QFont()
+    font_checkbox_duplicate_report.setFamily(u"Arial")
+    font_checkbox_duplicate_report.setPointSize(13)
+    checkbox_duplicate_report.setFont(font_checkbox_duplicate_report)
+    # задаём параметры стиля и оформления check_box 'Есть ли в таблицах столбцы "Line" и "Drawing"?'
+    font_checkbox_column_in_the_table = QFont()
+    font_checkbox_column_in_the_table.setFamily(u"Arial")
+    font_checkbox_column_in_the_table.setPointSize(13)
+    checkbox_column_in_the_table.setFont(font_checkbox_column_in_the_table)
+    # задаём параметры стиля и оформления check_box 'Все ли чертежи загружены??'
+    font_checkbox_drawings_uploaded = QFont()
+    font_checkbox_drawings_uploaded.setFamily(u"Arial")
+    font_checkbox_drawings_uploaded.setPointSize(13)
+    checkbox_drawings_uploaded.setFont(font_checkbox_drawings_uploaded)
+    # задаём параметры стиля и оформления check_box 'Верно ли заполнен столбец "Unit"?'
+    font_checkbox_unit_column = QFont()
+    font_checkbox_unit_column.setFamily(u"Arial")
+    font_checkbox_unit_column.setPointSize(13)
+    checkbox_unit_column.setFont(font_checkbox_unit_column)
+
+    # запуск верификации
+    def start_ver():
+        # закрываем окно верификации
+        ver_window.accept()
+        # замораживаем приложение
+        freeze_button()
+        verificat = Verification()
+        verificat.start_loading()
+        window.repaint()
+        all_reports_loading = False
+        if checkbox_all_reports_loading.isChecked():
+            all_reports_loading = True
+        duplicate_report = False
+        if checkbox_duplicate_report.isChecked():
+            duplicate_report = True
+        column_in_the_table = False
+        if checkbox_column_in_the_table.isChecked():
+            column_in_the_table = True
+        drawings_uploaded = False
+        if checkbox_drawings_uploaded.isChecked():
+            drawings_uploaded = True
+        unit_column = False
+        if checkbox_unit_column.isChecked():
+            unit_column = True
+
+        # запускаем саму верификацию
+        ver(define_db_for_search(data_filter_for_search), all_reports_loading, duplicate_report, column_in_the_table, drawings_uploaded, unit_column)
+        unfreeze_button()
+        verificat.stop_loading()
+        window.repaint()
+
+    # нажатие на кнопку "Начать" для запуска верификации
+    button_start_ver.clicked.connect(start_ver)
+    ver_window.exec_()
 
 
 # нажатие кнопки "Войти"
