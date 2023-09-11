@@ -22,28 +22,95 @@ def add_table():
     if no_db_in_folder:
         for i in no_db_in_folder:
             logger_with_user.error(f'В папке "DB" нет базы данных {i}')
-        sys.exit(f'В папке "DB" нет базы данных {i}')
+        sys.exit(f'В папке "DB" нет базы данных {no_db_in_folder}')
     # тест, надо будет поменять
     # путь к файлам для загрузки из диалогового окна выбора
     # dir_files = 'C:/Users/Andrei/Documents/NDT/NDT UTT/REPORTS 2022/+PAUT/'
     # dir_files = 'C:/Users/Андрей/Documents/NDT/Тестовые данные/'
 
     # для продакшн
-    dir_files = QFileDialog.getOpenFileNames(None, 'Выбрать папку', 'C:/Users/Andrei/Documents/NDT/NDT UTT/REPORTS 2021/UT/OS', "docx(*.docx)")
+    dir_files = QFileDialog.getOpenFileNames(None, 'Выбрать папку', 'C:/Users/Andrei/Documents/NDT/NDT UTT/REPORTS 2021/PAUT/ON', "docx(*.docx)")
     # dir_files = QFileDialog.getOpenFileNames(None, 'Выбрать папку', '/home', "docx(*.docx)")
 
     # список путей и названий репортов для дальнейшей обработки
     list_name_reports_for_future_work = dir_files[:-1]
     # выбор только репортов в названиях которых есть "04-YKR"
     list_files_for_work = change_only_ykr_reports(list_name_reports_for_future_work[0])
+    # # если есть отчёт со сваркой или поперечное сканирование
+    # if list_files_for_work[1]:
+    #     print(list_files_for_work[1])
+    # #     write_in_master_nonreports(list_files_for_work[1])
+    # if list_files_for_work[2]:
+    #     print(list_files_for_work[2])
+    #     write_in_master_nonreports(list_files_for_work[2])
 
-    if not list_files_for_work:
+    # если нет файлов с отчётами, то прерываемся
+    if not list_files_for_work[0]:
         stop_loading = True
         return stop_loading
+
     # начинаем перебирать репорты, прошедшие предварительную выборку
-    for report in list_files_for_work:
+    for index_report, report in enumerate(list_files_for_work[0]):
         # переменная для перехода к следующему репорту, в случае выявленной ошибки
         break_break = True
+
+        # проверяем является ли репорт сваркой
+        if list_files_for_work[1]:
+            for index_non_welding in list_files_for_work[1]:
+                # for index_non_welding in non_welding:
+                if index_non_welding == index_report:
+                    # получаем из первого верхнего колонтитула репорта неочищенные номер репорта, номер work order и дату
+                    dirty_rep_number = number_report_wo_date(report)
+                    # очищаем номер репорта, номер work order и дату от лишних (пробелы, новая строка) символов
+                    # dirty_rep_number[0] - данные из верхнего колонтитула для дальнейшей обработки
+                    # dirty_rep_number[1] - активатор "Особого колонтитула для первой страницы"
+                    clear_rep_number = clear_data_rep_number(dirty_rep_number[0], dirty_rep_number[1])
+                    # проверяем номер репорта в отчёте и имени файла
+                    # if clear_rep_number['report_number'] not in report:
+                    #     repp_numm = clear_rep_number['report_number']
+                    #     logger_with_user.info(f'Проверь номер отчёта {repp_numm} в файле (верхний колонтитул) и название самого файла. Возможна ошибка!')
+                    # получаем название БД с локацией (ON, OF, OS), методом контроля (UTT, PAUT), годом контроля (18, 19, 20, 21, 22, 23, 24, 25, 26)
+                    name_reports_db, break_break = reports_db(clear_rep_number['report_number'], break_break)
+                    # если невозможно получить название БД из номера репорта, то переходим к следующему репорту с записью в Log File
+                    # print('weld')
+                    # print(clear_rep_number['report_number'])
+                    # print(name_reports_db)
+                    # активатор, говорящий, что репорт это сварка
+                    welding = True
+                    shaer_wave = False
+                    # желаем запись в БД
+                    write_in_master_nonreports(clear_rep_number['report_number'], name_reports_db, welding, shaer_wave)
+                    # переменная для перехода к следующему репорту, в случае выявленной ошибки
+                    break_break = False
+
+        # или поперечным сканированием
+        if list_files_for_work[2]:
+            for index_non_shaer_wave in list_files_for_work[2]:
+                if index_non_shaer_wave == index_report:
+                    # получаем из первого верхнего колонтитула репорта неочищенные номер репорта, номер work order и дату
+                    dirty_rep_number = number_report_wo_date(report)
+                    # очищаем номер репорта, номер work order и дату от лишних (пробелы, новая строка) символов
+                    # dirty_rep_number[0] - данные из верхнего колонтитула для дальнейшей обработки
+                    # dirty_rep_number[1] - активатор "Особого колонтитула для первой страницы"
+                    clear_rep_number = clear_data_rep_number(dirty_rep_number[0], dirty_rep_number[1])
+                    # проверяем номер репорта в отчёте и имени файла
+                    # if clear_rep_number['report_number'] not in report:
+                    #     repp_numm = clear_rep_number['report_number']
+                    #     logger_with_user.info(f'Проверь номер отчёта {repp_numm} в файле (верхний колонтитул) и название самого файла. Возможна ошибка!')
+                    # получаем название БД с локацией (ON, OF, OS), методом контроля (UTT, PAUT), годом контроля (18, 19, 20, 21, 22, 23, 24, 25, 26)
+                    name_reports_db, break_break = reports_db(clear_rep_number['report_number'], break_break)
+                    # если невозможно получить название БД из номера репорта, то переходим к следующему репорту с записью в Log File
+                    # print('sw')
+                    # print(clear_rep_number['report_number'])
+                    # print(name_reports_db)
+                    # активатор, говорящий, что репорт это поперечное сканирование
+                    welding = False
+                    shaer_wave = True
+                    # желаем запись в БД
+                    write_in_master_nonreports(clear_rep_number['report_number'], name_reports_db, welding, shaer_wave)
+                    # переменная для перехода к следующему репорту, в случае выявленной ошибки
+                    break_break = False
+
         # получаем из первого верхнего колонтитула репорта неочищенные номер репорта, номер work order и дату
         dirty_rep_number = number_report_wo_date(report)
         # очищаем номер репорта, номер work order и дату от лишних (пробелы, новая строка) символов
@@ -127,7 +194,8 @@ def add_table():
             # проверяем есть ли столбец "Line", если нет, ищем его в первой таблице и добавляем в итоговый словарь
             if not check_is_line_in_data(pure_data_table):
                 pure_data_table = line_from_top_to_general_data(dirty_data_report, pure_data_table, clear_rep_number['report_number'])
-
+            if pure_data_table == True:
+                continue
             # ЗДЕСЬ ИТОГОВЫЕ ДАННЫЕ ДЛЯ ЗАПИСИ В БД - pure_data_table
 
             # определение номера unit
@@ -194,7 +262,8 @@ def add_table():
             # проверяем есть ли столбец "Line", если нет, ищем его в первой таблице и добавляем в итоговый словарь
             if not check_is_line_in_data(pure_data_table):
                 pure_data_table = line_from_top_to_general_data(dirty_data_report, pure_data_table, clear_rep_number['report_number'])
-
+            if pure_data_table == True:
+                continue
             # ЗДЕСЬ ИТОГОВЫЕ ДАННЫЕ ДЛЯ ЗАПИСИ В БД - pure_data_table
             # определение номера unit
             unit = unit_definition(pure_data_table, clear_rep_number['report_number'])

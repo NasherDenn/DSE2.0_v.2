@@ -6,6 +6,7 @@ import traceback
 import re
 from YKR.props import *
 from collections import Counter
+import sys
 
 # получаем имя машины с которой был осуществлён вход в программу
 uname = os.environ.get('USERNAME')
@@ -58,15 +59,27 @@ def get_dirty_data_report(path_to_report: str, report_number: str) -> dict:
 # выбор только файлов (репортов) в названиях которых есть "04-YKR"
 def change_only_ykr_reports(name_dir_docx: list) -> list:
     list_reports_for_work = []
-    for i in name_dir_docx:
-        if '04-YKR' in i:
+    not_loading_welding = []
+    not_loading_shaer_wave = []
+    for index, i in enumerate(name_dir_docx):
+        if 'WELDING' in i.upper():
+            not_loading_welding.append(index)
+        if 'SHAER WAVE' in i.upper():
+            not_loading_shaer_wave.append(index)
+        if '04-YKR' in i.upper():
             list_reports_for_work.append(i)
-    return list_reports_for_work
+
+    return list_reports_for_work, not_loading_welding, not_loading_shaer_wave
 
 
 # получаем номер репорта, номер work order и дату
 def number_report_wo_date(path_to_report: str) -> dict:
-    doc = Document(path_to_report)
+    try:
+        doc = Document(path_to_report)
+    except:
+        logger_with_user.warning(f'Не могу обработать верхний колонтитул в отчёте {path_to_report}!!!!\n'
+                                 f'{traceback.format_exc()}')
+        sys.exit()
     # получаем неочищенные данные из первого верхнего колонтитула
     head_paragraph = doc.sections[0].header.tables
     # активатор, если для первого листа установлен отдельный колонтитул
@@ -326,7 +339,7 @@ def converted_mesh(data_table_equal_row: dict, mesh_table: list, number_report: 
                     if 'LIN' in future_column.upper() or 'TAG' in future_column.upper() or 'CONT' in future_column.upper() \
                             or 'DRAW' in future_column.upper() or 'ISOM' in future_column.upper():
                         name_column = 'Line'
-                    elif 'DIA' in future_column.upper():
+                    elif 'DIA' in future_column.upper() or 'INCH' in future_column.upper():
                         name_column = 'Diameter'
                     elif 'NOM' in future_column.upper():
                         name_column = 'Nominal_thickness'
@@ -440,16 +453,16 @@ def shit_in_shit_out(finish_dirty_table: dict, method: str, number_report: str) 
         if 'paut' in method:
             try:
                 number_row_name_column = search_number_row_name_column(finish_dirty_table[index_table], method) + 1
+                # print(f'number_row_name_column {number_row_name_column}')
             except TypeError:
                 # если не найдено ни одно ключевое слово из возможных названий столбцов
                 logger_with_user.error(f'Не могу записать таблицу {index_table} репорта {number_report}. Проверь ключевые слова для поиска \n'
                                        f'{traceback.format_exc()}')
                 continue
-            # number_row_name_column = 1
             number_row_data = number_row_name_column + 1
-            # number_row_data = 2
         try:
             finish_name_column = cleaning_name_column(finish_dirty_table[index_table][number_row_name_column], method)
+            # print(finish_name_column)
         except IndexError:
             logger_with_user.error(f'Не могу записать таблицу {index_table} репорта {number_report} \n'
                                    f'Таблица будет записана не правильно или не полностью\n'
@@ -461,7 +474,13 @@ def shit_in_shit_out(finish_dirty_table: dict, method: str, number_report: str) 
             logger_with_user.error(f'Не могу записать таблицу {index_table} репорта {number_report} \n'
                                    f'Таблица будет записана не правильно или не полностью\n'
                                    f'{traceback.format_exc()}')
-        finish_data[index_table] = [finish_name_column, finish_value_table]
+        try:
+            finish_data[index_table] = [finish_name_column, finish_value_table]
+        except UnboundLocalError:
+            logger_with_user.error(f'Не могу записать таблицу {index_table} репорта {number_report} \n'
+                                   f'Таблица будет записана не правильно или не полностью\n'
+                                   f'{traceback.format_exc()}')
+    # print(finish_data)
     return finish_data
 
 
@@ -479,27 +498,30 @@ def search_number_row_name_column(table: list, method: str) -> int:
                         or 'INTRADOS' in column.upper() or 'O\'CLOCK' in column.upper() or 'S/N' in column.upper() or 'START' in column.upper() \
                         or 'END' in column.upper():
                     line_in_row = True
-                    continue
+                    # continue
                 if 'NOM' in column.upper():
                     nominal_in_row = True
-                    continue
+                    # continue
                 if line_in_row and nominal_in_row:
                     last_number_name_column = index_row
                     return last_number_name_column
     if method == 'paut':
+        # print('it\'s paut')
         for index_row, row in enumerate(table):
             # наличие в строке слова 'Line'
             line_in_row = False
             # наличие в строке слова 'Nominal thickness'
             nominal_in_row = False
+            # print(row)
             for column in row:
                 # дополнить перебор возможными словами
-                if 'END' in column.upper() or 'AVERAGE' in column.upper():
+                if 'LIN' in column.upper() or 'CONT' in column.upper() or 'END' in column.upper() or 'AVERAGE' in column.upper():
                     line_in_row = True
                 if 'NOM' in column.upper():
                     nominal_in_row = True
             if line_in_row and nominal_in_row:
                 last_number_name_column = index_row
+                # print(f'last_number_name_column {last_number_name_column}')
                 return last_number_name_column
 
 
@@ -518,6 +540,7 @@ def cleaning_name_column(list_dirty_name_column: list, method: str) -> list:
             clock = True
         if clock and num:
             new_column = re.sub('\\s+', '', column)
+            new_column = new_column.replace("'", '')
             list_dirty_name_column.pop(i)
             # вставляем на удалённое место новое допустимое название столбца
             list_dirty_name_column.insert(i, new_column)
@@ -600,13 +623,28 @@ def cleaning_name_column(list_dirty_name_column: list, method: str) -> list:
 def cleaning_value_table(list_dirty_value_table: list) -> list:
     for ii, row in enumerate(list_dirty_value_table):
         for i, column in enumerate(row):
-            new_column = re.sub(',', '.', column)
-            new_column = re.sub('\'+|”|"|’’', '', new_column)
-            new_column = re.sub('\\s+', '_', new_column)
-            if column == '':
-                new_column = re.sub('', '-', column)
+            # new_column = re.sub(',', '.', column)
+            # new_column = re.sub('\'+|”|"|’’', '', new_column)
+            # new_column = re.sub('\s+', '_', new_column)
+            # new_column = re.sub(':', '_', new_column)
+            # new_column = re.sub('÷', '_', new_column)
+            # new_column = re.sub('/', '_', new_column)
+            new_column = column
+            if new_column == '':
+                # new_column = re.sub('', '-', column)
+                new_column = re.sub('', '-', new_column)
             elif new_column == '_':
+                # new_column = re.sub('_', '-', column)
                 new_column = re.sub('_', '-', new_column)
+            else:
+
+                new_column = re.sub(',', '.', new_column)
+                new_column = re.sub('\'+|”|"|’’', '', new_column)
+                new_column = re.sub('\s+', '_', new_column)
+                new_column = re.sub(':', '_', new_column)
+                new_column = re.sub('÷', '_', new_column)
+                new_column = re.sub('/', '_', new_column)
+
             row.pop(i)
             row.insert(i, new_column)
     return list_dirty_value_table
@@ -630,6 +668,7 @@ def duplicate_name_column(pure_data_table: dict) -> dict:
                         else:
                             pure_data_table[number_table][0][index_column] = f'{column}_{index}'
                             index += 1
+    # print(f'duplicat {pure_data_table}')
     return pure_data_table
 
 
@@ -660,6 +699,7 @@ def check_drawing_in_line(pure_data_table: dict) -> dict:
         # добавляем в списке названий столбцов новый столбец "Drawing" на второе место
         if add_column_drawing:
             pure_data_table[number_table][0].insert(1, 'Drawing')
+    # print(f'pure_data_table {pure_data_table}')
     return pure_data_table
 
 
@@ -685,7 +725,8 @@ def check_is_line_in_data(pure_data_table: dict) -> bool:
 # ищем 'Line' в первой таблице и добавляем в итоговый словарь
 def line_from_top_to_general_data(dirty_data_report: dict, pure_data_table: dict, report_number: str) -> dict:
     stop = True
-    # находим номер строки в которой есть ключевые слова 'Control', 'Object', 'Line', 'Tag'
+    stop_stop = False
+    # находим номер строки в которой есть ключевые слова 'Control', 'Object', 'Tag'
     if stop:
         for number_dirty_table in dirty_data_report.keys():
             if stop:
@@ -714,65 +755,77 @@ def line_from_top_to_general_data(dirty_data_report: dict, pure_data_table: dict
                 logger_with_user.error(f'В репорте {report_number} таблице {number_dirty_table} какая-то ошибка! А именно:\n'
                                        f'{traceback.format_exc()}')
     # если это линия
-    if re.findall(r'[AАBВCСDHНMМ]'
-                  r'\d{1,2}'
-                  r'-{1,2}?\s?'
-                  r'\d{3,4}'
-                  r'-?\s?'
-                  r'\D{2}'
-                  r'-?\s?'
-                  r'\d{3}\D?'
-                  r'-?\s?'
-                  r'\d*'
-                  r'-?\s?'
-                  r'\D*\d*'
-                  r'-?\s?'
-                  r'\D*', line_or_drawing):
-        # если количество "-" не больше трёх, то это номер сосуда
-        if not line_or_drawing.count('-') > 3:
-            line = re.findall(r'[AАBВCСDHНMМ]'
-                              r'\d{1,2}'
-                              r'-{1,2}?\s?'
-                              r'\d{3,4}'
-                              r'-?\s?'
-                              r'\D{2}'
-                              r'-?\s?'
-                              r'\d{3}\D?', line_or_drawing)
-        else:
-            line = re.findall(r'[AАBВCСDHНMМ]'
-                              r'\d{1,2}'
-                              r'-{1,2}?\s?'
-                              r'\d{3,4}'
-                              r'-?\s?'
-                              r'\D{2}'
-                              r'-?\s?'
-                              r'\d{3}\D?'
-                              r'-?\s?'
-                              r'\d*'
-                              r'-?\s?'
-                              r'\D*\d*'
-                              r'-?\s?'
-                              r'\D*', line_or_drawing)
-        line = line[0].replace('\n', '')
-        # вставляем на первое место номер линии
-        for number_table in pure_data_table.keys():
-            # в названия столбцов
-            pure_data_table[number_table][0].insert(0, 'Line')
-            # в данные
-            for index, row in enumerate(pure_data_table[number_table][1]):
-                pure_data_table[number_table][1][index].insert(0, line)
-    # если это чертёж
-    if re.findall(r'KE01-.+|TR01-.+', line_or_drawing):
-        drawing = re.findall(r'KE01-.+|TR01-.+', line_or_drawing)
-        drawing = drawing[0].replace('\n', '')
-        # вставляем на второе место номер чертежа
-        for number_table in pure_data_table.keys():
-            # в названия столбцов
-            pure_data_table[number_table][0].insert(1, 'Drawing')
-            # в данные
-            for index, row in enumerate(pure_data_table[number_table][1]):
-                pure_data_table[number_table][1][index].insert(1, drawing)
-    return pure_data_table
+    try:
+        if re.findall(r'[AАBВCСDHНMМ]'
+                      r'\d{1,2}'
+                      r'-{1,2}?\s?'
+                      r'\d{3,4}'
+                      r'-?\s?'
+                      r'\D{2}'
+                      r'-?\s?'
+                      r'\d{3}\D?'
+                      r'-?\s?'
+                      r'\d*'
+                      r'-?\s?'
+                      r'\D*\d*'
+                      r'-?\s?'
+                      r'\D*', line_or_drawing):
+            # если количество "-" не больше трёх, то это номер сосуда
+            if not line_or_drawing.count('-') > 3:
+                line = re.findall(r'[AАBВCСDHНMМ]'
+                                  r'\d{1,2}'
+                                  r'-{1,2}?\s?'
+                                  r'\d{3,4}'
+                                  r'-?\s?'
+                                  r'\D{2}'
+                                  r'-?\s?'
+                                  r'\d{3}\D?', line_or_drawing)
+            else:
+                line = re.findall(r'[AАBВCСDHНMМ]'
+                                  r'\d{1,2}'
+                                  r'-{1,2}?\s?'
+                                  r'\d{3,4}'
+                                  r'-?\s?'
+                                  r'\D{2}'
+                                  r'-?\s?'
+                                  r'\d{3}\D?'
+                                  r'-?\s?'
+                                  r'\d*'
+                                  r'-?\s?'
+                                  r'\D*\d*'
+                                  r'-?\s?'
+                                  r'\D*', line_or_drawing)
+            line = line[0].replace('\n', '')
+            # вставляем на первое место номер линии
+            for number_table in pure_data_table.keys():
+                # в названия столбцов
+                pure_data_table[number_table][0].insert(0, 'Line')
+                # в данные
+                for index, row in enumerate(pure_data_table[number_table][1]):
+                    pure_data_table[number_table][1][index].insert(0, line)
+    except UnboundLocalError:
+        logger_with_user.error(f'В репорте {report_number} таблице {number_dirty_table} какая-то ошибка! А именно:\n'
+                               f'{traceback.format_exc()}')
+        stop_stop = True
+        return stop_stop
+    try:
+        # если это чертёж
+        if re.findall(r'KE01-.+|TR01-.+', line_or_drawing):
+            drawing = re.findall(r'KE01-.+|TR01-.+', line_or_drawing)
+            drawing = drawing[0].replace('\n', '')
+            # вставляем на второе место номер чертежа
+            for number_table in pure_data_table.keys():
+                # в названия столбцов
+                pure_data_table[number_table][0].insert(1, 'Drawing')
+                # в данные
+                for index, row in enumerate(pure_data_table[number_table][1]):
+                    pure_data_table[number_table][1][index].insert(1, drawing)
+        return pure_data_table
+    except UnboundLocalError:
+        logger_with_user.error(f'В репорте {report_number} таблице {number_dirty_table} какая-то ошибка! А именно:\n'
+                               f'{traceback.format_exc()}')
+        stop_stop = True
+        return stop_stop
 
 
 # удаляем Annex и Note в конце

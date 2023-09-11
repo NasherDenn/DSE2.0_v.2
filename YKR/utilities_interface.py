@@ -390,7 +390,7 @@ def output_data_master(data_filter_for_search: list):
                 sheet_for_print.cell(row=i + 2, column=j + 1).border = Border(top=thin, left=thin, right=thin, bottom=thin)
 
         # путь сохранения в папке с программой
-        new_path_for_print_statistic = os.path.abspath(os.getcwd()) + '\\Statistic for print\\' + date_time_for_print[:7] + '\\'
+        new_path_for_print_statistic = os.path.abspath(os.getcwd()) + '\\Print\\Statistic for print\\' + date_time_for_print[:7] + '\\'
         if not os.path.exists(new_path_for_print_statistic):
             # то создаём эту папку
             os.makedirs(new_path_for_print_statistic)

@@ -268,8 +268,7 @@ font_button_faq = QFont()
 font_button_faq.setFamily(u"Arial")
 font_button_faq.setPointSize(12)
 button_faq.setFont(font_button_faq)
-# временно, пока не напишу
-# button_faq.setEnabled(False)
+
 
 # создаём однострочное поле для ввода логина
 line_login = QLineEdit(window)
@@ -287,7 +286,7 @@ line_login.setFont(font_line_login)
 line_login.setEchoMode(QLineEdit.Normal)
 # устанавливаем исчезающий текст
 line_login.setPlaceholderText('login')
-line_login.setText('admin')
+line_login.setText('')
 
 # создаём однострочное поле для ввода пароля
 line_password = QLineEdit(window)
@@ -305,7 +304,7 @@ line_password.setFont(font_line_password)
 line_password.setEchoMode(QLineEdit.Password)
 # устанавливаем исчезающий текст
 line_password.setPlaceholderText('password')
-line_password.setText('admin')
+line_password.setText('')
 
 # устанавливаем надпись "Логин"
 label_login = QLabel('Логин', window)
@@ -487,19 +486,19 @@ button_statistic_master.setDisabled(True)
 label_ykr = QLabel(window)
 label_ykr.setObjectName(u"Rutledge")
 label_ykr.setGeometry(QRect(990, 10, 111, 121))
-label_ykr.setPixmap(QPixmap(u"logo_ykr.png"))
+label_ykr.setPixmap(QPixmap(f'{os.path.abspath(os.getcwd())}\\Images\\logo_ykr.png'))
 
 # вставляем картинку NCA
 label_nca = QLabel(window)
 label_nca.setObjectName(u"Rutledge")
 label_nca.setGeometry(QRect(1120, 10, 111, 121))
-label_nca.setPixmap(QPixmap(u"logo_nca.png"))
+label_nca.setPixmap(QPixmap(f'{os.path.abspath(os.getcwd())}\\Images\\logo_nca.png'))
 
 # вставляем картинку NCOC
 label_ncoc = QLabel(window)
 label_ncoc.setObjectName(u"Rutledge")
 label_ncoc.setGeometry(QRect(1250, 13, 111, 115))
-label_ncoc.setPixmap(QPixmap(u"logo_ncoc.png"))
+label_ncoc.setPixmap(QPixmap(f'{os.path.abspath(os.getcwd())}\\Images\\logo_ncoc.png'))
 
 # общая область с боковой полосой прокрутки
 scroll_area = QScrollArea(window)
@@ -686,7 +685,7 @@ def log_in():
         logger_with_user.error(
             'Попытка авторизоваться - Не заполнено поле "Пароль", указан логин - "{}"'.format(line_login.text()))
     # если правильно введён логин и пароль
-    elif line_login.text() == 'admin' and line_password.text() == 'admin':
+    elif line_login.text() == 'admin' and line_password.text() == '0751':
         # делаем активными кнопки "Добавить", "Удалить", "Выйти", "Сводные данные", "Верификация"
         button_delete.setDisabled(False)
         button_log_out.setDisabled(False)
@@ -949,7 +948,7 @@ def search():
                         # путь, где лежат чертежи для репорта
                         path_drawing = f'{os.path.abspath(os.getcwd())}\\Drawings\\{dir_drawings_db}\\{dir_with_drawing}'
                         # список чертежей для данного репорта
-                        list_drawing_button = os.listdir(path_drawing)
+                        # list_drawing_button = os.listdir(path_drawing)
                         # print(list_drawing_button)
                         # print(count_drawing_button)
                         # выставляем координату от левого края
@@ -1340,7 +1339,7 @@ def print_report():
                         # устанавливаем ширину заполненных столбцов по их содержимому
                         sheet_for_print.column_dimensions[ascii_range[collumn]].width = max_length_column + 2
                 # путь сохранения в папке с программой
-                new_path_for_print = os.path.abspath(os.getcwd()) + '\\Report for print\\' + date_time_for_print[:7] + '\\'
+                new_path_for_print = os.path.abspath(os.getcwd()) + '\\Print\\Report for print\\' + date_time_for_print[:7] + '\\'
                 if not os.path.exists(new_path_for_print):
                     # то создаём эту папку
                     os.makedirs(new_path_for_print)
@@ -1445,7 +1444,7 @@ class Loading():
         self.load = QLabel(scroll_area)
         self.load.setGeometry(0, 0, 1660, 630)
         self.load.setAlignment(Qt.AlignCenter)
-        self.load.setPixmap(QPixmap(u"loading.png"))
+        self.load.setPixmap(QPixmap(f'{os.path.abspath(os.getcwd())}\\Images\\loading.png'))
 
     # отображаем "Loading"
     def start_loading(self):
@@ -1463,7 +1462,7 @@ class Searching(Loading):
         self.load = QLabel(scroll_area)
         self.load.setGeometry(0, 0, 1660, 630)
         self.load.setAlignment(Qt.AlignCenter)
-        self.load.setPixmap(QPixmap(u"searching.png"))
+        self.load.setPixmap(QPixmap(f'{os.path.abspath(os.getcwd())}\\Images\\searching.png'))
 
         super().start_loading()
         super().stop_loading()
@@ -1475,7 +1474,7 @@ class Verification(Searching):
         self.load = QLabel(scroll_area)
         self.load.setGeometry(0, 0, 1660, 630)
         self.load.setAlignment(Qt.AlignCenter)
-        self.load.setPixmap(QPixmap(u"verification.png"))
+        self.load.setPixmap(QPixmap(f'{os.path.abspath(os.getcwd())}\\Images\\verification.png'))
 
         super().start_loading()
         super().stop_loading()
@@ -1540,14 +1539,14 @@ def unfreeze_button():
         line_search_number_report.setDisabled(False)
         checkBox_on.setDisabled(False)
         checkBox_os.setDisabled(False)
-        checkBox_of.setDisabled(False)
+        # checkBox_of.setDisabled(False)
         checkBox_utt.setDisabled(False)
         checkBox_paut.setDisabled(False)
-        checkBox_2023.setDisabled(False)
+        # checkBox_2023.setDisabled(False)
         checkBox_2022.setDisabled(False)
         checkBox_2021.setDisabled(False)
-        checkBox_2020.setDisabled(False)
-        checkBox_2019.setDisabled(False)
+        # checkBox_2020.setDisabled(False)
+        # checkBox_2019.setDisabled(False)
     # если пользователь НЕ авторизовался
     else:
         button_search.setDisabled(False)
@@ -1567,14 +1566,14 @@ def unfreeze_button():
         line_search_number_report.setDisabled(False)
         checkBox_on.setDisabled(False)
         checkBox_os.setDisabled(False)
-        checkBox_of.setDisabled(False)
+        # checkBox_of.setDisabled(False)
         checkBox_utt.setDisabled(False)
         checkBox_paut.setDisabled(False)
-        checkBox_2023.setDisabled(False)
+        # checkBox_2023.setDisabled(False)
         checkBox_2022.setDisabled(False)
         checkBox_2021.setDisabled(False)
-        checkBox_2020.setDisabled(False)
-        checkBox_2019.setDisabled(False)
+        # checkBox_2020.setDisabled(False)
+        # checkBox_2019.setDisabled(False)
 
 
 # создание окна выбора опций верификаций
@@ -1596,64 +1595,75 @@ def verification_data():
     # создаём окно с выбором опций
     ver_window = QDialog()
     ver_window.setWindowTitle('Verification')
-    ver_window.setFixedSize(805, 256)
+    ver_window.setFixedSize(805, 291)
 
     # создаем checkbox с опциями
     checkbox_all_reports_loading = QCheckBox(ver_window)
-    checkbox_all_reports_loading.setObjectName(u"checkBox_all_reports_loading")
+    checkbox_all_reports_loading.setObjectName(u"checkbox_checkbox_all_reports_loading")
     checkbox_all_reports_loading.setGeometry(QRect(20, 20, 461, 28))
+
+    # создаем checkbox с опциями
+    checkbox_all_tables_loading = QCheckBox(ver_window)
+    checkbox_all_tables_loading.setObjectName(u"checkbox_all_tables_loading")
+    checkbox_all_tables_loading.setGeometry(QRect(20, 53, 461, 28))
 
     # создаем checkbox с опциями
     checkbox_duplicate_report = QCheckBox(ver_window)
     checkbox_duplicate_report.setObjectName(u"checkbox_duplicate_report")
-    checkbox_duplicate_report.setGeometry(QRect(20, 53, 461, 28))
+    checkbox_duplicate_report.setGeometry(QRect(20, 86, 765, 28))
 
     # создаем checkbox с опциями
     checkbox_column_in_the_table = QCheckBox(ver_window)
     checkbox_column_in_the_table.setObjectName(u"checkbox_column_in_the_table")
-    checkbox_column_in_the_table.setGeometry(QRect(20, 86, 765, 28))
+    checkbox_column_in_the_table.setGeometry(QRect(20, 119, 765, 28))
 
     # создаем checkbox с опциями
     checkbox_drawings_uploaded = QCheckBox(ver_window)
     checkbox_drawings_uploaded.setObjectName(u"checkbox_drawings_uploaded")
-    checkbox_drawings_uploaded.setGeometry(QRect(20, 119, 321, 28))
+    checkbox_drawings_uploaded.setGeometry(QRect(20, 152, 321, 28))
+    checkbox_drawings_uploaded.setDisabled(True)
+    checkbox_drawings_uploaded.setCheckable(False)
 
     # создаем checkbox с опциями
     checkbox_unit_column = QCheckBox(ver_window)
     checkbox_unit_column.setObjectName(u"checkbox_unit_column")
-    checkbox_unit_column.setGeometry(QRect(20, 152, 601, 28))
+    checkbox_unit_column.setGeometry(QRect(20, 185, 765, 28))
 
     # указываем текст чек-боксов
     if button_ru.isChecked():
         button_start_ver = QPushButton('Начать', ver_window)
-        checkbox_all_reports_loading.setText('Все ли таблицы в отчётах загружены?')
+        checkbox_all_reports_loading.setText('Все ли отчёты загружены?')
+        checkbox_all_tables_loading.setText('Все ли таблицы в отчётах загружены?')
         checkbox_duplicate_report.setText('Есть ли повторяющиеся номера отчётов?')
         checkbox_column_in_the_table.setText('Есть ли в таблицах столбцы "Line" и "Drawing" и все ли они заполнены?')
         checkbox_drawings_uploaded.setText('Все ли чертежи загружены?')
-        checkbox_unit_column.setText('Верно ли заполнен столбец "Unit" в сводных данных?')
+        checkbox_unit_column.setText('Верно ли заполнен столбец "Unit", "Report Date" в сводных данных?')
     if button_en.isChecked():
         button_start_ver = QPushButton('Begin', ver_window)
-        checkbox_all_reports_loading.setText('Are all tables in reports loaded?')
+        checkbox_all_reports_loading.setText('Are all reports uploaded?')
+        checkbox_all_tables_loading.setText('Are all tables in reports loaded?')
         checkbox_duplicate_report.setText('Are there duplicate report numbers?')
         checkbox_column_in_the_table.setText('Are there "Line" and "Drawing" columns in the tables and are they all filled?')
         checkbox_drawings_uploaded.setText('Are all drawings uploaded?')
-        checkbox_unit_column.setText('Is the "Unit" column filled in correctly in the summary?')
+        checkbox_unit_column.setText('Is the "Unit", "Report Date" column filled in correctly in the summary?')
     if button_kz.isChecked():
         button_start_ver = QPushButton('БАСТА', ver_window)
-        checkbox_all_reports_loading.setText('Есептердегі барлық кестелер жүктелді ме?')
+        checkbox_all_reports_loading.setText('Барлық есептер жүктелді ме?')
+        checkbox_all_tables_loading.setText('Есептердегі барлық кестелер жүктелді ме?')
         checkbox_duplicate_report.setText('Қайталанатын есеп нөмірлері бар ма?')
         checkbox_column_in_the_table.setText('Кестелерде «Сызық» және «Сызу» бағандары бар ма және олардың барлығы толтырылған ба?')
         checkbox_drawings_uploaded.setText('Барлық сызбалар жүктелді ме?')
-        checkbox_unit_column.setText('Қорытындыда «Бірлік» бағанасы дұрыс толтырылған ба?')
+        checkbox_unit_column.setText('Қорытындыда «Бірлік», «Есеп беру күні» бағанасы дұрыс толтырылған ба?')
 
     checkbox_all_reports_loading.setChecked(True)
+    checkbox_all_tables_loading.setChecked(True)
     checkbox_duplicate_report.setChecked(True)
     checkbox_column_in_the_table.setChecked(True)
     checkbox_drawings_uploaded.setChecked(True)
     checkbox_unit_column.setChecked(True)
 
     # задаём положение и форму кнопки начала верификации
-    button_start_ver.setGeometry(340, 195, 90, 41)
+    button_start_ver.setGeometry(340, 230, 90, 41)
     # присваиваем уникальное объектное имя кнопке "Начать"
     button_start_ver.setObjectName(u"pushButton_begin")
     # задаём параметры стиля и оформления кнопки "Начать"
@@ -1661,11 +1671,16 @@ def verification_data():
     font_button_start_ver.setFamily(u"Arial")
     font_button_start_ver.setPointSize(14)
     button_start_ver.setFont(font_button_start_ver)
-    # задаём параметры стиля и оформления check_box 'Все ли таблицы в репортах загружены?'
+    # задаём параметры стиля и оформления check_box 'Все ли отчёты загружены?'
     font_checkbox_all_reports_loading = QFont()
     font_checkbox_all_reports_loading.setFamily(u"Arial")
     font_checkbox_all_reports_loading.setPointSize(13)
     checkbox_all_reports_loading.setFont(font_checkbox_all_reports_loading)
+    # задаём параметры стиля и оформления check_box 'Все ли таблицы в репортах загружены?'
+    font_checkbox_all_tables_loading = QFont()
+    font_checkbox_all_tables_loading.setFamily(u"Arial")
+    font_checkbox_all_tables_loading.setPointSize(13)
+    checkbox_all_tables_loading.setFont(font_checkbox_all_tables_loading)
     # задаём параметры стиля и оформления check_box 'Есть повторяющиеся номера отчётов?'
     font_checkbox_duplicate_report = QFont()
     font_checkbox_duplicate_report.setFamily(u"Arial")
@@ -1699,6 +1714,9 @@ def verification_data():
         all_reports_loading = False
         if checkbox_all_reports_loading.isChecked():
             all_reports_loading = True
+        all_tables_loading = False
+        if checkbox_all_tables_loading.isChecked():
+            all_tables_loading = True
         duplicate_report = False
         if checkbox_duplicate_report.isChecked():
             duplicate_report = True
@@ -1713,7 +1731,7 @@ def verification_data():
             unit_column = True
 
         # запускаем саму верификацию
-        ver(define_db_for_search(data_filter_for_search), all_reports_loading, duplicate_report, column_in_the_table, drawings_uploaded, unit_column)
+        ver(define_db_for_search(data_filter_for_search), all_reports_loading, all_tables_loading, duplicate_report, column_in_the_table, drawings_uploaded, unit_column)
         unfreeze_button()
         verificat.stop_loading()
         window.repaint()

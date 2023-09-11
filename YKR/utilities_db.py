@@ -1,16 +1,20 @@
 import logging
-import os
+# import os
 import shutil
 import sqlite3
 import traceback
 import zipfile
 import aspose.words as aw
+import openpyxl
 from PyQt5.QtWidgets import *
 from YKR.props import *
-import PIL
+# import PIL
 from PIL import Image
 import imagehash
 import re
+# from collections import defaultdict
+import numpy as np
+import copy
 
 # получаем имя машины с которой был осуществлён вход в программу
 uname = os.environ.get('USERNAME')
@@ -51,8 +55,8 @@ def write_report_in_db(clear_report: dict, number_report: dict, name_db: str, fi
                 conn.commit()
             except sqlite3.OperationalError:
                 logger_with_user.error(f'В репорте {number_report["report_number"]} таблице {name_table_for_write} какая-то ошибка! А именно:\n'
-                                       f'{number_report["report_number"]}\n'
                                        f'{name_table_for_write}\n'
+                                       f'{rep}\n'
                                        f'{traceback.format_exc()}')
                 continue
             for values in clear_report[number_table][1]:
@@ -86,9 +90,7 @@ def write_rep_number_in_master(number_report: dict, count_table: list, name_tabl
     if not cur.execute('''SELECT * FROM sqlite_master WHERE type="table" AND name="master"''').fetchall():
         cur.execute('''CREATE TABLE IF NOT EXISTS master (unit, report_number, report_date, work_order, one_of, list_table_report)''')
         conn.commit()
-        # создаём индекс
-        # conn.commit()
-    # если в master нет такого номера репорта, то записываем его первым с значение one_of (1/...) и номером таблицы
+    # если в master нет такого номера репорта, то записываем его первым со значением one_of (1/...) и номером таблицы
     if not cur.execute('''SELECT * FROM master WHERE report_number="{}"'''.format(number_report['report_number'])).fetchone():
         try:
             cur.execute('INSERT INTO master VALUES (?, ?, ?, ?, ?, ?)',
@@ -141,6 +143,31 @@ def write_rep_number_in_master(number_report: dict, count_table: list, name_tabl
     extract_drawing(name_db, report, number_report['report_number'])
 
 
+# запись в таблицу master отчёты по сварке и поперечном сканировании
+def write_in_master_nonreports(report_number: str, name_db: str, welding: bool, shaer_wave: bool):
+    # подключаемся к БД
+    conn = sqlite3.connect(f'{os.path.abspath(os.getcwd())}\\DB\\{name_db}')
+    cur = conn.cursor()
+    # если в master нет такого номера репорта, то записываем его первым со значением one_of (1/...) и номером таблицы
+    if not cur.execute('''SELECT * FROM master WHERE report_number="{}"'''.format(report_number)).fetchone():
+        if welding:
+            msg = 'WELDING'
+        if shaer_wave:
+            msg = 'SHAER WAVE'
+        try:
+            cur.execute('INSERT INTO master VALUES (?, ?, ?, ?, ?, ?)',
+                        ('-',
+                         report_number,
+                         '-',
+                         '-',
+                         '-',
+                         msg))
+            conn.commit()
+        except:
+            logger_with_user.error(f'Ошибка в {report_number}:\n {traceback.format_exc()}')
+    cur.close()
+
+
 # сохраняем чертежи из репорта
 def extract_drawing(name_db, report, number_report):
     # определяем название папки для чертежей по номеру репорта
@@ -152,21 +179,21 @@ def extract_drawing(name_db, report, number_report):
         # сохраняем в неё фигуры с изображениями из репорта
         doc = aw.Document(report)
         shapes = doc.get_child_nodes(aw.NodeType.SHAPE, True)
-        imageIndex = 0
+        image_index = 0
         for shape in shapes:
             shape = shape.as_shape()
             if shape.has_image:
-                imageFileName = f'{os.path.abspath(os.getcwd())}\\Drawings\\{name_folder}\\{drawing_number_report}\\Image.ExportImages.{imageIndex}_{aw.FileFormatUtil.image_type_to_extension(shape.image_data.image_type)}'
-                shape.image_data.save(imageFileName)
-                imageIndex += 1
-        # # сохраняем в неё изображения из репорта
+                image_file_name = f'{os.path.abspath(os.getcwd())}\\Drawings\\{name_folder}\\{drawing_number_report}\\Image.ExportImages.{image_index}_{aw.FileFormatUtil.image_type_to_extension(shape.image_data.image_type)}'
+                shape.image_data.save(image_file_name)
+                image_index += 1
+        # сохраняем в неё изображения из репорта
         archive = zipfile.ZipFile(report)
         for file in archive.filelist:
             new_path = f'{os.path.abspath(os.getcwd())}\\Drawings\\{name_folder}\\{drawing_number_report}'.replace('\\', '/')
             if file.filename.startswith('word/media/'):
                 archive.extract(file, path=new_path)
-    # удаляем ненужные изображения
-    delete_unnecessary_drawing(f'{os.path.abspath(os.getcwd())}\\Drawings\\{name_folder}\\{drawing_number_report}')
+        # удаляем ненужные изображения
+        delete_unnecessary_drawing(f'{os.path.abspath(os.getcwd())}\\Drawings\\{name_folder}\\{drawing_number_report}')
 
 
 # удаляем ненужные изображения
@@ -180,7 +207,7 @@ def delete_unnecessary_drawing(path):
         shutil.rmtree(f'{path}\\word\\media')
         shutil.rmtree(f'{path}\\word')
 
-    # удаляем изображения размером менее 50 кБ
+    # удаляем изображения размером менее 50 кБ и файлы, которые не являются изображениями
     files_image = os.listdir(f'{path}\\')
     for image in files_image:
         # если файл не PNG, JPEG, BMP
@@ -192,30 +219,81 @@ def delete_unnecessary_drawing(path):
         if os.path.getsize(f'{path}\\{image}') < 50000:
             os.remove(f'{path}\\{image}')
 
-    # удаляем стандартные изображения (папка "wrong drawings"), которые не являются чертежами
-    new_files_image = os.listdir(f'{path}\\')
-    for new_image in new_files_image:
-        stop_remove = False
-        for wrong_image in os.listdir(f'{os.path.abspath(os.getcwd())}\\Drawings\\wrong drawings'):
-            path_image = f'{path}\\{new_image}'
-            if not stop_remove:
-                if imagehash.dhash(Image.open(path_image)) == imagehash.dhash(
-                        Image.open(f'{os.path.abspath(os.getcwd())}\\Drawings\\wrong drawings\\{wrong_image}')):
-                    os.remove(f'{path}/{new_image}')
-                    stop_remove = True
+    # путь к проверяемой папке с номером репорта, где хранятся изображения
+    remaining_files_image = os.listdir(f'{path}\\')
+    # удаляем дубликаты
+    remove_duplicate = DuplicateRemover(path)
+    remove_duplicate.find_duplicates()
+    # удаляем похожие неверные изображения
+    for wrong_image in os.listdir(f'{os.path.abspath(os.getcwd())}\\Drawings\\wrong drawings'):
+        remove_duplicate.find_similar(f'{os.path.abspath(os.getcwd())}\\Drawings\\wrong drawings\\{wrong_image}')
 
-    # удаляем повторяющиеся изображения
-    # список порядковых номеров повторяющихся изображений
-    index_image_for_delete = []
-    # список оставшихся изображений
-    files_image_for_delete = os.listdir(f'{path}\\')
-    for index_image in range(len(files_image_for_delete) - 1):
-        if imagehash.dhash(Image.open(f'{path}\\{files_image_for_delete[index_image]}')) == imagehash.dhash(
-                Image.open(f'{path}\\{files_image_for_delete[index_image + 1]}')):
-            index_image_for_delete.append(index_image)
-    # перебираем и удаляем повторяющиеся изображения
-    for index in index_image_for_delete:
-        os.remove(f'{path}\\{files_image_for_delete[index]}')
+
+# класс для удаления дубликатов изображений
+class DuplicateRemover:
+    def __init__(self, dirname, hash_size=8):
+        self.dirname = dirname
+        self.hash_size = hash_size
+
+    def find_duplicates(self):
+        file_names = os.listdir(self.dirname)
+        hashes = {}
+        duplicates = []
+        for image in file_names:
+            with Image.open(os.path.join(self.dirname, image)) as img:
+                temp_hash = imagehash.average_hash(img, self.hash_size)
+                if temp_hash in hashes:
+                    duplicates.append(image)
+                else:
+                    hashes[temp_hash] = image
+        if len(duplicates) != 0:
+            for duplicate in duplicates:
+                os.remove(os.path.join(self.dirname, duplicate))
+
+    def find_similar(self, location, similarity=73):
+        file_names = os.listdir(self.dirname)
+        threshold = 1 - similarity / 100
+        diff_limit = int(threshold * (self.hash_size ** 2))
+
+        with Image.open(location) as img:
+            hash1 = imagehash.average_hash(img, self.hash_size).hash
+
+        for image in file_names:
+            with Image.open(os.path.join(self.dirname, image)) as img:
+                hash2 = imagehash.average_hash(img, self.hash_size).hash
+
+                if np.count_nonzero(hash1 != hash2) <= diff_limit:
+                    os.remove(os.path.join(self.dirname, image))
+
+
+
+
+    # # удаляем стандартные изображения (папка "wrong drawings"), которые не являются чертежами
+    # new_files_image = os.listdir(f'{path}\\')
+    # for new_image in new_files_image:
+    #     stop_remove = False
+    #     for wrong_image in os.listdir(f'{os.path.abspath(os.getcwd())}\\Drawings\\wrong drawings'):
+    #         path_image = f'{path}\\{new_image}'
+    #         if not stop_remove:
+    #             if imagehash.dhash(Image.open(path_image)) == imagehash.dhash(
+    #                     Image.open(f'{os.path.abspath(os.getcwd())}\\Drawings\\wrong drawings\\{wrong_image}')):
+    #                 os.remove(f'{path}/{new_image}')
+    #                 stop_remove = True
+    #
+    # # удаляем повторяющиеся изображения
+    # # список порядковых номеров повторяющихся изображений
+    # index_image_for_delete = []
+    # # список оставшихся изображений
+    # files_image_for_delete = os.listdir(f'{path}\\')
+    # # print(files_image_for_delete)
+    # for index_image in range(len(files_image_for_delete) - 1):
+    #     if imagehash.dhash(Image.open(f'{path}\\{files_image_for_delete[index_image]}')) == imagehash.dhash(
+    #             Image.open(f'{path}\\{files_image_for_delete[index_image + 1]}')):
+    #         index_image_for_delete.append(index_image)
+    # # перебираем и удаляем повторяющиеся изображения
+    # # print(index_image_for_delete)
+    # for index in index_image_for_delete:
+    #     os.remove(f'{path}\\{files_image_for_delete[index]}')
 
 
 # ищем данные в БД
@@ -464,24 +542,25 @@ def update_master_by_delete(table, db):
 
 
 # верификация данных
-def ver(list_db: list, all_reports_loading, duplicate_report, column_in_the_table, drawings_uploaded, unit_column):
+def ver(list_db: list, all_reports_loading, all_tables_loading, duplicate_report, column_in_the_table, drawings_uploaded, unit_column):
     logger_with_user.info(f'Начало верификации данных\n')
     for db in list_db:
         # подключаемся в базе данных
         conn = sqlite3.connect(f'{os.path.abspath(os.getcwd())}\\DB\\{db}')
         cur = conn.cursor()
-        list_report_number_one_of = cur.execute('''SELECT report_number, one_of, unit FROM master''').fetchall()
+        list_report_number_one_of = cur.execute('''SELECT report_number, one_of, unit, report_date, list_table_report FROM master''').fetchall()
 
         # все ли таблицы в репортах загружены
-        if all_reports_loading:
+        if all_tables_loading:
             for one_of in list_report_number_one_of:
-                index_slash = one_of[1].index('/')
-                one = one_of[1][:index_slash]
-                of = one_of[1][index_slash + 1:]
-                if int(one) < int(of):
-                    logger_with_user.info(f'Не все таблицы {one}/{of} загружены в репорте {one_of[0]}')
-                if int(one) > int(of):
-                    logger_with_user.info(f'{one}/{of} - Такого не может быть {one_of[0]}')
+                if 'WELDING' not in one_of[4] and 'SHAER WAVE' not in one_of[4]:
+                    index_slash = one_of[1].index('/')
+                    one = one_of[1][:index_slash]
+                    of = one_of[1][index_slash + 1:]
+                    if int(one) < int(of):
+                        logger_with_user.info(f'Не все таблицы {one}/{of} загружены в репорте {one_of[0]}')
+                    if int(one) > int(of):
+                        logger_with_user.info(f'{one}/{of} - Такого не может быть {one_of[0]}')
 
         # уникальны ли номера репортов
         if duplicate_report:
@@ -563,73 +642,34 @@ def ver(list_db: list, all_reports_loading, duplicate_report, column_in_the_tabl
                 if not drawing_dir_equal_number_report:
                     logger_with_user.info(f'В БД чертежей {name_folder_drawing} отсутствует папка с чертежами для репорта {number_report[0]}!')
 
-        # верно ли заполнен столбец unit в таблице master
+        # Верно ли заполнен столбец "Unit", "Report Date" в таблице master
         if unit_column:
             for index_unit, unit in enumerate(list_report_number_one_of):
+                # столбец "Unit"
                 if unit[2] == '-':
-                    logger_with_user.warning(f'Не указан номер юнита ({unit[2]}) в отчёте {unit[0]} в сводных данных БД {db}!')
+                    if 'WELDING' not in unit[4] and 'SHAER WAVE' not in unit[4]:
+                        logger_with_user.warning(f'Не указан номер юнита ({unit[2]}) в отчёте {unit[0]} в сводных данных БД {db}!')
                 elif len(unit[2]) < 3:
                     logger_with_user.warning(f'Не полный номер юнита ({unit[2]}) в отчёте {unit[0]} в сводных данных БД {db}!')
-                if 'FRACK' not in unit[2].upper():
+                elif 'FRACK' not in unit[2].upper():
                     for letter in unit[2]:
                         if not letter.isdigit():
                             logger_with_user.warning(f'В номере юнита ({unit[2]}) не должно быть букв, отчёт {unit[0]} в сводных данных БД {db}!')
                             break
+                # столбец "Report Date"
+                if not re.findall('\d{2}(-\d{2})?\.\d{2}\.\d{4}', unit[3]):
+                    if 'WELDING' not in unit[4] and 'SHAER WAVE' not in unit[4]:
+                        logger_with_user.warning(f'Дата ({unit[3]}) отчёта {unit[0]} в сводных данных БД {db} не соответствует шаблону '
+                                                 f'(ХХ.ХХ.ХХХХ или ХХ-ХХ.ХХ.ХХХХ)!')
+
+        # все ли репорты загружены
+        if all_reports_loading:
+            if len(list_report_number_one_of) != count_reports_in_ndt[db]:
+                miss_reports = count_reports_in_ndt[db] - len(list_report_number_one_of)
+                if miss_reports > 0:
+                    logger_with_user.info(f'В БД {db} не загружено {miss_reports} отчётов!')
+                if miss_reports < 0:
+                    logger_with_user.info(f'В БД {db} есть лишние ({miss_reports}) загруженные отчёты.')
 
         conn.close()
-#         # все ли номера репортов в Daily
-#         year = ''
-#         for i in db:
-#             if i.isdigit():
-#                 year += i
-#         path_master_daily = f'{os.path.abspath(os.getcwd())}\\Master Daily\\Master Daily Activities 20{year}.xlsx'
-#         wb = openpyxl.load_workbook(path_master_daily)
-#         sheets = wb.sheetnames
-#         # список PAUT репортов
-#         reports_paut =[]
-#         # список UTT репортов
-#         reports_utt = []
-#         print(db)
-#         for month in month_alpha.keys():
-#             for month_sheets in sheets:
-#                 if month_alpha[month] in month_sheets.upper():
-#                     # потом проверка на "дырки" и сопоставление с report_number_one_of[0]
-#                     ws = wb[month_sheets]
-#                     # перебираем столбец "NDT"
-#                     for row_cell in range(2, 2000):
-#                         if ws.cell(row=row_cell, column=2).value == 'PAUT':
-#                             if ws.cell(row=row_cell, column=3).value[-3:].isdigit():
-#                                 reports_paut.append(ws.cell(row=row_cell, column=3).value[-3:])
-#                         if ws.cell(row=row_cell, column=2).value == 'UTT':
-#                             if ws.cell(row=row_cell, column=3).value[-3:].isdigit():
-#                                 reports_utt.append(ws.cell(row=row_cell, column=3).value[-3:])
-#         # убираем повторы и сортируем в порядке возрастания номера
-#         sort_reports_paut = sorted((list(set(reports_paut))))
-#         sort_reports_utt = sorted((list(set(reports_utt))))
-#         # список отсутствующих репортов в БД
-#         missing_paut_in_db = sort_reports_paut.copy()
-#         missing_utt_in_db = sort_reports_utt.copy()
-#         print(f'list_report_number_one_of {list_report_number_one_of}')
-#         print(f'sort_reports_paut {sort_reports_paut}')
-#         print(f'sort_reports_paut {sort_reports_utt}')
-#         for report_number_one_of in list_report_number_one_of:
-#             for sort_number_reports_paut in sort_reports_paut:
-#                 table_paut_in_file = False
-#                 # print(f'report_number_one_of[0][-3:] {report_number_one_of[0][-3:]}')
-#                 # print(f'sort_number_reports_paut {sort_number_reports_paut}')
-#                 if report_number_one_of[0][-3:] in sort_number_reports_paut:
-#                     table_paut_in_file = True
-#                     table_paut = report_number_one_of[0][-3:]
-#             if table_paut_in_file:
-#                 missing_paut_in_db.remove(table_paut)
-#             for sort_number_reports_utt in sort_reports_utt:
-#                 table_utt_in_file = False
-#                 if report_number_one_of[0][-3:] not in sort_number_reports_utt:
-#                     table_utt_in_file = True
-#                     table_utt = report_number_one_of[0][-3:]
-#             if table_utt_in_file:
-#                 print(table_utt)
-#                 missing_utt_in_db.remove(table_utt)
-#         print(missing_paut_in_db)
-#         print(missing_utt_in_db)
-#     pass
+    logger_with_user.info(f'Верификации данных завершена\n')
