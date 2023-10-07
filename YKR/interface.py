@@ -286,7 +286,7 @@ line_login.setFont(font_line_login)
 line_login.setEchoMode(QLineEdit.Normal)
 # устанавливаем исчезающий текст
 line_login.setPlaceholderText('login')
-line_login.setText('')
+line_login.setText('admin')
 
 # создаём однострочное поле для ввода пароля
 line_password = QLineEdit(window)
@@ -304,7 +304,7 @@ line_password.setFont(font_line_password)
 line_password.setEchoMode(QLineEdit.Password)
 # устанавливаем исчезающий текст
 line_password.setPlaceholderText('password')
-line_password.setText('')
+line_password.setText('0751')
 
 # устанавливаем надпись "Логин"
 label_login = QLabel('Логин', window)
@@ -542,7 +542,7 @@ checkBox_of.setGeometry(QRect(61, 25, 42, 20))
 # указываем текст чек-бокса
 checkBox_of.setText('OF')
 # временно, пока не загрузятся другие локации
-checkBox_of.setEnabled(False)
+checkBox_of.setEnabled(True)
 
 # создаём чек-бокс локации 'OS'
 checkBox_os = QCheckBox(groupBox_location)
@@ -607,7 +607,7 @@ checkBox_2023.setGeometry(QRect(10, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2023.setText('2023')
 # временно, пока не загрузятся другие локации
-checkBox_2023.setEnabled(False)
+checkBox_2023.setEnabled(True)
 
 # создаём чек-бокс года '2022'
 checkBox_2022 = QCheckBox(groupBox_year)
@@ -1539,7 +1539,7 @@ def unfreeze_button():
         line_search_number_report.setDisabled(False)
         checkBox_on.setDisabled(False)
         checkBox_os.setDisabled(False)
-        # checkBox_of.setDisabled(False)
+        checkBox_of.setDisabled(False)
         checkBox_utt.setDisabled(False)
         checkBox_paut.setDisabled(False)
         # checkBox_2023.setDisabled(False)

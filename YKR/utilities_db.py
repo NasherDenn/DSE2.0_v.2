@@ -8,7 +8,7 @@ import aspose.words as aw
 import openpyxl
 from PyQt5.QtWidgets import *
 from YKR.props import *
-# import PIL
+import PIL
 from PIL import Image
 import imagehash
 import re
@@ -240,12 +240,15 @@ class DuplicateRemover:
         hashes = {}
         duplicates = []
         for image in file_names:
-            with Image.open(os.path.join(self.dirname, image)) as img:
-                temp_hash = imagehash.average_hash(img, self.hash_size)
-                if temp_hash in hashes:
-                    duplicates.append(image)
-                else:
-                    hashes[temp_hash] = image
+            try:
+                with Image.open(os.path.join(self.dirname, image)) as img:
+                    temp_hash = imagehash.average_hash(img, self.hash_size)
+                    if temp_hash in hashes:
+                        duplicates.append(image)
+                    else:
+                        hashes[temp_hash] = image
+            except:
+                continue
         if len(duplicates) != 0:
             for duplicate in duplicates:
                 os.remove(os.path.join(self.dirname, duplicate))
@@ -259,11 +262,14 @@ class DuplicateRemover:
             hash1 = imagehash.average_hash(img, self.hash_size).hash
 
         for image in file_names:
-            with Image.open(os.path.join(self.dirname, image)) as img:
-                hash2 = imagehash.average_hash(img, self.hash_size).hash
+            try:
+                with Image.open(os.path.join(self.dirname, image)) as img:
+                    hash2 = imagehash.average_hash(img, self.hash_size).hash
 
-                if np.count_nonzero(hash1 != hash2) <= diff_limit:
-                    os.remove(os.path.join(self.dirname, image))
+                    if np.count_nonzero(hash1 != hash2) <= diff_limit:
+                        os.remove(os.path.join(self.dirname, image))
+            except:
+                continue
 
 
 

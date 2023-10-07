@@ -29,7 +29,7 @@ def add_table():
     # dir_files = 'C:/Users/Андрей/Documents/NDT/Тестовые данные/'
 
     # для продакшн
-    dir_files = QFileDialog.getOpenFileNames(None, 'Выбрать папку', 'C:/Users/Andrei/Documents/NDT/NDT UTT/REPORTS 2021/PAUT/ON', "docx(*.docx)")
+    dir_files = QFileDialog.getOpenFileNames(None, 'Выбрать папку', 'C:/Users/Andrei/Documents/NDT/NDT UTT/REPORTS 2023/', "docx(*.docx)")
     # dir_files = QFileDialog.getOpenFileNames(None, 'Выбрать папку', '/home', "docx(*.docx)")
 
     # список путей и названий репортов для дальнейшей обработки

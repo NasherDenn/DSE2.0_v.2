@@ -446,6 +446,8 @@ def shit_in_shit_out(finish_dirty_table: dict, method: str, number_report: str) 
             try:
                 number_row_name_column = search_number_row_name_column(finish_dirty_table[index_table], method)
                 number_row_data = number_row_name_column + 1
+                # print(f'number_row_name_column {number_row_name_column}')
+                # print(f'number_row_data {number_row_data}')
             except TypeError:
                 # если не найдено ни одно ключевое слово из возможных названий столбцов
                 logger_with_user.error(f'Не могу записать таблицу {index_table} репорта {number_report}. Проверь ключевые слова для поиска')
@@ -487,6 +489,8 @@ def shit_in_shit_out(finish_dirty_table: dict, method: str, number_report: str) 
 # поиск последнего номера строки, которая является названием столбцов перед строками с данными
 def search_number_row_name_column(table: list, method: str) -> int:
     if method == 'utt':
+        check_index_row = 0
+        last_number_name_column = 0
         for index_row, row in enumerate(table):
             # наличие в строке слова 'Line'
             line_in_row = False
@@ -504,7 +508,13 @@ def search_number_row_name_column(table: list, method: str) -> int:
                     # continue
                 if line_in_row and nominal_in_row:
                     last_number_name_column = index_row
-                    return last_number_name_column
+                    # return last_number_name_column
+                    check_index_row = index_row
+            if check_index_row - index_row != 0:
+                # print(f'check_index_row {check_index_row}')
+                # print(f'index_row {index_row}')
+                # print(f'last_number_name_column {last_number_name_column}')
+                return last_number_name_column
     if method == 'paut':
         # print('it\'s paut')
         for index_row, row in enumerate(table):
@@ -616,6 +626,14 @@ def cleaning_name_column(list_dirty_name_column: list, method: str) -> list:
                 new_column = column.replace('-', '_')
                 list_dirty_name_column.pop(i)
                 list_dirty_name_column.insert(i, new_column)
+
+
+            if ':' in column:
+                new_column = column.replace(':', '_')
+                list_dirty_name_column.pop(i)
+                list_dirty_name_column.insert(i, new_column)
+
+
     return list_dirty_name_column
 
 
