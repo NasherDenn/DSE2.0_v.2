@@ -166,7 +166,7 @@ line_search_number_report.setCursorMoveStyle(Qt.LogicalMoveStyle)
 line_search_number_report.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_number_report.setFocusPolicy(Qt.StrongFocus)
-line_search_number_report.setText('')
+line_search_number_report.setText('010')
 
 # создаём кнопку "Поиск"
 button_search = QPushButton('Поиск', window)
@@ -707,10 +707,23 @@ def log_in():
             open_scroll_area = window.findChildren(QScrollArea)
             for scroll in open_scroll_area:
                 open_push_button = scroll.findChildren(QPushButton)
-                # сдвигаем кнопки названий найденных таблиц в бок для отображения флажков при авторизации
-                for push_button in open_push_button:
-                    push_button.move(20, push_button.y())
-                    push_button.repaint()
+                # список номеров кнопок, которые являются кнопками чертежей
+                button_drawing = []
+                # сдвигаем кнопки названий найденных таблиц и чертежей в бок для отображения флажков при авторизации
+                for list_push in all_list_button_for_drawing:
+                    x11 = 820
+                    for push in list_push:
+                        for index_push_button, push_button in enumerate(open_push_button):
+                            if push_button == push:
+                                push_button.move(x11, push_button.y())
+                                push_button.repaint()
+                                x11 += 100
+                                button_drawing.append(index_push_button)
+                for i in range(len(open_push_button)):
+                    if i not in button_drawing:
+                        open_push_button[i].move(20, open_push_button[i].y())
+                        open_push_button[i].repaint()
+
                 open_check_box = scroll.findChildren(QCheckBox)
                 # делаем видимые флажки
                 for check_box in open_check_box:
@@ -745,12 +758,26 @@ def log_out():
     # если отображаются найденные таблицы
     if window.findChildren(QTableView):
         open_scroll_area = window.findChildren(QScrollArea)
+
         for scroll in open_scroll_area:
             open_push_button = scroll.findChildren(QPushButton)
-            for push_button in open_push_button:
-                # то возвращаем влево кнопки названий таблиц
-                push_button.move(0, push_button.y())
-                push_button.repaint()
+            # список номеров кнопок, которые являются кнопками чертежей
+            button_drawing = []
+            # сдвигаем кнопки названий найденных таблиц и чертежей в бок для отображения флажков при авторизации
+            for list_push in all_list_button_for_drawing:
+                x11 = 800
+                for push in list_push:
+                    for index_push_button, push_button in enumerate(open_push_button):
+                        if push_button == push:
+                            push_button.move(x11, push_button.y())
+                            push_button.repaint()
+                            x11 += 100
+                            button_drawing.append(index_push_button)
+            for i in range(len(open_push_button)):
+                if i not in button_drawing:
+                    open_push_button[i].move(0, open_push_button[i].y())
+                    open_push_button[i].repaint()
+
             open_check_box = scroll.findChildren(QCheckBox)
             # скрываем флажки
             for check_box in open_check_box:
@@ -800,11 +827,16 @@ for button in groupBox_year.findChildren(QCheckBox):
 list_sqm = []
 
 
+# список всех наёденных чертежей в рамках одного запроса
+all_list_button_for_drawing = []
+
+
 # нажатие на кнопку "Поиск"
 def search():
     # список найденных данных
-    global list_sqm
+    global list_sqm, all_list_button_for_drawing
     list_sqm = []
+    all_list_button_for_drawing = []
     # проверяем наличие областей tableView для вывода данных и кнопок в ней
     # если есть, то закрываем их, чтобы не наслаивались
     if window.findChildren(QTableView):
@@ -872,8 +904,12 @@ def search():
     all_count_table_in_search = 0
     # список областей для вывода таблиц
     list_table_view = []
-    # список
+    # список всех найденых таблиц
     list_button_for_table = []
+
+    # # список всех наёденных чертежей в рамках одного запроса
+    # all_list_button_for_drawing = []
+
 
     list_height_table_view = []
     list_check_box = []
@@ -918,7 +954,6 @@ def search():
                 if find_data[1] == 1:
                     # делаем запрос в модели
                     sqm.setQuery('SELECT * FROM {}'.format(table))
-                    list_sqm.append(sqm)
                     # количество строк в найденной таблице
                     count_row_in_table = sqm.rowCount()
                     # сумма всех строк при поиске
@@ -930,8 +965,10 @@ def search():
                     table_index.hide()
                     y1 += 20
 
-                    # list_button_for_drawing = []
-
+                    # список чертежей в рамках одного репорта
+                    list_button_for_drawing = []
+                    # список всех наёденных чертежей в рамках одного запроса
+                    # all_list_button_for_drawing = []
 
                     table_index.setGeometry(QRect(0, y1, 2500, table_height_for_data_output))
                     if sqm.rowCount() != 0:
@@ -943,47 +980,37 @@ def search():
 
                         # папка с чертежами для данного репорта
                         dir_with_drawing = table.replace('_', '-')[3:]
-                        # print(dir_with_drawing)
                         dir_drawings_db = db.replace('reports', 'drawings')[:-7]
                         # путь, где лежат чертежи для репорта
                         path_drawing = f'{os.path.abspath(os.getcwd())}\\Drawings\\{dir_drawings_db}\\{dir_with_drawing}'
                         # список чертежей для данного репорта
-                        # list_drawing_button = os.listdir(path_drawing)
-                        # print(list_drawing_button)
-                        # print(count_drawing_button)
+                        list_drawing_button = os.listdir(path_drawing)
                         # выставляем координату от левого края
                         # если авторизовались
-                        # if authorization:
-                        #     x11 = 820
-                        # # если нет
-                        # else:
-                        #     x11 = 800
-                        # # итерируемся по количеству чертежей для создания нужного количества кнопок номеров чертежей
-                        # # print(button_for_table.text())
-                        # for index, draw in enumerate(list_drawing_button):
-                        #     # print(f'index {index}')
-                        #     # print(f'чертёж {draw}')
-                        #     # создаём кнопку для чертежа
-                        #     button_for_drawing = drawing_name_buttons(frame_for_table, y1, x11, language, index)
-                        #     x11 += 100
-                        #     # print(button_for_drawing.text())
-                        #     list_button_for_drawing.append(button_for_drawing)
-                        #     button_for_drawing.clicked.connect(lambda: show_drawing(path_drawing, draw))
-                        #     # print(button_for_drawing.text())
+                        if authorization:
+                            x11 = 820
+                        # если нет
+                        else:
+                            x11 = 800
+                        # итерируемся по количеству чертежей для создания нужного количества кнопок номеров чертежей
+                        for index, draw in enumerate(list_drawing_button):
+                            # создаём кнопку для чертежа
+                            button_for_drawing = drawing_name_buttons(frame_for_table, y1, x11, language, index)
+                            x11 += 100
+                            list_button_for_drawing.append(button_for_drawing)
+                        # button_for_drawing.clicked.connect(lambda: show_drawing(path_drawing, draw))
+
+                        all_list_button_for_drawing.append(list_button_for_drawing)
+
                         check_box = check_box_name_buttons(frame_for_table, y1, authorization)
                         list_table_view.append(table_index)
                         list_button_for_table.append(button_for_table)
-                        # print(type(button_for_table.text()))
-                        #
-                        # print(list_button_for_drawing)
                         list_height_table_view.append(table_height_for_data_output)
                         list_check_box.append(check_box)
                         button_for_table.clicked.connect(
-                            lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization))
-                            # lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, list_button_for_drawing))
+                            lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing))
                         # перерисовываем кнопки
-                        visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization)
-                        # visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, list_button_for_drawing)
+                        visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing)
 
                 # если заполнено одно поле, кроме unit или номера репорта
                 if find_data[1] == 2:
@@ -1051,6 +1078,13 @@ def search():
                         # перерисовываем кнопки
                         visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization)
                 con.close()
+
+    # button_for_table.clicked.connect(
+    #     lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization,
+    #                                list_button_for_drawing))
+
+    button_for_drawing.clicked.connect(lambda: show_drawing(path_drawing, draw))
+
     # сообщение о том, что ничего не найдено
     if not list_button_for_table:
         QMessageBox.information(
@@ -1075,16 +1109,6 @@ def search():
 
 # открытие чертежа по нажатию на кнопку для таблицы
 def show_drawing(path_drawing, draw):
-    # if window.findChildren(QTableView):
-    #     open_scroll_area = window.findChildren(QScrollArea)
-    #     for scroll in open_scroll_area:
-    #         open_push_button = scroll.findChildren(QPushButton)
-    #         for push_button in open_push_button:
-    #             if push_button.text().startswith('чертёж') or push_button.text().startswith('drawing') or push_button.text().startswith('сурет салу'):
-    #                 print(push_button.text())
-    #
-    #                 if push_button.isChecked():
-    #                     print(push_button.text())
     Image.open(f'{path_drawing}\\{draw}').show()
 
 
@@ -1542,7 +1566,7 @@ def unfreeze_button():
         checkBox_of.setDisabled(False)
         checkBox_utt.setDisabled(False)
         checkBox_paut.setDisabled(False)
-        # checkBox_2023.setDisabled(False)
+        checkBox_2023.setDisabled(False)
         checkBox_2022.setDisabled(False)
         checkBox_2021.setDisabled(False)
         # checkBox_2020.setDisabled(False)

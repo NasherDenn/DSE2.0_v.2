@@ -177,19 +177,17 @@ def sort_date(list_date):
 # функция отображения и повторного скрытия таблиц в frame
 # l_t_v = list_table_view = список всех таблиц
 # l_b_t = list_button_for_table = список всех номеров (кнопок) репортов
+# l_ch_b = list_check_box = список всех чек-боксов
 # y_1 - координата строки (кнопки) с номером репорта
 # y_2 = y_1 + 20 - координата таблицы (20 - высота строки с номером репорта)
 # l_h_t_v = list_height_table_view = список высот таблиц (строка с названием колонок + все строки таблицы)
 # l_b_f_d = list_button_for_drawing = список кнопок с чертежами
-def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization):
-# def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization, l_b_f_d):
-#     print(f'кнопки чертежей {l_b_f_d}')
+# def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization):
+def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization, l_b_f_d):
     # x1 - координата кнопки таблицы
     if authorization:
-        # для таблиц
         x1 = 20
     else:
-        # для таблиц
         x1 = 0
     # y_1 - координата первой строки номера репорта
     y_1 = 0
@@ -212,11 +210,11 @@ def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization):
         # если нажата
         if i.isChecked():
             list_button_for_table_true.append(ii)
-            # list_button_for_drawing_true.append(ii)
+            list_button_for_drawing_true.append(ii)
         # если не нажата
         if not i.isChecked():
             list_button_for_table_false.append(ii)
-            # list_button_for_drawing_false.append(ii)
+            list_button_for_drawing_false.append(ii)
         ii += 1
     # вычисляем новые координаты номеров репортов и таблиц в зависимости от списка нажатых (list_button_for_table_true)
     # и не нажатых (list_button_for_table_false) кнопок
@@ -246,26 +244,19 @@ def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization):
                     position_y2.append(y_2)
                     y_2 += 20
     # делаем таблицы видимыми или скрываем их в зависимости от статуса
-    # print(f'нажата {list_button_for_table_true}')
-    # print(f'НЕнажата {list_button_for_table_false}')
     for b in list_button_for_table_true:
+        # передвигаем кнопку репорта
         l_b_t[b].move(x1, position_y1[b])
-        # print('---------------------------------------------------')
-        # print(f'position_y1 {position_y1}')
-        # print(f'нажатая кнопка {b}')
+
         # x11 - координата кнопки чертежей
-        # if authorization:
-        #     # для чертежй
-        #     x11 = 820
-        # else:
-        #     # для чертежй
-        #     x11 = 880
-        # for button_draw in l_b_f_d:
-        # for button_draw in list_button_for_drawing_true:
-        #     # print(f'координата при нажатии {position_y1[b]}')
-        #     button_draw.move(x11, position_y1[b])
-        #     # l_b_f_d[button_draw].move(x11, position_y1[b])
-        #     x11 += 100
+        if authorization:
+            x11 = 820
+        else:
+            x11 = 800
+        # передвигаем кнопку чертежей
+        for button_draw in l_b_f_d[b]:
+            button_draw.move(x11, position_y1[b])
+            x11 += 100
 
         l_t_v[b].setGeometry((QRect(0, position_y2[b], 1640, l_h_t_v[b])))
         # делаем таблицу из списка видимой
@@ -276,33 +267,24 @@ def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization):
     for bb in list_button_for_table_false:
         # передвигаем кнопку репорта
         l_b_t[bb].move(x1, position_y1[bb])
-        # print(f'position_y1 {position_y1}')
-        # print(f'не нажатая кнопка {bb}')
-        #
-        # # x11 - координата кнопки чертежей
-        # if authorization:
-        #     # для чертежй
-        #     x11 = 820
-        # else:
-        #     # для чертежй
-        #     x11 = 800
-        # for button_draw in l_b_f_d:
-        # # for button_draw in list_button_for_drawing_false:
-        #     print(f'list_button_for_drawing_false {list_button_for_drawing_false}')
-        #     print(f'l_b_f_d {l_b_f_d}')
-        #     # print(f'координата при НЕнажатии {position_y1[bb]}')
-        #     button_draw.move(x11, position_y1[bb])
-        #     # l_b_f_d[button_draw].move(x11, position_y1[bb])
-        #     x11 += 100
+
+        # x11 - координата кнопки чертежей
+        if authorization:
+            # для чертежй
+            x11 = 820
+        else:
+            # для чертежй
+            x11 = 800
+        # передвигаем кнопку чертежей
+        for button_draw in l_b_f_d[bb]:
+            button_draw.move(x11, position_y1[bb])
+            x11 += 100
 
         # делаем таблицу из списка снова скрытой
         l_t_v[bb].hide()
         if l_ch_b[bb]:
             # передвигаем флажок
             l_ch_b[bb].move(0, position_y1[bb])
-
-    # print('---------------------------------------------------')
-
 
 
 # функция для вывода найденных открытых репортов и сводных данных на лист Excel для дальнейшей печати на принтер

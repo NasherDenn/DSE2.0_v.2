@@ -136,12 +136,14 @@ def get_number_report_wo_date(data_header: dict) -> dict:
                 # индекс начала номера work order в той же ячейке
                 index_start_number_report = re.search("\\d", ii).start()
                 rep_number['work_order'] = data_header[0][index_row][index_column][index_start_number_report:]
+            elif 'REQU' in ii.upper():
+                rep_number['work_order'] = 'NCO Request'
             # иначе если слова "order" и номер work order в разных ячейках
             elif 'order' in ii and any(map(str.isdigit, data_header[0][index_row][index_column + 1])):
                 # индекс начала номера work order в соседней ячейке
                 index_start_number_report = re.search("\\d", data_header[0][index_row][index_column + 1]).start()
                 rep_number['work_order'] = data_header[0][index_row][index_column + 1][index_start_number_report:]
-            # иначе если слова "order" и номер work order в разных ячейках и нет цифр, значит номер work order - NCO C Request
+            # иначе если слова "order" и номер work order в разных ячейках и нет цифр, значит номер work order - NCO Request
             elif 'order' in ii and not any(map(str.isdigit, data_header[0][index_row][index_column + 1])):
                 rep_number['work_order'] = data_header[0][index_row][index_column + 1]
     # возвращаем не очищенные значения номера репорта, номера work order и даты

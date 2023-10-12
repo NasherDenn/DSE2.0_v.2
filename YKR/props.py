@@ -63,13 +63,13 @@ tuple_utt_name_column_for_search = (
 utt_name_column = {'Line': ['LINE', 'TAG', 'CONTR', 'OBJ'],
                    'Drawing': ['DRAW', 'ISOM'],
                    'Item_description': ['ITEM', 'DESCR'],
-                   'Diameter': ['ETER', 'INCH', 'ДИАМЕ', 'Día'.upper(), 'Ø'],
+                   'Diameter': ['ETER', 'INCH', 'ДИАМЕ', 'Día'.upper(), 'Ø', 'DIMENSION'],
                    'Nominal_thickness': ['NOM', 'THICK'],
                    'North': ['NOR'],
                    'South': ['SOU'],
                    'West': ['WES'],
                    'East': ['EAS'],
-                   'Top': ['TOP'],
+                   'Top': ['TOP', 'TPO'],
                    'Bottom': ['BOT'],
                    'Center': ['CENT'],
                    'Extrados': ['EXTR'],
@@ -92,14 +92,15 @@ utt_name_column = {'Line': ['LINE', 'TAG', 'CONTR', 'OBJ'],
                    'Plate': ['PLAT'],
                    'Right': ['RIGHT'],
                    'Left': ['LEFT'],
-                   'Distance': ['DIST']
+                   'Distance': ['DIST'],
                    }
 
 # кортеж названий столбцов для поиска
 tuple_paut_name_column_for_search = (
     'Location', 'Line', 'Drawing', 'Scanned_area', 'Item_description', 'Diameter', 'Nominal_thickness', 'Date',
     'Minimum_thickness', 'Maximum_thickness',
-    'Average_thickness', 'Start_X', 'End_X', 'Start_Y', 'End_Y'
+    'Average_thickness', 'Start_X', 'End_X', 'Start_Y', 'End_Y',
+    'Depth'
 )
 
 # список названий столбцов для PAUT
@@ -117,7 +118,8 @@ paut_name_column = {'Location': ['LOC'],
                     'End_X': ['END X'],
                     'Start_Y': ['START Y'],
                     'End_Y': ['END Y'],
-                    'Average_thickness': ['AVER']
+                    'Average_thickness': ['AVER'],
+                    'Depth': ['DEPTH']
                     }
 
 # названия месяцев для дат репортов
