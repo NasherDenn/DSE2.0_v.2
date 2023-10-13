@@ -231,18 +231,16 @@ faq_text_kz = '- Бұл бағдарлама не үшін?\n' \
            '- Деректерді қалай жоюға болады?\n' \
            'Сіз тек толық кестелерді жоя аласыз. Ол үшін қызықтыратын кестенің жанындағы құсбелгіні қойып, «Жою» түймесін басыңыз.'
 
-index_x11 = [800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500, 2600, 2700, 2800, 2900, 3000]
-
 # количество репортов, которое должно бы ть в каждой БД
-count_reports_in_ndt = {'reports_db_OF_PAUT_19.sqlite': 0, 'reports_db_OF_PAUT_20.sqlite': 0, 'reports_db_OF_PAUT_21.sqlite': 0, 'reports_db_OF_PAUT_22.sqlite': 0,
+count_reports_in_ndt = {'reports_db_OF_PAUT_19.sqlite': 0, 'reports_db_OF_PAUT_20.sqlite': 0, 'reports_db_OF_PAUT_21.sqlite': 0, 'reports_db_OF_PAUT_22.sqlite': 7,
                         'reports_db_OF_PAUT_23.sqlite': 0, 'reports_db_OF_PAUT_24.sqlite': 0, 'reports_db_OF_PAUT_25.sqlite': 0, 'reports_db_OF_PAUT_26.sqlite': 0,
-                        'reports_db_OF_UTT_19.sqlite': 0, 'reports_db_OF_UTT_20.sqlite': 0, 'reports_db_OF_UTT_21.sqlite': 0, 'reports_db_OF_UTT_22.sqlite': 0,
+                        'reports_db_OF_UTT_19.sqlite': 0, 'reports_db_OF_UTT_20.sqlite': 0, 'reports_db_OF_UTT_21.sqlite': 393, 'reports_db_OF_UTT_22.sqlite': 74,
                         'reports_db_OF_UTT_23.sqlite': 0, 'reports_db_OF_UTT_24.sqlite': 0, 'reports_db_OF_UTT_25.sqlite': 0, 'reports_db_OF_UTT_26.sqlite': 0,
-                        'reports_db_ON_PAUT_19.sqlite': 0, 'reports_db_ON_PAUT_20.sqlite': 0, 'reports_db_ON_PAUT_21.sqlite': 353, 'reports_db_ON_PAUT_22.sqlite': 978,
+                        'reports_db_ON_PAUT_19.sqlite': 0, 'reports_db_ON_PAUT_20.sqlite': 0, 'reports_db_ON_PAUT_21.sqlite': 353, 'reports_db_ON_PAUT_22.sqlite': 1080,
                         'reports_db_ON_PAUT_23.sqlite': 0, 'reports_db_ON_PAUT_24.sqlite': 0, 'reports_db_ON_PAUT_25.sqlite': 0, 'reports_db_ON_PAUT_26.sqlite': 0,
-                        'reports_db_ON_UTT_19.sqlite': 0, 'reports_db_ON_UTT_20.sqlite': 0, 'reports_db_ON_UTT_21.sqlite': 793, 'reports_db_ON_UTT_22.sqlite': 810,
+                        'reports_db_ON_UTT_19.sqlite': 0, 'reports_db_ON_UTT_20.sqlite': 450, 'reports_db_ON_UTT_21.sqlite': 790, 'reports_db_ON_UTT_22.sqlite': 1338,
                         'reports_db_ON_UTT_23.sqlite': 0, 'reports_db_ON_UTT_24.sqlite': 0, 'reports_db_ON_UTT_25.sqlite': 0, 'reports_db_ON_UTT_26.sqlite': 0,
-                        'reports_db_OS_PAUT_19.sqlite': 0, 'reports_db_OS_PAUT_20.sqlite': 0, 'reports_db_OS_PAUT_21.sqlite': 11, 'reports_db_OS_PAUT_22.sqlite': 11,
+                        'reports_db_OS_PAUT_19.sqlite': 0, 'reports_db_OS_PAUT_20.sqlite': 0, 'reports_db_OS_PAUT_21.sqlite': 11, 'reports_db_OS_PAUT_22.sqlite': 6,
                         'reports_db_OS_PAUT_23.sqlite': 0, 'reports_db_OS_PAUT_24.sqlite': 0, 'reports_db_OS_PAUT_25.sqlite': 0, 'reports_db_OS_PAUT_26.sqlite': 0,
                         'reports_db_OS_UTT_19.sqlite': 0, 'reports_db_OS_UTT_20.sqlite': 0, 'reports_db_OS_UTT_21.sqlite': 52, 'reports_db_OS_UTT_22.sqlite': 18,
                         'reports_db_OS_UTT_23.sqlite': 0, 'reports_db_OS_UTT_24.sqlite': 0, 'reports_db_OS_UTT_25.sqlite': 0, 'reports_db_OS_UTT_26.sqlite': 0}

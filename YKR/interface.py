@@ -452,7 +452,7 @@ button_delete.setDisabled(True)
 # создаём кнопку "Верификация"
 button_verification = QPushButton('Верификация', window)
 # устанавливаем положение и размер кнопки "Верификация" в родительском окне (window)
-button_verification.setGeometry(QRect(300, 904, 171, 41))
+button_verification.setGeometry(QRect(570, 904, 171, 41))
 # присваиваем уникальное объектное имя кнопке "Верификация"
 button_verification.setObjectName(u"pushButton_verification")
 # задаём параметры стиля и оформления кнопки "Верификация"

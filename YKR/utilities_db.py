@@ -522,9 +522,6 @@ def update_master_by_delete(table, db):
     cur.close()
 
 
-
-
-
 # верификация данных
 def ver(list_db: list, all_reports_loading, all_tables_loading, duplicate_report, column_in_the_table, drawings_uploaded, unit_column):
     logger_with_user.info(f'Начало верификации данных\n')
@@ -601,7 +598,7 @@ def ver(list_db: list, all_reports_loading, all_tables_loading, duplicate_report
                             # если не совпадает с шаблоном
                             if not re.findall('\D{2}\d{2}-\D\d-\d{3,4}\D?-\D{2}', drawing_value[0]):
                                 logger_with_user.warning(f'Ошибка в указании номера чертежа ({drawing_value[0]}) в таблице {table[0]} - не похож '
-                                                      f'на номер чертежа или пропущены буквы/цифры!')
+                                                         f'на номер чертежа или пропущены буквы/цифры!')
                                 break
 
         # совпадает ли количество папок с чертежами с количеством загруженных репортов
