@@ -825,8 +825,6 @@ for button in groupBox_year.findChildren(QCheckBox):
 
 # список найденных данных
 list_sqm = []
-
-
 # список всех наёденных чертежей в рамках одного запроса
 all_list_button_for_drawing = []
 
@@ -906,16 +904,15 @@ def search():
     list_table_view = []
     # список всех найденых таблиц
     list_button_for_table = []
-
-    # # список всех наёденных чертежей в рамках одного запроса
-    # all_list_button_for_drawing = []
-
-
+    # словарь последовательностей пути и чертежей
+    # dict_path_draw = {}
     list_height_table_view = []
     list_check_box = []
     # find_data[0] - основные данные
     # сортируем года в порядке убывания
     sort_db_year = sort_year(find_data[0])
+    # индекс для последовательности путей и чертежей
+    index_path_draw = 0
     for db in sort_db_year:
         # сортируем таблицы в году по датам в обратном порядке, что бы вверху отображались более ранние отчёты
         unsort = sort_date(find_data[0][db].keys())
@@ -964,14 +961,12 @@ def search():
                     table_height_for_data_output = count_row_in_table * 25 + 25
                     table_index.hide()
                     y1 += 20
-
                     # список чертежей в рамках одного репорта
                     list_button_for_drawing = []
-                    # список всех наёденных чертежей в рамках одного запроса
-                    # all_list_button_for_drawing = []
-
                     table_index.setGeometry(QRect(0, y1, 2500, table_height_for_data_output))
+
                     if sqm.rowCount() != 0:
+                        index_path_draw += 1
                         list_sqm.append(sqm)
                         # номер линии, сосуда для кнопки названия таблицы
                         line_for_table_name_buttons = sqm.query().value('line')
@@ -992,16 +987,19 @@ def search():
                         # если нет
                         else:
                             x11 = 800
+                        # список имён чертежей для последующего формирования словаря с путём до чертежей и самимим чертежами
+                        # list_name_draw = []
                         # итерируемся по количеству чертежей для создания нужного количества кнопок номеров чертежей
                         for index, draw in enumerate(list_drawing_button):
                             # создаём кнопку для чертежа
-                            button_for_drawing = drawing_name_buttons(frame_for_table, y1, x11, language, index)
+                            button_for_drawing = drawing_name_buttons(frame_for_table, y1, x11, language, index, path_drawing, draw)
                             x11 += 100
                             list_button_for_drawing.append(button_for_drawing)
-                        # button_for_drawing.clicked.connect(lambda: show_drawing(path_drawing, draw))
-
+                            # list_name_draw.append(draw)
+                        # добавляем путь и чертежи в словарь, путь всегда на первом месте
+                        # list_name_draw.insert(0, path_drawing)
+                        # dict_path_draw[index_path_draw] = list_name_draw
                         all_list_button_for_drawing.append(list_button_for_drawing)
-
                         check_box = check_box_name_buttons(frame_for_table, y1, authorization)
                         list_table_view.append(table_index)
                         list_button_for_table.append(button_for_table)
@@ -1079,12 +1077,6 @@ def search():
                         visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization)
                 con.close()
 
-    # button_for_table.clicked.connect(
-    #     lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization,
-    #                                list_button_for_drawing))
-
-    button_for_drawing.clicked.connect(lambda: show_drawing(path_drawing, draw))
-
     # сообщение о том, что ничего не найдено
     if not list_button_for_table:
         QMessageBox.information(
@@ -1105,11 +1097,6 @@ def search():
     window.repaint()
     frame_for_table.show()
     scroll_area.show()
-
-
-# открытие чертежа по нажатию на кнопку для таблицы
-def show_drawing(path_drawing, draw):
-    Image.open(f'{path_drawing}\\{draw}').show()
 
 
 # установка языка RU
@@ -1593,7 +1580,7 @@ def unfreeze_button():
         # checkBox_of.setDisabled(False)
         checkBox_utt.setDisabled(False)
         checkBox_paut.setDisabled(False)
-        # checkBox_2023.setDisabled(False)
+        checkBox_2023.setDisabled(False)
         checkBox_2022.setDisabled(False)
         checkBox_2021.setDisabled(False)
         # checkBox_2020.setDisabled(False)

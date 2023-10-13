@@ -84,7 +84,7 @@ def table_name_buttons(frame_for_table, y1, authorization, table, find_date, lan
 
 
 # формируем кнопки названий чертежей для таблиц
-def drawing_name_buttons(frame_for_table, y1, x11, language, index_draw):
+def drawing_name_buttons(frame_for_table, y1, x11, language, index_draw, path_drawing, draw):
     # задаём название кнопки по номеру репорта и помещаем внутрь frame
     drawing_button_for_table = QPushButton(second_underlining_drawing(language, index_draw), frame_for_table)
     # задаём размеры и место расположения кнопки во frame
@@ -98,6 +98,8 @@ def drawing_name_buttons(frame_for_table, y1, x11, language, index_draw):
     drawing_button_for_table.show()
     # скрываем границы кнопки
     drawing_button_for_table.setFlat(True)
+    # открытие чертежа по нажатию на кнопку
+    drawing_button_for_table.clicked.connect(lambda: Image.open(f'{path_drawing}\\{draw}').show())
     return drawing_button_for_table
 
 
