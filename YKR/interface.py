@@ -637,7 +637,7 @@ checkBox_2020.setGeometry(QRect(220, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2020.setText('2020')
 # временно, пока не загрузятся другие локации
-checkBox_2020.setEnabled(False)
+checkBox_2020.setEnabled(True)
 
 # создаём чек-бокс года '2019'
 checkBox_2019 = QCheckBox(groupBox_year)
@@ -717,7 +717,7 @@ def log_in():
                             if push_button == push:
                                 push_button.move(x11, push_button.y())
                                 push_button.repaint()
-                                x11 += 100
+                                x11 += 130
                                 button_drawing.append(index_push_button)
                 for i in range(len(open_push_button)):
                     if i not in button_drawing:
@@ -771,7 +771,7 @@ def log_out():
                         if push_button == push:
                             push_button.move(x11, push_button.y())
                             push_button.repaint()
-                            x11 += 100
+                            x11 += 130
                             button_drawing.append(index_push_button)
             for i in range(len(open_push_button)):
                 if i not in button_drawing:
@@ -902,7 +902,7 @@ def search():
     all_count_table_in_search = 0
     # список областей для вывода таблиц
     list_table_view = []
-    # список всех найденых таблиц
+    # список всех найденных таблиц
     list_button_for_table = []
     # словарь последовательностей пути и чертежей
     # dict_path_draw = {}
@@ -912,7 +912,7 @@ def search():
     # сортируем года в порядке убывания
     sort_db_year = sort_year(find_data[0])
     # индекс для последовательности путей и чертежей
-    index_path_draw = 0
+    # index_path_draw = 0
     for db in sort_db_year:
         # сортируем таблицы в году по датам в обратном порядке, что бы вверху отображались более ранние отчёты
         unsort = sort_date(find_data[0][db].keys())
@@ -966,20 +966,22 @@ def search():
                     table_index.setGeometry(QRect(0, y1, 2500, table_height_for_data_output))
 
                     if sqm.rowCount() != 0:
-                        index_path_draw += 1
                         list_sqm.append(sqm)
                         # номер линии, сосуда для кнопки названия таблицы
                         line_for_table_name_buttons = sqm.query().value('line')
                         button_for_table = table_name_buttons(frame_for_table, y1, authorization, table, unsort[key_date], language,
                                                               line_for_table_name_buttons)
-
                         # папка с чертежами для данного репорта
                         dir_with_drawing = table.replace('_', '-')[3:]
                         dir_drawings_db = db.replace('reports', 'drawings')[:-7]
                         # путь, где лежат чертежи для репорта
                         path_drawing = f'{os.path.abspath(os.getcwd())}\\Drawings\\{dir_drawings_db}\\{dir_with_drawing}'
                         # список чертежей для данного репорта
-                        list_drawing_button = os.listdir(path_drawing)
+                        try:
+                            list_drawing_button = os.listdir(path_drawing)
+                        except FileNotFoundError:
+                            list_drawing_button = []
+                            logger_with_user.info(f'Отсутствуют чертежи для отчёта {dir_with_drawing} в базе чертежей {dir_drawings_db}')
                         # выставляем координату от левого края
                         # если авторизовались
                         if authorization:
@@ -987,18 +989,13 @@ def search():
                         # если нет
                         else:
                             x11 = 800
-                        # список имён чертежей для последующего формирования словаря с путём до чертежей и самимим чертежами
-                        # list_name_draw = []
                         # итерируемся по количеству чертежей для создания нужного количества кнопок номеров чертежей
-                        for index, draw in enumerate(list_drawing_button):
-                            # создаём кнопку для чертежа
-                            button_for_drawing = drawing_name_buttons(frame_for_table, y1, x11, language, index, path_drawing, draw)
-                            x11 += 100
-                            list_button_for_drawing.append(button_for_drawing)
-                            # list_name_draw.append(draw)
-                        # добавляем путь и чертежи в словарь, путь всегда на первом месте
-                        # list_name_draw.insert(0, path_drawing)
-                        # dict_path_draw[index_path_draw] = list_name_draw
+                        if len(list_drawing_button) > 0:
+                            for index, draw in enumerate(list_drawing_button):
+                                # создаём кнопку для чертежа
+                                button_for_drawing = drawing_name_buttons(frame_for_table, y1, x11, language, index, path_drawing, draw)
+                                x11 += 150
+                                list_button_for_drawing.append(button_for_drawing)
                         all_list_button_for_drawing.append(list_button_for_drawing)
                         check_box = check_box_name_buttons(frame_for_table, y1, authorization)
                         list_table_view.append(table_index)
@@ -1015,6 +1012,8 @@ def search():
                     # делаем запрос в модели
                     sqm.setQuery('''SELECT * FROM {} WHERE "{}" LIKE "%{}%"'''.format(table, find_data[2], find_data[3]))
                     # если не найдено ни одной строчки, то ничего не показываем
+                    # список чертежей в рамках одного репорта
+                    list_button_for_drawing = []
                     if sqm.rowCount() == 0:
                         table_index.reset()
                     else:
@@ -1034,19 +1033,50 @@ def search():
                         line_for_table_name_buttons = sqm.query().value('line')
                         button_for_table = table_name_buttons(frame_for_table, y1, authorization, table, unsort[key_date], language,
                                                               line_for_table_name_buttons)
+
+                        # папка с чертежами для данного репорта
+                        dir_with_drawing = table.replace('_', '-')[3:]
+                        dir_drawings_db = db.replace('reports', 'drawings')[:-7]
+                        # путь, где лежат чертежи для репорта
+                        path_drawing = f'{os.path.abspath(os.getcwd())}\\Drawings\\{dir_drawings_db}\\{dir_with_drawing}'
+                        # список чертежей для данного репорта
+                        try:
+                            list_drawing_button = os.listdir(path_drawing)
+                        except FileNotFoundError:
+                            list_drawing_button = []
+                            logger_with_user.info(f'Отсутствуют чертежи для отчёта {dir_with_drawing} в базе чертежей {dir_drawings_db}')
+                        # выставляем координату от левого края
+                        # если авторизовались
+                        if authorization:
+                            x11 = 820
+                        # если нет
+                        else:
+                            x11 = 800
+                        # итерируемся по количеству чертежей для создания нужного количества кнопок номеров чертежей
+                        if len(list_drawing_button) > 0:
+                            for index, draw in enumerate(list_drawing_button):
+                                # создаём кнопку для чертежа
+                                button_for_drawing = drawing_name_buttons(frame_for_table, y1, x11, language, index, path_drawing, draw)
+                                x11 += 150
+                                list_button_for_drawing.append(button_for_drawing)
+                        all_list_button_for_drawing.append(list_button_for_drawing)
                         check_box = check_box_name_buttons(frame_for_table, y1, authorization)
                         list_table_view.append(table_index)
                         list_button_for_table.append(button_for_table)
                         list_height_table_view.append(table_height_for_data_output)
                         list_check_box.append(check_box)
                         button_for_table.clicked.connect(
-                            lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization))
+                            lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing))
                         # перерисовываем кнопки
-                        visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization)
+                        visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing)
                 # если заполнен номер unit или report_number и любая(-ые) другие данные (номер линии, номер чертежа, номер локации)
                 if find_data[1] == 3:
+                    print(f'table {table}')
+                    print(f'find_data[3] {find_data[3]}')
                     # делаем запрос в модели
                     sqm.setQuery('''SELECT * FROM {} WHERE {}'''.format(table, find_data[3]))
+                    # список чертежей в рамках одного репорта
+                    list_button_for_drawing = []
                     if sqm.rowCount() == 0:
                         table_index.reset()
                     else:
@@ -1066,15 +1096,42 @@ def search():
                         line_for_table_name_buttons = sqm.query().value('line')
                         button_for_table = table_name_buttons(frame_for_table, y1, authorization, table, unsort[key_date], language,
                                                               line_for_table_name_buttons)
+
+                        # папка с чертежами для данного репорта
+                        dir_with_drawing = table.replace('_', '-')[3:]
+                        dir_drawings_db = db.replace('reports', 'drawings')[:-7]
+                        # путь, где лежат чертежи для репорта
+                        path_drawing = f'{os.path.abspath(os.getcwd())}\\Drawings\\{dir_drawings_db}\\{dir_with_drawing}'
+                        # список чертежей для данного репорта
+                        try:
+                            list_drawing_button = os.listdir(path_drawing)
+                        except FileNotFoundError:
+                            list_drawing_button = []
+                            logger_with_user.info(f'Отсутствуют чертежи для отчёта {dir_with_drawing} в базе чертежей {dir_drawings_db}')
+                        # выставляем координату от левого края
+                        # если авторизовались
+                        if authorization:
+                            x11 = 820
+                        # если нет
+                        else:
+                            x11 = 800
+                        # итерируемся по количеству чертежей для создания нужного количества кнопок номеров чертежей
+                        if len(list_drawing_button) > 0:
+                            for index, draw in enumerate(list_drawing_button):
+                                # создаём кнопку для чертежа
+                                button_for_drawing = drawing_name_buttons(frame_for_table, y1, x11, language, index, path_drawing, draw)
+                                x11 += 150
+                                list_button_for_drawing.append(button_for_drawing)
+                        all_list_button_for_drawing.append(list_button_for_drawing)
                         check_box = check_box_name_buttons(frame_for_table, y1, authorization)
                         list_table_view.append(table_index)
                         list_button_for_table.append(button_for_table)
                         list_height_table_view.append(table_height_for_data_output)
                         list_check_box.append(check_box)
                         button_for_table.clicked.connect(
-                            lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization))
+                            lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing))
                         # перерисовываем кнопки
-                        visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization)
+                        visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing)
                 con.close()
 
     # сообщение о том, что ничего не найдено
@@ -1142,6 +1199,10 @@ def ru():
                     new_text = old_text.replace('есеп нөмірі', 'номер отчёта')
                     new_text = new_text.replace('күні', 'дата')
                     new_text = new_text.replace('бақылау объектісі', 'объект контроля')
+                if 'drawing' in old_text:
+                    new_text = old_text.replace('drawing', 'чертёж')
+                if 'сурет' in old_text:
+                    new_text = old_text.replace('сурет', 'чертёж')
                 push_button.setText(new_text)
                 push_button.repaint()
     window.repaint()
@@ -1190,6 +1251,10 @@ def en():
                     new_text = old_text.replace('есеп нөмірі', 'report number')
                     new_text = new_text.replace('күні', 'date')
                     new_text = new_text.replace('бақылау объектісі', 'object of control')
+                if 'чертёж' in old_text:
+                    new_text = old_text.replace('чертёж', 'drawing')
+                if 'сурет' in old_text:
+                    new_text = old_text.replace('сурет', 'drawing')
                 push_button.setText(new_text)
                 push_button.repaint()
     window.repaint()
@@ -1238,6 +1303,10 @@ def kz():
                     new_text = old_text.replace('report number', 'есеп нөмірі')
                     new_text = new_text.replace('date', 'күні')
                     new_text = new_text.replace('object of control', 'бақылау объектісі')
+                if 'чертёж' in old_text:
+                    new_text = old_text.replace('чертёж', 'сурет')
+                if 'drawing' in old_text:
+                    new_text = old_text.replace('drawing', 'сурет')
                 push_button.setText(new_text)
                 push_button.repaint()
     window.repaint()
@@ -1556,7 +1625,7 @@ def unfreeze_button():
         checkBox_2023.setDisabled(False)
         checkBox_2022.setDisabled(False)
         checkBox_2021.setDisabled(False)
-        # checkBox_2020.setDisabled(False)
+        checkBox_2020.setDisabled(False)
         # checkBox_2019.setDisabled(False)
     # если пользователь НЕ авторизовался
     else:
@@ -1583,7 +1652,7 @@ def unfreeze_button():
         checkBox_2023.setDisabled(False)
         checkBox_2022.setDisabled(False)
         checkBox_2021.setDisabled(False)
-        # checkBox_2020.setDisabled(False)
+        checkBox_2020.setDisabled(False)
         # checkBox_2019.setDisabled(False)
 
 

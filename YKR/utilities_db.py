@@ -23,6 +23,8 @@ logger = logging.getLogger()
 logger_with_user = logging.LoggerAdapter(logger, {'user': uname})
 
 
+
+
 # записываем очищенный репорт в базу данных
 # clear_report - очищенные таблицы
 # number_report - номер репорта
@@ -290,6 +292,7 @@ def look_up_data(db_for_search: list, values_for_search: dict):
 
         # если заполнено только одно поле
         if count_value == 1:
+            # заполнено только поле unit или number_report
             if values_for_search['unit'] != '' and count_value == 1:
                 unit_or_number_report_for_search = values_for_search['unit']
                 place_for_search = 'unit'
@@ -297,8 +300,8 @@ def look_up_data(db_for_search: list, values_for_search: dict):
                 unit_or_number_report_for_search = values_for_search['number_report']
                 place_for_search = 'report_number'
 
-            # если заполнено только поле unit или number_report
-            if values_for_search['number_report'] != '' or values_for_search['unit'] != '':
+            # поиск, если заполнено только поле unit или number_report
+            if (values_for_search['number_report'] != '' or values_for_search['unit'] != '') and count_value == 1:
                 # находим названия таблиц
                 find_tables_by_unit_or_report_number = cur.execute('''SELECT "list_table_report", "report_date" FROM master WHERE "{}" LIKE "%{}%"'''.
                                                                    format(place_for_search, unit_or_number_report_for_search)).fetchall()
@@ -354,7 +357,7 @@ def look_up_data(db_for_search: list, values_for_search: dict):
                     place_for_search = 'report_number'
                 # находим названия таблиц
                 find_tables_by_unit_or_report_number = cur.execute(
-                    '''SELECT "list_table_report", "report_date" FROM master WHERE "{}"="{}"'''.format(place_for_search,
+                    '''SELECT "list_table_report", "report_date" FROM master WHERE "{}" LIKE "%{}%"'''.format(place_for_search,
                                                                                                        unit_or_number_report_for_search)). \
                     fetchall()
                 # преобразуем найденные названия таблиц в вид, в котором они записаны в БД
@@ -362,8 +365,10 @@ def look_up_data(db_for_search: list, values_for_search: dict):
                 find_data[name_db] = list_table
                 place_for_search = ''
                 # формируем условия для конечного поиска, в зависимости от количества полей и какие именно поля заполнены
-                comma_or_and = "comma"
-                values = conversion_to_accumulation(values_for_search, comma_or_and)[:-2]
+                # comma_or_and = "comma"
+                comma_or_and = "and"
+                # values = conversion_to_accumulation(values_for_search, comma_or_and)[:-2]
+                values = conversion_to_accumulation(values_for_search, comma_or_and)[:-5]
                 path = 3
 
             # если заполнены любые поля (номер линии, номер чертежа, номер локации), КРОМЕ номера unit и номера репорта
@@ -515,6 +520,9 @@ def update_master_by_delete(table, db):
         variable_report_for_delete_from_master_new, variable))
     conn.commit()
     cur.close()
+
+
+
 
 
 # верификация данных
