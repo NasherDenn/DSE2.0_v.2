@@ -253,7 +253,7 @@ class DuplicateRemover:
             for duplicate in duplicates:
                 os.remove(os.path.join(self.dirname, duplicate))
 
-    def find_similar(self, location, similarity=73):
+    def find_similar(self, location, similarity=80):
         file_names = os.listdir(self.dirname)
         threshold = 1 - similarity / 100
         diff_limit = int(threshold * (self.hash_size ** 2))
@@ -270,36 +270,6 @@ class DuplicateRemover:
                         os.remove(os.path.join(self.dirname, image))
             except:
                 continue
-
-
-
-
-    # # удаляем стандартные изображения (папка "wrong drawings"), которые не являются чертежами
-    # new_files_image = os.listdir(f'{path}\\')
-    # for new_image in new_files_image:
-    #     stop_remove = False
-    #     for wrong_image in os.listdir(f'{os.path.abspath(os.getcwd())}\\Drawings\\wrong drawings'):
-    #         path_image = f'{path}\\{new_image}'
-    #         if not stop_remove:
-    #             if imagehash.dhash(Image.open(path_image)) == imagehash.dhash(
-    #                     Image.open(f'{os.path.abspath(os.getcwd())}\\Drawings\\wrong drawings\\{wrong_image}')):
-    #                 os.remove(f'{path}/{new_image}')
-    #                 stop_remove = True
-    #
-    # # удаляем повторяющиеся изображения
-    # # список порядковых номеров повторяющихся изображений
-    # index_image_for_delete = []
-    # # список оставшихся изображений
-    # files_image_for_delete = os.listdir(f'{path}\\')
-    # # print(files_image_for_delete)
-    # for index_image in range(len(files_image_for_delete) - 1):
-    #     if imagehash.dhash(Image.open(f'{path}\\{files_image_for_delete[index_image]}')) == imagehash.dhash(
-    #             Image.open(f'{path}\\{files_image_for_delete[index_image + 1]}')):
-    #         index_image_for_delete.append(index_image)
-    # # перебираем и удаляем повторяющиеся изображения
-    # # print(index_image_for_delete)
-    # for index in index_image_for_delete:
-    #     os.remove(f'{path}\\{files_image_for_delete[index]}')
 
 
 # ищем данные в БД
