@@ -363,7 +363,7 @@ def converted_mesh(data_table_equal_row: dict, mesh_table: list, number_report: 
                       r'-?\s?'
                       r'\D{2}'
                       r'-?\s?'
-                      r'\d{3}', name_value_converted['Line']) and re.findall(r'[KК][EЕ]01-.+|[TТ]R01-.+', name_value_converted['Line']):
+                      r'\d{3}', name_value_converted['Line']) and re.findall(r'[KК][EЕ]01[-.].+|[TТ]R01[-.].+', name_value_converted['Line']):
             # если да, то рассоединяем их
             line_drawing = disconnect_line_drawing(name_value_converted['Line'])
             # заменяем 'Line' и дополняем 'Drawing' в name_value_converted
@@ -415,7 +415,7 @@ def disconnect_line_drawing(line_and_drawing: str) -> dict:
     # словарь рассоединённых и очищенных номера линии и номера чертежа
     clean_line_drawing = {}
     # получаем "грязный" номер чертежа в виде строки
-    drawing = re.findall(r'[KК][EЕ]01-.+|[TТ]R01-.+', line_and_drawing)[0]
+    drawing = re.findall(r'[KК][EЕ]01[-.].+|[TТ]R01[-.].+', line_and_drawing)[0]
     # получаем "грязный" номер линии в виде строки
     line = line_and_drawing.replace(drawing, '')
     # очищаем их от лишних знаков
@@ -430,6 +430,8 @@ def dirt_cleaning(dirt_str: str) -> str:
     dirt_str = re.sub('\\s+', '', dirt_str)
     # удаление знака "/"
     dirt_str = re.sub('/', '', dirt_str)
+    # # меняем "." на "-"
+    # dirt_str = re.sub('\.', '-', dirt_str)
     dirt_str = dirt_str.upper()
     return dirt_str
 
@@ -628,14 +630,10 @@ def cleaning_name_column(list_dirty_name_column: list, method: str) -> list:
                 new_column = column.replace('-', '_')
                 list_dirty_name_column.pop(i)
                 list_dirty_name_column.insert(i, new_column)
-
-
             if ':' in column:
                 new_column = column.replace(':', '_')
                 list_dirty_name_column.pop(i)
                 list_dirty_name_column.insert(i, new_column)
-
-
     return list_dirty_name_column
 
 
@@ -705,7 +703,7 @@ def check_drawing_in_line(pure_data_table: dict) -> dict:
                               r'-?\s?'
                               r'\D{2}'
                               r'-?\s?'
-                              r'\d{3}', column) and re.findall(r'[KК][EЕ]01-.+|[TТ]R01-.+', column):
+                              r'\d{3}', column) and re.findall(r'[KК][EЕ]01[-.].+|[TТ]R01[-.].+', column):
                     # рассоединяем номер линии и номер чертежа
                     dict_line_drawing = disconnect_line_drawing(column)
                     dict_line_drawing['Line'] = dict_line_drawing['Line'].replace('_', '')
@@ -716,10 +714,12 @@ def check_drawing_in_line(pure_data_table: dict) -> dict:
                     pure_data_table[number_table][1][index_row].insert(0, dict_line_drawing['Line'])
                     pure_data_table[number_table][1][index_row].insert(1, dict_line_drawing['Drawing'])
                     add_column_drawing = True
-        # добавляем в списке названий столбцов новый столбец "Drawing" на второе место
+
+        # вставляем названия столбцов "Line" на первое место, "Drawing" на второе
         if add_column_drawing:
+            pure_data_table[number_table][0].remove('Line')
+            pure_data_table[number_table][0].insert(0, 'Line')
             pure_data_table[number_table][0].insert(1, 'Drawing')
-    # print(f'pure_data_table {pure_data_table}')
     return pure_data_table
 
 
@@ -830,8 +830,8 @@ def line_from_top_to_general_data(dirty_data_report: dict, pure_data_table: dict
         return stop_stop
     try:
         # если это чертёж
-        if re.findall(r'[KК][EЕ]01-.+|[TТ]R01-.+', line_or_drawing):
-            drawing = re.findall(r'[KК][EЕ]01-.+|[TТ]R01-.+', line_or_drawing)
+        if re.findall(r'[KК][EЕ]01-.+|[TТ]R01[-.].+', line_or_drawing):
+            drawing = re.findall(r'[KК][EЕ]01-.+|[TТ]R01[-.].+', line_or_drawing)
             drawing = drawing[0].replace('\n', '')
             # вставляем на второе место номер чертежа
             for number_table in pure_data_table.keys():

@@ -711,13 +711,13 @@ def log_in():
                 button_drawing = []
                 # сдвигаем кнопки названий найденных таблиц и чертежей в бок для отображения флажков при авторизации
                 for list_push in all_list_button_for_drawing:
-                    x11 = 820
+                    x11 = 920
                     for push in list_push:
                         for index_push_button, push_button in enumerate(open_push_button):
                             if push_button == push:
                                 push_button.move(x11, push_button.y())
                                 push_button.repaint()
-                                x11 += 130
+                                x11 += 85
                                 button_drawing.append(index_push_button)
                 for i in range(len(open_push_button)):
                     if i not in button_drawing:
@@ -765,13 +765,13 @@ def log_out():
             button_drawing = []
             # сдвигаем кнопки названий найденных таблиц и чертежей в бок для отображения флажков при авторизации
             for list_push in all_list_button_for_drawing:
-                x11 = 800
+                x11 = 900
                 for push in list_push:
                     for index_push_button, push_button in enumerate(open_push_button):
                         if push_button == push:
                             push_button.move(x11, push_button.y())
                             push_button.repaint()
-                            x11 += 130
+                            x11 += 85
                             button_drawing.append(index_push_button)
             for i in range(len(open_push_button)):
                 if i not in button_drawing:
@@ -985,16 +985,16 @@ def search():
                         # выставляем координату от левого края
                         # если авторизовались
                         if authorization:
-                            x11 = 820
+                            x11 = 920
                         # если нет
                         else:
-                            x11 = 800
+                            x11 = 900
                         # итерируемся по количеству чертежей для создания нужного количества кнопок номеров чертежей
                         if len(list_drawing_button) > 0:
                             for index, draw in enumerate(list_drawing_button):
                                 # создаём кнопку для чертежа
                                 button_for_drawing = drawing_name_buttons(frame_for_table, y1, x11, language, index, path_drawing, draw)
-                                x11 += 150
+                                x11 += 105
                                 list_button_for_drawing.append(button_for_drawing)
                         all_list_button_for_drawing.append(list_button_for_drawing)
                         check_box = check_box_name_buttons(frame_for_table, y1, authorization)
@@ -1048,16 +1048,16 @@ def search():
                         # выставляем координату от левого края
                         # если авторизовались
                         if authorization:
-                            x11 = 820
+                            x11 = 920
                         # если нет
                         else:
-                            x11 = 800
+                            x11 = 900
                         # итерируемся по количеству чертежей для создания нужного количества кнопок номеров чертежей
                         if len(list_drawing_button) > 0:
                             for index, draw in enumerate(list_drawing_button):
                                 # создаём кнопку для чертежа
                                 button_for_drawing = drawing_name_buttons(frame_for_table, y1, x11, language, index, path_drawing, draw)
-                                x11 += 150
+                                x11 += 105
                                 list_button_for_drawing.append(button_for_drawing)
                         all_list_button_for_drawing.append(list_button_for_drawing)
                         check_box = check_box_name_buttons(frame_for_table, y1, authorization)
@@ -1071,8 +1071,6 @@ def search():
                         visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing)
                 # если заполнен номер unit или report_number и любая(-ые) другие данные (номер линии, номер чертежа, номер локации)
                 if find_data[1] == 3:
-                    print(f'table {table}')
-                    print(f'find_data[3] {find_data[3]}')
                     # делаем запрос в модели
                     sqm.setQuery('''SELECT * FROM {} WHERE {}'''.format(table, find_data[3]))
                     # список чертежей в рамках одного репорта
@@ -1111,16 +1109,16 @@ def search():
                         # выставляем координату от левого края
                         # если авторизовались
                         if authorization:
-                            x11 = 820
+                            x11 = 920
                         # если нет
                         else:
-                            x11 = 800
+                            x11 = 900
                         # итерируемся по количеству чертежей для создания нужного количества кнопок номеров чертежей
                         if len(list_drawing_button) > 0:
                             for index, draw in enumerate(list_drawing_button):
                                 # создаём кнопку для чертежа
                                 button_for_drawing = drawing_name_buttons(frame_for_table, y1, x11, language, index, path_drawing, draw)
-                                x11 += 150
+                                x11 += 105
                                 list_button_for_drawing.append(button_for_drawing)
                         all_list_button_for_drawing.append(list_button_for_drawing)
                         check_box = check_box_name_buttons(frame_for_table, y1, authorization)
@@ -1646,7 +1644,7 @@ def unfreeze_button():
         line_search_number_report.setDisabled(False)
         checkBox_on.setDisabled(False)
         checkBox_os.setDisabled(False)
-        # checkBox_of.setDisabled(False)
+        checkBox_of.setDisabled(False)
         checkBox_utt.setDisabled(False)
         checkBox_paut.setDisabled(False)
         checkBox_2023.setDisabled(False)

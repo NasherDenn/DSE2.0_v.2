@@ -68,7 +68,7 @@ def table_name_buttons(frame_for_table, y1, authorization, table, find_date, lan
     else:
         x1 = 0
     # задаём размеры и место расположения кнопки во frame
-    button_for_table.setGeometry(QRect(x1, y1, 800, 20))
+    button_for_table.setGeometry(QRect(x1, y1, 900, 20))
     # задаём стиль шрифта
     font_button_for_table = QFont()
     font_button_for_table.setFamily(u"Calibri")
@@ -88,7 +88,7 @@ def drawing_name_buttons(frame_for_table, y1, x11, language, index_draw, path_dr
     # задаём название кнопки по номеру репорта и помещаем внутрь frame
     drawing_button_for_table = QPushButton(second_underlining_drawing(language, index_draw), frame_for_table)
     # задаём размеры и место расположения кнопки во frame
-    drawing_button_for_table.setGeometry(QRect(x11, y1, 100, 20))
+    drawing_button_for_table.setGeometry(QRect(x11, y1, 85, 20))
     # задаём стиль шрифта
     font_drawing_button_for_table = QFont()
     font_drawing_button_for_table.setFamily(u"Calibri")
@@ -252,13 +252,13 @@ def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization, l_b_f_d):
 
         # x11 - координата кнопки чертежей
         if authorization:
-            x11 = 820
+            x11 = 920
         else:
-            x11 = 800
+            x11 = 900
         # передвигаем кнопку чертежей
         for button_draw in l_b_f_d[b]:
             button_draw.move(x11, position_y1[b])
-            x11 += 100
+            x11 += 85
 
         l_t_v[b].setGeometry((QRect(0, position_y2[b], 1640, l_h_t_v[b])))
         # делаем таблицу из списка видимой
@@ -273,14 +273,14 @@ def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization, l_b_f_d):
         # x11 - координата кнопки чертежей
         if authorization:
             # для чертежй
-            x11 = 820
+            x11 = 920
         else:
             # для чертежй
-            x11 = 800
+            x11 = 900
         # передвигаем кнопку чертежей
         for button_draw in l_b_f_d[bb]:
             button_draw.move(x11, position_y1[bb])
-            x11 += 100
+            x11 += 85
 
         # делаем таблицу из списка снова скрытой
         l_t_v[bb].hide()
