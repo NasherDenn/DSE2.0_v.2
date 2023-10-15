@@ -175,7 +175,8 @@ faq_text_ru = '- Для чего эта программа?\n' \
            'По умолчанию сформированный отчёт сохраняется в папке "Statistic for print".\n'\
            'Достоверность этих и других данных ВАЖНЫ для корректной работы всей программы!!!\n\n' \
            '- Как удалять данные?\n' \
-           'Удалять можно только таблицы целиком. Для этого поставьте флажок напротив интересующей таблицы и нажмите кнопку "Удалить".'
+           'Удалять можно только таблицы целиком. Для этого поставьте флажок напротив интересующей таблицы и нажмите кнопку "Удалить".\n'\
+           '!!!Внимание!!! При удалении проверьте выбранные фильтры. Возможны Вы хотите удалить только часть данных, а не всю таблицу!'
 
 # FAQ на английском языке
 faq_text_en = '- What is this program for??\n' \
@@ -202,7 +203,8 @@ faq_text_en = '- What is this program for??\n' \
            'By default, the generated report is saved in the "Statistic for print" folder.\n'\
            'The reliability of these and other data is IMPORTANT for the correct operation of the entire program!!!\n\n' \
            '- How to delete data?\n' \
-           'You can only delete entire tables. To do this, check the box next to the table of interest and click the "Delete" button.'
+           'You can only delete entire tables. To do this, check the box next to the table of interest and click the "Delete" button.\n'\
+           '!!!Attention!!! When deleting, check the selected filters. Possible You want to delete only part of the data, not the entire table!'
 
 # FAQ на казахском языке
 faq_text_kz = '- Бұл бағдарлама не үшін?\n' \
@@ -229,7 +231,8 @@ faq_text_kz = '- Бұл бағдарлама не үшін?\n' \
            'Әдепкі бойынша жасалған есеп қалтада сақталады "Statistic for print".\n'\
            'Осы және басқа деректердің дәлдігі бүкіл бағдарламаның дұрыс жұмыс істеуі үшін МАҢЫЗДЫ.!!!\n\n' \
            '- Деректерді қалай жоюға болады?\n' \
-           'Сіз тек толық кестелерді жоя аласыз. Ол үшін қызықтыратын кестенің жанындағы құсбелгіні қойып, «Жою» түймесін басыңыз.'
+           'Сіз тек толық кестелерді жоя аласыз. Ол үшін қызықтыратын кестенің жанындағы құсбелгіні қойып, «Жою» түймесін басыңыз.\n'\
+           '!!!Назар аударыңыз!!! Жою кезінде таңдалған сүзгілерді тексеріңіз. Мүмкін сіз бүкіл кестені емес, деректердің бір бөлігін ғана жойғыңыз келеді!'
 
 # количество репортов, которое должно бы ть в каждой БД
 count_reports_in_ndt = {'reports_db_OF_PAUT_19.sqlite': 0, 'reports_db_OF_PAUT_20.sqlite': 0, 'reports_db_OF_PAUT_21.sqlite': 0, 'reports_db_OF_PAUT_22.sqlite': 7,

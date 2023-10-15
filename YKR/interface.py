@@ -3,6 +3,7 @@ import time
 
 from PyQt5.QtSql import QSqlDatabase
 from PyQt5.QtSql import QSqlQueryModel
+from PyQt5.QtSql import QSqlTableModel
 
 from YKR.utilities_interface import *
 from YKR.add_reports import *
@@ -166,7 +167,7 @@ line_search_number_report.setCursorMoveStyle(Qt.LogicalMoveStyle)
 line_search_number_report.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_number_report.setFocusPolicy(Qt.StrongFocus)
-line_search_number_report.setText('010')
+line_search_number_report.setText('004')
 
 # создаём кнопку "Поиск"
 button_search = QPushButton('Поиск', window)
@@ -197,6 +198,7 @@ button_print.setFont(font_button_print)
 button_print.setFocusPolicy(Qt.ClickFocus)
 # включаем переход фокуса по кнопке Tab
 button_print.setFocusPolicy(Qt.TabFocus)
+button_print.setDisabled(True)
 
 # создаём кнопку "Добавить"
 button_add = QPushButton('Добавить', window)
@@ -433,26 +435,75 @@ button_log_out.setFocusPolicy(Qt.ClickFocus)
 # делаем неактивной кнопку "Выйти" до авторизации
 button_log_out.setDisabled(True)
 
-# создаём кнопку "Удалить"
-button_delete = QPushButton('Удалить', window)
-# устанавливаем положение и размер кнопки "Удалить" в родительском окне (window)
-button_delete.setGeometry(QRect(20, 904, 171, 41))
-# присваиваем уникальное объектное имя кнопке "Удалить"
-button_delete.setObjectName(u"pushButton_delete")
-# задаём параметры стиля и оформления кнопки "Удалить"
-font_button_delete = QFont()
-font_button_delete.setFamily(u"Arial")
-font_button_delete.setPointSize(14)
-button_delete.setFont(font_button_delete)
+# создаём кнопку "Удалить таблицу"
+button_delete_table = QPushButton('Удалить таблицу', window)
+# устанавливаем положение и размер кнопки "Удалить таблицу" в родительском окне (window)
+button_delete_table.setGeometry(QRect(20, 904, 191, 41))
+# присваиваем уникальное объектное имя кнопке "Удалить таблицу"
+button_delete_table.setObjectName(u"pushButton_delete")
+# задаём параметры стиля и оформления кнопки "Удалить таблицу"
+font_button_delete_table = QFont()
+font_button_delete_table.setFamily(u"Arial")
+font_button_delete_table.setPointSize(14)
+button_delete_table.setFont(font_button_delete_table)
 # дополнительные параметры
-button_delete.setFocusPolicy(Qt.ClickFocus)
+button_delete_table.setFocusPolicy(Qt.ClickFocus)
 # делаем неактивной кнопку "Удалить" до авторизации
-button_delete.setDisabled(True)
+button_delete_table.setDisabled(True)
+
+# создаём кнопку "Удалить строку"
+button_delete_row = QPushButton('Удалить строку', window)
+# устанавливаем положение и размер кнопки "Удалить строку" в родительском окне (window)
+button_delete_row.setGeometry(QRect(231, 904, 171, 41))
+# присваиваем уникальное объектное имя кнопке "Удалить строку"
+button_delete_row.setObjectName(u"pushButton_delete_row")
+# задаём параметры стиля и оформления кнопки "Удалить строку"
+font_button_delete_row = QFont()
+font_button_delete_row.setFamily(u"Arial")
+font_button_delete_row.setPointSize(14)
+button_delete_row.setFont(font_button_delete_row)
+# дополнительные параметры
+button_delete_row.setFocusPolicy(Qt.ClickFocus)
+# делаем неактивной кнопку "Удалить строку" до авторизации
+button_delete_row.setDisabled(True)
+
+# создаём кнопку "Добавить строку"
+button_add_row = QPushButton('Добавить строку', window)
+# устанавливаем положение и размер кнопки "Добавить строку" в родительском окне (window)
+button_add_row.setGeometry(QRect(495, 904, 191, 41))
+# присваиваем уникальное объектное имя кнопке "Добавить строку"
+button_add_row.setObjectName(u"pushButton_button_add_row")
+# задаём параметры стиля и оформления кнопки "Добавить строку"
+font_button_add_row = QFont()
+font_button_add_row.setFamily(u"Arial")
+font_button_add_row.setPointSize(14)
+button_add_row.setFont(font_button_add_row)
+# дополнительные параметры
+button_add_row.setFocusPolicy(Qt.ClickFocus)
+# делаем неактивной кнопку "Добавить строку" до авторизации
+button_add_row.setDisabled(True)
+
+# создаём кнопку "Сохранить"
+button_save = QPushButton('Сохранить', window)
+# устанавливаем положение и размер кнопки "Сохранить" в родительском окне (window)
+button_save.setGeometry(QRect(706, 904, 191, 41))
+# присваиваем уникальное объектное имя кнопке "Сохранить"
+button_save.setObjectName(u"pushButton_button_save")
+# задаём параметры стиля и оформления кнопки "Сохранить"
+font_button_save = QFont()
+font_button_save.setFamily(u"Arial")
+font_button_save.setPointSize(14)
+button_save.setFont(font_button_save)
+# дополнительные параметры
+button_save.setFocusPolicy(Qt.ClickFocus)
+# делаем неактивной кнопку "Сохранить" до авторизации
+button_save.setDisabled(True)
 
 # создаём кнопку "Верификация"
 button_verification = QPushButton('Верификация', window)
 # устанавливаем положение и размер кнопки "Верификация" в родительском окне (window)
-button_verification.setGeometry(QRect(570, 904, 171, 41))
+# button_verification.setGeometry(QRect(570, 904, 171, 41))
+button_verification.setGeometry(QRect(990, 904, 191, 41))
 # присваиваем уникальное объектное имя кнопке "Верификация"
 button_verification.setObjectName(u"pushButton_verification")
 # задаём параметры стиля и оформления кнопки "Верификация"
@@ -463,13 +514,12 @@ button_verification.setFont(font_button_verification)
 # дополнительные параметры
 button_verification.setFocusPolicy(Qt.ClickFocus)
 # делаем неактивной кнопку "Верификация" до авторизации
-# button_verification.setDisabled(False)
 button_verification.setDisabled(True)
 
 # создаём кнопку "Сводные данные"
 button_statistic_master = QPushButton('Сводные данные', window)
 # устанавливаем положение и размер кнопки "Сводные данные" в родительском окне (window)
-button_statistic_master.setGeometry(QRect(761, 904, 200, 41))
+button_statistic_master.setGeometry(QRect(1201, 904, 191, 41))
 # присваиваем уникальное объектное имя кнопке "Сводные данные"
 button_statistic_master.setObjectName(u"pushButton_statistic_master")
 # задаём параметры стиля и оформления кнопки "Сводные данные"
@@ -484,19 +534,19 @@ button_statistic_master.setDisabled(True)
 
 # вставляем картинку YKR
 label_ykr = QLabel(window)
-label_ykr.setObjectName(u"Rutledge")
+label_ykr.setObjectName(u"YKR")
 label_ykr.setGeometry(QRect(990, 10, 111, 121))
 label_ykr.setPixmap(QPixmap(f'{os.path.abspath(os.getcwd())}\\Images\\logo_ykr.png'))
 
 # вставляем картинку NCA
 label_nca = QLabel(window)
-label_nca.setObjectName(u"Rutledge")
+label_nca.setObjectName(u"NCA")
 label_nca.setGeometry(QRect(1120, 10, 111, 121))
 label_nca.setPixmap(QPixmap(f'{os.path.abspath(os.getcwd())}\\Images\\logo_nca.png'))
 
 # вставляем картинку NCOC
 label_ncoc = QLabel(window)
-label_ncoc.setObjectName(u"Rutledge")
+label_ncoc.setObjectName(u"NCOC")
 label_ncoc.setGeometry(QRect(1250, 13, 111, 115))
 label_ncoc.setPixmap(QPixmap(f'{os.path.abspath(os.getcwd())}\\Images\\logo_ncoc.png'))
 
@@ -508,7 +558,6 @@ scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 # задаём размер области с полосой прокрутки
 scroll_area.setGeometry(20, 245, 1680, 650)
-# scroll_area.setGeometry(20, 245, 1680, 650)
 
 # создаём группу из чек-бокса 'ON', 'OF', 'OS'
 groupBox_location = QGroupBox(window)
@@ -589,7 +638,7 @@ checkBox_paut.setText('PAUT')
 groupBox_year = QGroupBox(window)
 groupBox_year.setObjectName(u"groupBox_year")
 # устанавливаем размер группы радио-кнопок
-groupBox_year.setGeometry(QRect(360, 180, 381, 56))
+groupBox_year.setGeometry(QRect(360, 180, 561, 56))
 # устанавливаем название группы чек-боксов
 groupBox_year.setTitle('Год контроля')
 groupBox_year.setStyleSheet('''QGroupBox {border: 0.5px solid grey;};
@@ -599,11 +648,22 @@ groupBox_year.setStyleSheet('''QGroupBox {border: 0.5px solid grey;};
                                padding: 0 3px 0 3px;
                             }''')
 
+# создаём чек-бокс года '2024'
+checkBox_2024 = QCheckBox(groupBox_year)
+checkBox_2024.setObjectName(u"checkBox_2024")
+# устанавливаем положение внутри группы
+checkBox_2024.setGeometry(QRect(10, 25, 61, 20))
+# указываем текст чек-бокса
+checkBox_2024.setText('2024')
+# временно, пока не загрузятся другие локации
+checkBox_2024.setEnabled(False)
+
 # создаём чек-бокс года '2023'
 checkBox_2023 = QCheckBox(groupBox_year)
 checkBox_2023.setObjectName(u"checkBox_2023")
 # устанавливаем положение внутри группы
-checkBox_2023.setGeometry(QRect(10, 25, 61, 20))
+checkBox_2023.setGeometry(QRect(80, 25, 61, 20))
+# checkBox_2023.setGeometry(QRect(10, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2023.setText('2023')
 # временно, пока не загрузятся другие локации
@@ -613,7 +673,8 @@ checkBox_2023.setEnabled(True)
 checkBox_2022 = QCheckBox(groupBox_year)
 checkBox_2022.setObjectName(u"checkBox_2022")
 # устанавливаем положение внутри группы
-checkBox_2022.setGeometry(QRect(80, 25, 61, 20))
+checkBox_2022.setGeometry(QRect(150, 25, 61, 20))
+# checkBox_2022.setGeometry(QRect(80, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2022.setText('2022')
 # делаем чек-бокс '2022' активным по умолчанию
@@ -623,7 +684,8 @@ checkBox_2022.setChecked(True)
 checkBox_2021 = QCheckBox(groupBox_year)
 checkBox_2021.setObjectName(u"checkBox_2021")
 # устанавливаем положение внутри группы
-checkBox_2021.setGeometry(QRect(150, 25, 61, 20))
+checkBox_2021.setGeometry(QRect(220, 25, 61, 20))
+# checkBox_2021.setGeometry(QRect(150, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2021.setText('2021')
 # временно, пока не загрузятся другие локации
@@ -633,7 +695,8 @@ checkBox_2021.setEnabled(True)
 checkBox_2020 = QCheckBox(groupBox_year)
 checkBox_2020.setObjectName(u"checkBox_2020")
 # устанавливаем положение внутри группы
-checkBox_2020.setGeometry(QRect(220, 25, 61, 20))
+checkBox_2020.setGeometry(QRect(290, 25, 61, 20))
+# checkBox_2020.setGeometry(QRect(220, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2020.setText('2020')
 # временно, пока не загрузятся другие локации
@@ -643,7 +706,8 @@ checkBox_2020.setEnabled(True)
 checkBox_2019 = QCheckBox(groupBox_year)
 checkBox_2019.setObjectName(u"checkBox_2019")
 # устанавливаем положение внутри группы
-checkBox_2019.setGeometry(QRect(290, 25, 61, 20))
+checkBox_2019.setGeometry(QRect(360, 25, 61, 20))
+# checkBox_2019.setGeometry(QRect(290, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2019.setText('2019')
 # временно, пока не загрузятся другие локации
@@ -687,7 +751,10 @@ def log_in():
     # если правильно введён логин и пароль
     elif line_login.text() == 'admin' and line_password.text() == '0751':
         # делаем активными кнопки "Добавить", "Удалить", "Выйти", "Сводные данные", "Верификация"
-        button_delete.setDisabled(False)
+        button_delete_table.setDisabled(False)
+        # button_delete_row.setDisabled(False)
+        # button_add_row.setDisabled(False)
+        # button_save.setDisabled(False)
         button_log_out.setDisabled(False)
         button_add.setDisabled(False)
         button_statistic_master.setDisabled(False)
@@ -728,7 +795,6 @@ def log_in():
                 # делаем видимые флажки
                 for check_box in open_check_box:
                     check_box.show()
-
     # если неправильно введён логин или пароль
     else:
         QMessageBox.information(
@@ -743,7 +809,10 @@ def log_in():
 # нажатие кнопки "Выйти"
 def log_out():
     # делаем НЕ активными кнопки "Добавить", "Удалить", "Выйти", "Сводные данные", "Выйти", "Верификация"
-    button_delete.setDisabled(True)
+    button_delete_table.setDisabled(True)
+    # button_delete_row.setDisabled(True)
+    # button_add_row.setDisabled(True)
+    # button_save.setDisabled(True)
     button_log_out.setDisabled(True)
     button_add.setDisabled(True)
     button_statistic_master.setDisabled(True)
@@ -781,7 +850,7 @@ def log_out():
             open_check_box = scroll.findChildren(QCheckBox)
             # скрываем флажки
             for check_box in open_check_box:
-                check_box.setParent(None)
+                check_box.close()
 
 
 # словарь выбранных фильтров (локация, метод, год) для поиска
@@ -934,8 +1003,17 @@ def search():
                 con.open()
                 # задаём поле для вывода данных из базы данных, размещённую в области с полосой прокрутки
                 table_index = QTableView(frame_for_table)
+
+
                 # создаём модель
-                sqm = QSqlQueryModel(parent=window)
+                # sqm = QSqlQueryModel(parent=window)
+                if authorization:
+                    sqm = QSqlTableModel(parent=window)
+                    # sqm.setEditStrategy(QSqlTableModel.OnManualSubmit)
+                else:
+                    sqm = QSqlQueryModel(parent=window)
+
+
                 # устанавливаем ширину столбцов под содержимое
                 table_index.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
                 # устанавливаем высоту столбцов под содержимое
@@ -949,8 +1027,21 @@ def search():
                 # find_data[3] - values (введённые значения в поля для поиска)
                 # find_data[4] - list_date (список дат каждого репорта)
                 if find_data[1] == 1:
+
+
                     # делаем запрос в модели
-                    sqm.setQuery('SELECT * FROM {}'.format(table))
+                    # sqm.setQuery('SELECT * FROM {}'.format(table))
+                    if authorization:
+                        sqm.setTable(table)
+                        sqm.setEditStrategy(QSqlTableModel.OnManualSubmit)
+                        # sqm.submit()
+                        sqm.select()
+
+                        # lambda: button_save.clicked.connect(sqm.submitAll())
+                    else:
+                        sqm.setQuery('SELECT * FROM {}'.format(table))
+
+
                     # количество строк в найденной таблице
                     count_row_in_table = sqm.rowCount()
                     # сумма всех строк при поиске
@@ -1009,8 +1100,32 @@ def search():
 
                 # если заполнено одно поле, кроме unit или номера репорта
                 if find_data[1] == 2:
+
+
                     # делаем запрос в модели
-                    sqm.setQuery('''SELECT * FROM {} WHERE "{}" LIKE "%{}%"'''.format(table, find_data[2], find_data[3]))
+                    # sqm.setQuery('''SELECT * FROM {} WHERE "{}" LIKE "%{}%"'''.format(table, find_data[2], find_data[3]))
+                    if authorization:
+                        conn = sqlite3.connect(f'{os.path.abspath(os.getcwd())}\\DB\\{db}')
+                        cur = conn.cursor()
+                        try:
+                            if len(cur.execute('''SELECT * FROM {} WHERE "{}" LIKE "%{}%"'''.format(table, find_data[2], find_data[3])).fetchall()) > 0:
+                                sqm.setTable(table)
+                                sqm.setFilter('"{}" LIKE "%{}%"'.format(find_data[2], find_data[3]))
+                                # sqm.setEditStrategy(QSqlTableModel.OnFieldChange)
+                                # sqm.submitAll()
+                                # rec = sqm.record(1)
+                                sqm.select()
+                                # rec.setValue('Line', '454645466')
+                                # sqm.setRecord(0, rec)
+                                # sqm.submitAll()
+                                # lambda: button_save.clicked.connect(sqm.submitAll())
+                        except:
+                            continue
+                        cur.close()
+                    else:
+                        sqm.setQuery('''SELECT * FROM {} WHERE "{}" LIKE "%{}%"'''.format(table, find_data[2], find_data[3]))
+
+
                     # если не найдено ни одной строчки, то ничего не показываем
                     # список чертежей в рамках одного репорта
                     list_button_for_drawing = []
@@ -1071,8 +1186,28 @@ def search():
                         visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing)
                 # если заполнен номер unit или report_number и любая(-ые) другие данные (номер линии, номер чертежа, номер локации)
                 if find_data[1] == 3:
+
+
                     # делаем запрос в модели
-                    sqm.setQuery('''SELECT * FROM {} WHERE {}'''.format(table, find_data[3]))
+                    # sqm.setQuery('''SELECT * FROM {} WHERE {}'''.format(table, find_data[3]))
+                    if authorization:
+                        conn = sqlite3.connect(f'{os.path.abspath(os.getcwd())}\\DB\\{db}')
+                        cur = conn.cursor()
+                        try:
+                            if len(cur.execute('''SELECT * FROM {} WHERE {}'''.format(table, find_data[3])).fetchall()) > 0:
+                                sqm.setTable(table)
+                                sqm.setFilter(f'{find_data[3]}')
+                                # sqm.setEditStrategy(QSqlTableModel.OnFieldChange)
+                                sqm.select()
+                                # lambda: button_save.clicked.connect(sqm.submitAll())
+                                # lambda: button_save.clicked.connect(sqm.submitAll())
+                        except:
+                            continue
+                        cur.close()
+                    else:
+                        sqm.setQuery('''SELECT * FROM {} WHERE {}'''.format(table, find_data[3]))
+
+
                     # список чертежей в рамках одного репорта
                     list_button_for_drawing = []
                     if sqm.rowCount() == 0:
@@ -1173,9 +1308,12 @@ def ru():
     button_add.setText('Добавить')
     button_log_in.setText('Войти')
     button_log_out.setText('Выйти')
-    button_delete.setText('Удалить')
+    button_delete_table.setText('Удалить таблицу')
+    button_delete_row.setText('Удалить строку')
+    button_add_row.setText('Добавить строку')
+    button_save.setText('Сохранить')
     button_statistic_master.setText('Сводные данные')
-    button_statistic_master.setGeometry(QRect(761, 904, 200, 41))
+    button_statistic_master.setGeometry(QRect(1201, 904, 200, 41))
     button_exit.setText('Выход')
     button_verification.setText('Верификация')
     groupBox_location.setTitle('Локация')
@@ -1225,9 +1363,12 @@ def en():
     button_add.setText('Add reports')
     button_log_in.setText('Sign in')
     button_log_out.setText('Sign out')
-    button_delete.setText('Delete')
+    button_delete_table.setText('Delete table')
+    button_delete_row.setText('Delete row')
+    button_add_row.setText('Add row')
+    button_save.setText('Save')
     button_statistic_master.setText('Summary data')
-    button_statistic_master.setGeometry(QRect(761, 904, 200, 41))
+    button_statistic_master.setGeometry(QRect(1201, 904, 200, 41))
     button_exit.setText('Exit')
     button_verification.setText('Verification')
     groupBox_location.setTitle('Location')
@@ -1277,9 +1418,12 @@ def kz():
     button_add.setText('Қосу')
     button_log_in.setText('Кіру үшін')
     button_log_out.setText('Шығу')
-    button_delete.setText('Жою')
+    button_delete_table.setText('Кестені жою')
+    button_delete_row.setText('Жолды жою')
+    button_add_row.setText('Жолды қосыңыз')
+    button_save.setText('Сақтау')
     button_statistic_master.setText('Жиынтық деректер')
-    button_statistic_master.setGeometry(QRect(736, 904, 250, 41))
+    button_statistic_master.setGeometry(QRect(1201, 904, 250, 41))
     button_exit.setText('Шығу')
     button_verification.setText('Тексеру')
     groupBox_location.setTitle('Орналасқан жері')
@@ -1331,7 +1475,12 @@ def delete_report():
                 # то записываем его индекс
                 index_check_checkbox.append(index_checkbox)
         # список всех кнопок во Frame
-        pushbutton = area.findChildren(QPushButton)
+        all_pushbutton = area.findChildren(QPushButton)
+        pushbutton = []
+        # выбираем только кнопки с названиями таблиц (исключаем кнопки чертежей)
+        for i in all_pushbutton:
+            if ':' in i.text():
+                pushbutton.append(i)
         for index in index_check_checkbox:
             # список кнопок в которых находится информация о таблице для удаления
             table_for_delete.append(pushbutton[index])
@@ -1348,6 +1497,15 @@ def delete_report():
         delete_table_from_db(list_table_and_db_for_delete)
         search()
 
+
+        # # если отображаются найденные таблицы
+        # if window.findChildren(QTableView):
+        #     open_scroll_area = window.findChildren(QScrollArea)
+        #     for scroll in open_scroll_area:
+        #         open_check_box = scroll.findChildren(QCheckBox)
+        #         # делаем видимые флажки
+        #         for check_box in open_check_box:
+        #             check_box.show()
 
 # печать репортов
 def print_report():
@@ -1563,7 +1721,10 @@ def freeze_button():
     button_search.setDisabled(True)
     button_print.setDisabled(True)
     button_add.setDisabled(True)
-    button_delete.setDisabled(True)
+    button_delete_table.setDisabled(True)
+    # button_delete_row.setDisabled(True)
+    # button_add_row.setDisabled(True)
+    # button_save.setDisabled(True)
     button_statistic_master.setDisabled(True)
     button_exit.setDisabled(True)
     button_verification.setDisabled(True)
@@ -1585,6 +1746,7 @@ def freeze_button():
     checkBox_of.setDisabled(True)
     checkBox_utt.setDisabled(True)
     checkBox_paut.setDisabled(True)
+    # checkBox_2024.setDisabled(True)
     checkBox_2023.setDisabled(True)
     checkBox_2022.setDisabled(True)
     checkBox_2021.setDisabled(True)
@@ -1599,7 +1761,10 @@ def unfreeze_button():
         button_search.setDisabled(False)
         button_print.setDisabled(False)
         button_add.setDisabled(False)
-        button_delete.setDisabled(False)
+        button_delete_table.setDisabled(False)
+        # button_delete_row.setDisabled(False)
+        # button_add_row.setDisabled(False)
+        # button_save.setDisabled(False)
         button_statistic_master.setDisabled(False)
         button_exit.setDisabled(False)
         button_verification.setDisabled(False)
@@ -1620,6 +1785,7 @@ def unfreeze_button():
         checkBox_of.setDisabled(False)
         checkBox_utt.setDisabled(False)
         checkBox_paut.setDisabled(False)
+        # checkBox_2024.setDisabled(False)
         checkBox_2023.setDisabled(False)
         checkBox_2022.setDisabled(False)
         checkBox_2021.setDisabled(False)
@@ -1647,6 +1813,7 @@ def unfreeze_button():
         checkBox_of.setDisabled(False)
         checkBox_utt.setDisabled(False)
         checkBox_paut.setDisabled(False)
+        # checkBox_2024.setDisabled(False)
         checkBox_2023.setDisabled(False)
         checkBox_2022.setDisabled(False)
         checkBox_2021.setDisabled(False)
@@ -1819,6 +1986,19 @@ def verification_data():
     ver_window.exec_()
 
 
+# внесение изменений в БД после нажатия на кнопку "Сохранить"
+# def save():
+#     # if window.findChildren(QTableView):
+#     #     open_tableview = window.findChildren(QTableView)
+#     #     for tableview in open_tableview:
+#     #         print(tableview)
+#     for i in list_sqm:
+#         print(i.tableName())
+#         print(i.isDirty())
+#         # print(i.dataChanged)
+#         i.submitAll()
+
+
 # нажатие кнопки "Войти"
 button_log_in.clicked.connect(log_in)
 
@@ -1843,7 +2023,16 @@ button_kz.clicked.connect(kz)
 button_statistic_master.clicked.connect(statistic_master)
 
 # нажатие на кнопку "Удалить"
-button_delete.clicked.connect(delete_report)
+button_delete_table.clicked.connect(delete_report)
+
+# нажатие на кнопку "Удалить строку"
+# button_delete_row.clicked.connect(delete_row)
+
+# нажатие на кнопку "Добавить строку"
+# button_add_row.clicked.connect(add_row)
+
+# нажатие на кнопку "Сохранить"
+# button_save.clicked.connect(save)
 
 # нажатие на кнопку "Печать"
 button_print.clicked.connect(print_report)
