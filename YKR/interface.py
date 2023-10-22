@@ -5,6 +5,7 @@ from PyQt5.QtSql import QSqlDatabase
 from PyQt5.QtSql import QSqlQueryModel
 from PyQt5.QtSql import QSqlTableModel
 
+import YKR.utilities_interface
 from YKR.utilities_interface import *
 from YKR.add_reports import *
 from YKR.props import *
@@ -131,7 +132,7 @@ line_search_unit.setCursorMoveStyle(Qt.LogicalMoveStyle)
 line_search_unit.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_unit.setFocusPolicy(Qt.StrongFocus)
-line_search_unit.setText('')
+line_search_unit.setText('300')
 
 # создаём однострочное поле для ввода номера локации
 line_search_item_description = QLineEdit(window)
@@ -177,7 +178,7 @@ line_search_number_report.setCursorMoveStyle(Qt.LogicalMoveStyle)
 line_search_number_report.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_number_report.setFocusPolicy(Qt.StrongFocus)
-line_search_number_report.setText('004')
+line_search_number_report.setText('')
 
 # создаём кнопку "Поиск"
 button_search = QPushButton('Поиск', window)
@@ -959,6 +960,8 @@ for button in groupBox_year.findChildren(QCheckBox):
 list_sqm = []
 # список всех наёденных чертежей в рамках одного запроса
 all_list_button_for_drawing = []
+# активатор остановки изменения ширины фрейма, если хоть в одном найденном репорте больше, чем девять чертежй
+# stop_width_frame = False
 
 
 # нажатие на кнопку "Поиск"
@@ -967,6 +970,10 @@ def search():
     global list_sqm, all_list_button_for_drawing
     list_sqm = []
     all_list_button_for_drawing = []
+
+    # сбрасывание ширины фрейма на 1680
+    YKR.utilities_interface.new_width_frame = 1680
+
     # проверяем наличие областей tableView для вывода данных и кнопок в ней
     # если есть, то закрываем их, чтобы не наслаивались
     if window.findChildren(QTableView):
@@ -1148,7 +1155,7 @@ def search():
                             for index, draw in enumerate(list_drawing_button):
                                 # создаём кнопку для чертежа
                                 button_for_drawing = drawing_name_buttons(frame_for_table, y1, x11, language, index, path_drawing, draw)
-                                x11 += 105
+                                x11 += 110
                                 list_button_for_drawing.append(button_for_drawing)
                         all_list_button_for_drawing.append(list_button_for_drawing)
                         check_box = check_box_name_buttons(frame_for_table, y1, authorization)
@@ -1157,9 +1164,9 @@ def search():
                         list_height_table_view.append(table_height_for_data_output)
                         list_check_box.append(check_box)
                         button_for_table.clicked.connect(
-                            lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing, frame_for_table))
+                            lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing, frame_for_table, list_drawing_button))
                         # перерисовываем кнопки
-                        visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing, frame_for_table)
+                        visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing, frame_for_table, list_drawing_button)
 
                 # если заполнено одно поле, кроме unit или номера репорта
                 if find_data[1] == 2:
@@ -1234,7 +1241,7 @@ def search():
                             for index, draw in enumerate(list_drawing_button):
                                 # создаём кнопку для чертежа
                                 button_for_drawing = drawing_name_buttons(frame_for_table, y1, x11, language, index, path_drawing, draw)
-                                x11 += 105
+                                x11 += 110
                                 list_button_for_drawing.append(button_for_drawing)
                         all_list_button_for_drawing.append(list_button_for_drawing)
                         check_box = check_box_name_buttons(frame_for_table, y1, authorization)
@@ -1243,9 +1250,9 @@ def search():
                         list_height_table_view.append(table_height_for_data_output)
                         list_check_box.append(check_box)
                         button_for_table.clicked.connect(
-                            lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing, frame_for_table))
+                            lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing, frame_for_table, list_drawing_button))
                         # перерисовываем кнопки
-                        visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing, frame_for_table)
+                        visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing, frame_for_table, list_drawing_button)
                 # если заполнен номер unit или report_number и любая(-ые) другие данные (номер линии, номер чертежа, номер локации)
                 if find_data[1] == 3:
                     # делаем запрос в модели
@@ -1311,7 +1318,7 @@ def search():
                             for index, draw in enumerate(list_drawing_button):
                                 # создаём кнопку для чертежа
                                 button_for_drawing = drawing_name_buttons(frame_for_table, y1, x11, language, index, path_drawing, draw)
-                                x11 += 105
+                                x11 += 110
                                 list_button_for_drawing.append(button_for_drawing)
                         all_list_button_for_drawing.append(list_button_for_drawing)
                         check_box = check_box_name_buttons(frame_for_table, y1, authorization)
@@ -1320,9 +1327,9 @@ def search():
                         list_height_table_view.append(table_height_for_data_output)
                         list_check_box.append(check_box)
                         button_for_table.clicked.connect(
-                            lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing, frame_for_table))
+                            lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing, frame_for_table, list_drawing_button))
                         # перерисовываем кнопки
-                        visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing, frame_for_table)
+                        visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing, frame_for_table, list_drawing_button)
                 con.close()
 
     # сообщение о том, что ничего не найдено
@@ -1333,12 +1340,12 @@ def search():
             'Ничего не найдено!'
         )
 
-    frame_height_for_data_output = all_count_table_in_search * 20
+    # frame_height_for_data_output = all_count_table_in_search * 20
     # высота фрейма = общее количество строк в найденных таблицах * 25 (высота одной строки) + количество таблиц
     # * 2 (кнопка номера репорта и строка названий столбцов) * 20 (высота одной строки) + 20 (высота первой строки с номером первого репорта)
     # + количество таблиц * 20 (расстояние между таблицами в открытом виде)
     # frame_height_for_data_output = all_count_row_in_search * 25 + all_count_table_in_search * 2 * 20 + 20 + all_count_table_in_search * 20
-    frame_for_table.setGeometry(0, 0, 1680, frame_height_for_data_output)
+    # frame_for_table.setGeometry(0, 0, 1680, frame_height_for_data_output)
     # размораживаем все кнопки и поля на время поиска данных
     unfreeze_button()
     search_picture.stop_loading()

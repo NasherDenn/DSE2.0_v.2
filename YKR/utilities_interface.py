@@ -88,7 +88,7 @@ def drawing_name_buttons(frame_for_table, y1, x11, language, index_draw, path_dr
     # задаём название кнопки по номеру репорта и помещаем внутрь frame
     drawing_button_for_table = QPushButton(second_underlining_drawing(language, index_draw), frame_for_table)
     # задаём размеры и место расположения кнопки во frame
-    drawing_button_for_table.setGeometry(QRect(x11, y1, 85, 20))
+    drawing_button_for_table.setGeometry(QRect(x11, y1, 90, 20))
     # задаём стиль шрифта
     font_drawing_button_for_table = QFont()
     font_drawing_button_for_table.setFamily(u"Calibri")
@@ -131,6 +131,7 @@ def second_underlining(table: str, find_date: str, language: str, line_for_table
 
 # кнопка названия чертежа
 def second_underlining_drawing(language, index_draw):
+    index_draw = int(index_draw) + 1
     name_button = ''
     if language == 'ru':
         name_button = f'чертёж-{index_draw}'
@@ -176,6 +177,10 @@ def sort_date(list_date):
     return i
 
 
+# ширина фрейма для вывода найденных таблиц по умолчанию
+new_width_frame = 1680
+
+
 # функция отображения и повторного скрытия таблиц в frame
 # l_t_v = list_table_view = список всех таблиц
 # l_b_t = list_button_for_table = список всех номеров (кнопок) репортов
@@ -185,7 +190,8 @@ def sort_date(list_date):
 # l_h_t_v = list_height_table_view = список высот таблиц (строка с названием колонок + все строки таблицы)
 # l_b_f_d = list_button_for_drawing = список кнопок с чертежами
 # def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization):
-def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization, l_b_f_d, frame_for_table):
+# list_drawing_button - список чертежей в папке для репорта
+def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization, l_b_f_d, frame_for_table, list_drawing_button):
     # x1 - координата кнопки таблицы
     if authorization:
         x1 = 20
@@ -245,18 +251,15 @@ def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization, l_b_f_d, fr
                     # добавляем в список координату таблицы с данными при НЕ нажатой кнопки номера репорта
                     position_y2.append(y_2)
                     y_2 += 20
-    # делаем таблицы видимыми или скрываем их в зависимости от статуса
-
     # общее количество строк в найденных таблицах
     all_count_row_in_search = 0
     # количество всех найденных таблиц
     all_count_table_in_search = len(l_h_t_v)
     frame_height_for_data_output = all_count_table_in_search * 20
-
+    # делаем таблицы видимыми или скрываем их в зависимости от статуса
     for b in list_button_for_table_true:
         # передвигаем кнопку репорта
         l_b_t[b].move(x1, position_y1[b])
-
         # x11 - координата кнопки чертежей
         if authorization:
             x11 = 920
@@ -265,27 +268,21 @@ def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization, l_b_f_d, fr
         # передвигаем кнопку чертежей
         for button_draw in l_b_f_d[b]:
             button_draw.move(x11, position_y1[b])
-            x11 += 85
-
+            x11 += 110
         l_t_v[b].setGeometry((QRect(0, position_y2[b], 1640, l_h_t_v[b])))
         # делаем таблицу из списка видимой
         l_t_v[b].setVisible(True)
         if l_ch_b[b]:
             # передвигаем флажок
             l_ch_b[b].move(0, position_y2[b] - 20)
-
-
         # количество строк в открытых таблицах
         all_count_row_in_search += l_h_t_v[b]
-        # высота фрейма = количество таблиц * 20 (высоты строки с кнопкой для таблицы) + количество строк в открытых таблицах * 20 (высота строки в табице)
-        # + количество открытых таблиц * 20 (расстояние между открытыми таблицами)
+        # высота фрейма = количество таблиц * 20 (высоты строки с кнопкой для таблицы) + количество строк в открытых таблицах *
+        # * 20 (высота строки в таблице) + количество открытых таблиц * 20 (расстояние между открытыми таблицами)
         frame_height_for_data_output = all_count_table_in_search * 20 + all_count_row_in_search + len(list_button_for_table_true) * 20
-
-
     for bb in list_button_for_table_false:
         # передвигаем кнопку репорта
         l_b_t[bb].move(x1, position_y1[bb])
-
         # x11 - координата кнопки чертежей
         if authorization:
             # для чертежй
@@ -296,14 +293,17 @@ def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization, l_b_f_d, fr
         # передвигаем кнопку чертежей
         for button_draw in l_b_f_d[bb]:
             button_draw.move(x11, position_y1[bb])
-            x11 += 85
-
+            x11 += 110
         # делаем таблицу из списка снова скрытой
         l_t_v[bb].hide()
         if l_ch_b[bb]:
             # передвигаем флажок
             l_ch_b[bb].move(0, position_y1[bb])
-    frame_for_table.setGeometry(0, 0, 1680, frame_height_for_data_output)
+    # если хоть в одном репорте больше чем 9 чертежей, то изменяем ширину поля для вывода найденных таблиц
+    if len(list_drawing_button) > 7:
+        global new_width_frame
+        new_width_frame = 1680 + (len(list_drawing_button) - 7) * 110
+    frame_for_table.setGeometry(0, 0, new_width_frame, frame_height_for_data_output)
 
 
 # функция для вывода найденных открытых репортов и сводных данных на лист Excel для дальнейшей печати на принтер
