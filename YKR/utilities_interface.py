@@ -185,7 +185,7 @@ def sort_date(list_date):
 # l_h_t_v = list_height_table_view = список высот таблиц (строка с названием колонок + все строки таблицы)
 # l_b_f_d = list_button_for_drawing = список кнопок с чертежами
 # def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization):
-def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization, l_b_f_d):
+def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization, l_b_f_d, frame_for_table):
     # x1 - координата кнопки таблицы
     if authorization:
         x1 = 20
@@ -246,6 +246,13 @@ def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization, l_b_f_d):
                     position_y2.append(y_2)
                     y_2 += 20
     # делаем таблицы видимыми или скрываем их в зависимости от статуса
+
+    # общее количество строк в найденных таблицах
+    all_count_row_in_search = 0
+    # количество всех найденных таблиц
+    all_count_table_in_search = len(l_h_t_v)
+    frame_height_for_data_output = all_count_table_in_search * 20
+
     for b in list_button_for_table_true:
         # передвигаем кнопку репорта
         l_b_t[b].move(x1, position_y1[b])
@@ -266,6 +273,15 @@ def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization, l_b_f_d):
         if l_ch_b[b]:
             # передвигаем флажок
             l_ch_b[b].move(0, position_y2[b] - 20)
+
+
+        # количество строк в открытых таблицах
+        all_count_row_in_search += l_h_t_v[b]
+        # высота фрейма = количество таблиц * 20 (высоты строки с кнопкой для таблицы) + количество строк в открытых таблицах * 20 (высота строки в табице)
+        # + количество открытых таблиц * 20 (расстояние между открытыми таблицами)
+        frame_height_for_data_output = all_count_table_in_search * 20 + all_count_row_in_search + len(list_button_for_table_true) * 20
+
+
     for bb in list_button_for_table_false:
         # передвигаем кнопку репорта
         l_b_t[bb].move(x1, position_y1[bb])
@@ -287,6 +303,7 @@ def visible_table_view(l_t_v, l_b_t, l_ch_b, l_h_t_v, authorization, l_b_f_d):
         if l_ch_b[bb]:
             # передвигаем флажок
             l_ch_b[bb].move(0, position_y1[bb])
+    frame_for_table.setGeometry(0, 0, 1680, frame_height_for_data_output)
 
 
 # функция для вывода найденных открытых репортов и сводных данных на лист Excel для дальнейшей печати на принтер

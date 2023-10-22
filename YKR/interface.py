@@ -1094,9 +1094,9 @@ def search():
                         list_height_table_view.append(table_height_for_data_output)
                         list_check_box.append(check_box)
                         button_for_table.clicked.connect(
-                            lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing))
+                            lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing, frame_for_table))
                         # перерисовываем кнопки
-                        visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing)
+                        visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing, frame_for_table)
 
                 # если заполнено одно поле, кроме unit или номера репорта
                 if find_data[1] == 2:
@@ -1124,7 +1124,6 @@ def search():
                         cur.close()
                     else:
                         sqm.setQuery('''SELECT * FROM {} WHERE "{}" LIKE "%{}%"'''.format(table, find_data[2], find_data[3]))
-
 
                     # если не найдено ни одной строчки, то ничего не показываем
                     # список чертежей в рамках одного репорта
@@ -1181,13 +1180,11 @@ def search():
                         list_height_table_view.append(table_height_for_data_output)
                         list_check_box.append(check_box)
                         button_for_table.clicked.connect(
-                            lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing))
+                            lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing, frame_for_table))
                         # перерисовываем кнопки
-                        visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing)
+                        visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing, frame_for_table)
                 # если заполнен номер unit или report_number и любая(-ые) другие данные (номер линии, номер чертежа, номер локации)
                 if find_data[1] == 3:
-
-
                     # делаем запрос в модели
                     # sqm.setQuery('''SELECT * FROM {} WHERE {}'''.format(table, find_data[3]))
                     if authorization:
@@ -1206,8 +1203,6 @@ def search():
                         cur.close()
                     else:
                         sqm.setQuery('''SELECT * FROM {} WHERE {}'''.format(table, find_data[3]))
-
-
                     # список чертежей в рамках одного репорта
                     list_button_for_drawing = []
                     if sqm.rowCount() == 0:
@@ -1262,9 +1257,9 @@ def search():
                         list_height_table_view.append(table_height_for_data_output)
                         list_check_box.append(check_box)
                         button_for_table.clicked.connect(
-                            lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing))
+                            lambda: visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing, frame_for_table))
                         # перерисовываем кнопки
-                        visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing)
+                        visible_table_view(list_table_view, list_button_for_table, list_check_box, list_height_table_view, authorization, all_list_button_for_drawing, frame_for_table)
                 con.close()
 
     # сообщение о том, что ничего не найдено
@@ -1275,11 +1270,11 @@ def search():
             'Ничего не найдено!'
         )
 
+    frame_height_for_data_output = all_count_table_in_search * 20
     # высота фрейма = общее количество строк в найденных таблицах * 25 (высота одной строки) + количество таблиц
     # * 2 (кнопка номера репорта и строка названий столбцов) * 20 (высота одной строки) + 20 (высота первой строки с номером первого репорта)
     # + количество таблиц * 20 (расстояние между таблицами в открытом виде)
-    frame_height_for_data_output = all_count_row_in_search * 25 + all_count_table_in_search * 2 * 20 + 20 + all_count_table_in_search * 20
-    # frame_for_table.setGeometry(0, 0, 1680, 650)
+    # frame_height_for_data_output = all_count_row_in_search * 25 + all_count_table_in_search * 2 * 20 + 20 + all_count_table_in_search * 20
     frame_for_table.setGeometry(0, 0, 1680, frame_height_for_data_output)
     # размораживаем все кнопки и поля на время поиска данных
     unfreeze_button()
@@ -1518,7 +1513,12 @@ def print_report():
     if window.findChildren(QTableView):
         open_scroll_area = window.findChildren(QScrollArea)
         for scroll in open_scroll_area:
-            open_push_button = scroll.findChildren(QPushButton)
+            all_push_button = scroll.findChildren(QPushButton)
+            open_push_button = []
+            # выбираем только кнопки с названиями таблиц (исключаем кнопки чертежей)
+            for i in all_push_button:
+                if ':' in i.text():
+                    open_push_button.append(i)
             for index_push_button, push_button in enumerate(open_push_button):
                 # список найденных заполненных таблиц
                 full_sqm = []

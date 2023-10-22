@@ -717,9 +717,15 @@ def check_drawing_in_line(pure_data_table: dict) -> dict:
 
         # вставляем названия столбцов "Line" на первое место, "Drawing" на второе
         if add_column_drawing:
-            pure_data_table[number_table][0].remove('Line')
-            pure_data_table[number_table][0].insert(0, 'Line')
-            pure_data_table[number_table][0].insert(1, 'Drawing')
+            try:
+                pure_data_table[number_table][0].remove('Line')
+                pure_data_table[number_table][0].insert(0, 'Line')
+                pure_data_table[number_table][0].insert(1, 'Drawing')
+            except:
+                logger_with_user.info(f'-----------------------------------------\n'
+                                      f'Критическая ошибка!!! Таблица записана не правильно!!!\n'
+                                      f'{traceback.format_exc()}\n'
+                                      f'-----------------------------------------')
     return pure_data_table
 
 
