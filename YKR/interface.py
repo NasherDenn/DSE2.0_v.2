@@ -66,6 +66,8 @@ font.setItalic(False)
 line_search_line = QLineEdit(window)
 # устанавливаем положение окна ввода и его размеры в родительском окне
 line_search_line.setGeometry(QRect(181, 20, 561, 31))
+# вывод надписи при наведении курсора
+line_search_line.setToolTip('Полный или частичный номер линии/ёмкости, таговый номер')
 # присваиваем уникальное объектное имя однострочному полю для ввода
 line_search_line.setObjectName(u"line_search_line")
 # дополнительные параметры
@@ -88,6 +90,8 @@ line_search_line.setFocus()
 line_search_drawing = QLineEdit(window)
 # устанавливаем положение окна ввода и его размеры в родительском окне
 line_search_drawing.setGeometry(QRect(181, 60, 561, 31))
+# вывод надписи при наведении курсора
+line_search_drawing.setToolTip('Полный или частичный номер чертежа')
 # присваиваем уникальное объектное имя однострочному полю для ввода
 line_search_drawing.setObjectName(u"line_search_drawing")
 # дополнительные параметры
@@ -110,6 +114,8 @@ line_search_drawing.setText('')
 line_search_unit = QLineEdit(window)
 # устанавливаем положение окна ввода и его размеры в родительском окне
 line_search_unit.setGeometry(QRect(181, 100, 170, 31))
+# вывод надписи при наведении курсора
+line_search_unit.setToolTip('Трёхзначный номер юнита')
 # присваиваем уникальное объектное имя однострочному полю для ввода
 line_search_unit.setObjectName(u"line_search_unit")
 # дополнительные параметры
@@ -131,6 +137,8 @@ line_search_unit.setText('')
 line_search_item_description = QLineEdit(window)
 # устанавливаем положение окна ввода и его размеры в родительском окне
 line_search_item_description.setGeometry(QRect(521, 100, 220, 31))
+# вывод надписи при наведении курсора
+line_search_item_description.setToolTip('Полный(-ое) или частичный(-ое) номер/название локации')
 # присваиваем уникальное объектное имя однострочному полю для ввода
 line_search_item_description.setObjectName(u"line_search_item_description")
 # дополнительные параметры
@@ -152,6 +160,8 @@ line_search_item_description.setText('')
 line_search_number_report = QLineEdit(window)
 # устанавливаем положение окна ввода и его размеры в родительском окне
 line_search_number_report.setGeometry(QRect(181, 140, 561, 31))
+# вывод надписи при наведении курсора
+line_search_number_report.setToolTip('Полный или частичный номер отчёта')
 # присваиваем уникальное объектное имя однострочному полю для ввода
 line_search_number_report.setObjectName(u"line_search_number_report")
 # дополнительные параметры
@@ -173,6 +183,8 @@ line_search_number_report.setText('004')
 button_search = QPushButton('Поиск', window)
 # устанавливаем положение и размер кнопки для поиска в родительском окне (window)
 button_search.setGeometry(760, 20, 161, 41)
+# вывод надписи при наведении курсора
+button_search.setToolTip('Поиск')
 # присваиваем уникальное объектное имя кнопке "Поиск"
 button_search.setObjectName(u"pushButton_search")
 # задаём параметры стиля и оформления кнопки "Поиск"
@@ -187,6 +199,8 @@ button_search.setFocusPolicy(Qt.StrongFocus)
 button_print = QPushButton('Печать', window)
 # устанавливаем положение и размер кнопки печати в родительском окне (window)
 button_print.setGeometry(QRect(760, 70, 161, 41))
+# вывод надписи при наведении курсора
+button_print.setToolTip('Печать')
 # присваиваем уникальное объектное имя кнопке "Печать"
 button_print.setObjectName(u"pushButton_print")
 # задаём параметры стиля и оформления кнопки печати
@@ -204,6 +218,8 @@ button_print.setDisabled(True)
 button_add = QPushButton('Добавить', window)
 # устанавливаем положение и размер кнопки "Добавить" в родительском окне (window)
 button_add.setGeometry(QRect(760, 120, 161, 41))
+# вывод надписи при наведении курсора
+button_add.setToolTip('Добавить таблицы в БД')
 # присваиваем уникальное объектное имя кнопке "Добавить"
 button_add.setObjectName(u"pushButton_add")
 # задаём параметры стиля и оформления кнопки "Добавить"
@@ -222,6 +238,8 @@ button_add.setFocusPolicy(Qt.TabFocus)
 button_exit = QPushButton('Закрыть', window)
 # устанавливаем положение и размер кнопки "Закрыть" для выхода из программы в родительском окне (window)
 button_exit.setGeometry(QRect(1540, 904, 161, 41))
+# вывод надписи при наведении курсора
+button_exit.setToolTip('Выход из программы')
 # присваиваем уникальное объектное имя кнопке "Закрыть"
 button_exit.setObjectName(u"pushButton_exit")
 # задаём параметры стиля и оформления кнопки "Закрыть"
@@ -238,6 +256,8 @@ button_exit.clicked.connect(qApp.exit)
 button_ru = QPushButton('RU', window)
 # устанавливаем положение и размер кнопки "RU"
 button_ru.setGeometry(QRect(1623, 10, 26, 26))
+# вывод надписи при наведении курсора
+button_ru.setToolTip('Русский язык')
 button_ru.setCheckable(True)
 button_ru.setChecked(True)
 
@@ -245,6 +265,8 @@ button_ru.setChecked(True)
 button_en = QPushButton('EN', window)
 # устанавливаем положение и размер кнопки "EN"
 button_en.setGeometry(QRect(1649, 10, 26, 26))
+# вывод надписи при наведении курсора
+button_en.setToolTip('Английский язык')
 # включаем возможность быть нажатой
 button_en.setCheckable(True)
 # по умолчанию не нажата
@@ -254,6 +276,8 @@ button_en.setChecked(False)
 button_kz = QPushButton('KZ', window)
 # устанавливаем положение и размер кнопки "KZ"
 button_kz.setGeometry(QRect(1675, 10, 26, 26))
+# вывод надписи при наведении курсора
+button_kz.setToolTip('Казахский язык')
 # включаем возможность быть нажатой
 button_kz.setCheckable(True)
 # по умолчанию не нажата
@@ -263,6 +287,8 @@ button_kz.setChecked(False)
 button_faq = QPushButton('FAQ', window)
 # устанавливаем положение и размер кнопки "FAQ"
 button_faq.setGeometry(QRect(1651, 186, 50, 50))
+# вывод надписи при наведении курсора
+button_faq.setToolTip('Часто задаваемые вопросы')
 # по умолчанию не нажата
 button_faq.setChecked(False)
 # задаём параметры стиля и оформления кнопки "FAQ"
@@ -278,6 +304,8 @@ line_login = QLineEdit(window)
 line_login.setObjectName(u"line_login")
 # устанавливаем положение и размер поля для ввода логина в родительском окне (window)
 line_login.setGeometry(QRect(1470, 45, 111, 31))
+# вывод надписи при наведении курсора
+line_login.setToolTip('Поле для ввода логина')
 # задаём параметры стиля и оформления поля для ввода логина
 font_line_login = QFont()
 font_line_login.setFamily(u"Arial")
@@ -296,6 +324,8 @@ line_password = QLineEdit(window)
 line_password.setObjectName(u"line_password")
 # устанавливаем положение и размер поля для ввода пароля в родительском окне (window)
 line_password.setGeometry(QRect(1470, 85, 111, 31))
+# вывод надписи при наведении курсора
+line_password.setToolTip('Поле для ввода пароля')
 # задаём параметры стиля и оформления поля для ввода пароля
 font_line_password = QFont()
 font_line_password.setFamily(u"Arial")
@@ -409,6 +439,8 @@ label_number_report.setAlignment(Qt.AlignRight)
 button_log_in = QPushButton('Войти', window)
 # устанавливаем положение и размер кнопки "Войти" в родительском окне (window)
 button_log_in.setGeometry(QRect(1590, 45, 111, 31))
+# вывод надписи при наведении курсора
+button_log_in.setToolTip('Войти в систему')
 # присваиваем уникальное объектное имя кнопке "Войти"
 button_log_in.setObjectName(u"pushButton_enter")
 # задаём параметры стиля и оформления кнопки "Войти"
@@ -423,6 +455,8 @@ button_log_in.setFocusPolicy(Qt.ClickFocus)
 button_log_out = QPushButton('Выйти', window)
 # устанавливаем положение и размер кнопки "Выйти" в родительском окне (window)
 button_log_out.setGeometry(QRect(1590, 85, 111, 31))
+# вывод надписи при наведении курсора
+button_log_out.setToolTip('Выйти из системы')
 # присваиваем уникальное объектное имя кнопке "Выйти"
 button_log_out.setObjectName(u"pushButton_out")
 # задаём параметры стиля и оформления кнопки "Выйти"
@@ -439,6 +473,8 @@ button_log_out.setDisabled(True)
 button_delete_table = QPushButton('Удалить таблицу', window)
 # устанавливаем положение и размер кнопки "Удалить таблицу" в родительском окне (window)
 button_delete_table.setGeometry(QRect(20, 904, 191, 41))
+# вывод надписи при наведении курсора
+button_delete_table.setToolTip('Удалить выбранную таблицу целиком')
 # присваиваем уникальное объектное имя кнопке "Удалить таблицу"
 button_delete_table.setObjectName(u"pushButton_delete")
 # задаём параметры стиля и оформления кнопки "Удалить таблицу"
@@ -455,6 +491,8 @@ button_delete_table.setDisabled(True)
 button_delete_row = QPushButton('Удалить строку', window)
 # устанавливаем положение и размер кнопки "Удалить строку" в родительском окне (window)
 button_delete_row.setGeometry(QRect(231, 904, 171, 41))
+# вывод надписи при наведении курсора
+button_delete_row.setToolTip('Удалить строку из таблицы, на которой находится курсор')
 # присваиваем уникальное объектное имя кнопке "Удалить строку"
 button_delete_row.setObjectName(u"pushButton_delete_row")
 # задаём параметры стиля и оформления кнопки "Удалить строку"
@@ -471,6 +509,8 @@ button_delete_row.setDisabled(True)
 button_add_row = QPushButton('Добавить строку', window)
 # устанавливаем положение и размер кнопки "Добавить строку" в родительском окне (window)
 button_add_row.setGeometry(QRect(495, 904, 191, 41))
+# вывод надписи при наведении курсора
+button_add_row.setToolTip('Добавить строку в конец таблицы')
 # присваиваем уникальное объектное имя кнопке "Добавить строку"
 button_add_row.setObjectName(u"pushButton_button_add_row")
 # задаём параметры стиля и оформления кнопки "Добавить строку"
@@ -487,6 +527,8 @@ button_add_row.setDisabled(True)
 button_save = QPushButton('Сохранить', window)
 # устанавливаем положение и размер кнопки "Сохранить" в родительском окне (window)
 button_save.setGeometry(QRect(706, 904, 191, 41))
+# вывод надписи при наведении курсора
+button_save.setToolTip('Сохранить изменения')
 # присваиваем уникальное объектное имя кнопке "Сохранить"
 button_save.setObjectName(u"pushButton_button_save")
 # задаём параметры стиля и оформления кнопки "Сохранить"
@@ -502,8 +544,9 @@ button_save.setDisabled(True)
 # создаём кнопку "Верификация"
 button_verification = QPushButton('Верификация', window)
 # устанавливаем положение и размер кнопки "Верификация" в родительском окне (window)
-# button_verification.setGeometry(QRect(570, 904, 171, 41))
 button_verification.setGeometry(QRect(990, 904, 191, 41))
+# вывод надписи при наведении курсора
+button_verification.setToolTip('Автоматическая проверка данных в БД')
 # присваиваем уникальное объектное имя кнопке "Верификация"
 button_verification.setObjectName(u"pushButton_verification")
 # задаём параметры стиля и оформления кнопки "Верификация"
@@ -520,6 +563,8 @@ button_verification.setDisabled(True)
 button_statistic_master = QPushButton('Сводные данные', window)
 # устанавливаем положение и размер кнопки "Сводные данные" в родительском окне (window)
 button_statistic_master.setGeometry(QRect(1201, 904, 191, 41))
+# вывод надписи при наведении курсора
+button_statistic_master.setToolTip('Общие данные из БД')
 # присваиваем уникальное объектное имя кнопке "Сводные данные"
 button_statistic_master.setObjectName(u"pushButton_statistic_master")
 # задаём параметры стиля и оформления кнопки "Сводные данные"
@@ -536,17 +581,23 @@ button_statistic_master.setDisabled(True)
 label_ykr = QLabel(window)
 label_ykr.setObjectName(u"YKR")
 label_ykr.setGeometry(QRect(990, 10, 111, 121))
+# вывод надписи при наведении курсора
+label_ykr.setToolTip('Yeskert Kyzmet Rutledge')
 label_ykr.setPixmap(QPixmap(f'{os.path.abspath(os.getcwd())}\\Images\\logo_ykr.png'))
 
 # вставляем картинку NCA
 label_nca = QLabel(window)
 label_nca.setObjectName(u"NCA")
+# вывод надписи при наведении курсора
+label_nca.setToolTip('National Accreditation Center')
 label_nca.setGeometry(QRect(1120, 10, 111, 121))
 label_nca.setPixmap(QPixmap(f'{os.path.abspath(os.getcwd())}\\Images\\logo_nca.png'))
 
 # вставляем картинку NCOC
 label_ncoc = QLabel(window)
 label_ncoc.setObjectName(u"NCOC")
+# вывод надписи при наведении курсора
+label_ncoc.setToolTip('North Caspian Operating Company')
 label_ncoc.setGeometry(QRect(1250, 13, 111, 115))
 label_ncoc.setPixmap(QPixmap(f'{os.path.abspath(os.getcwd())}\\Images\\logo_ncoc.png'))
 
@@ -579,6 +630,8 @@ checkBox_on = QCheckBox(groupBox_location)
 checkBox_on.setObjectName(u"checkBox_on")
 # устанавливаем положение внутри группы
 checkBox_on.setGeometry(QRect(10, 25, 45, 20))
+# вывод надписи при наведении курсора
+checkBox_on.setToolTip('Onshore')
 # указываем текст чек-бокса
 checkBox_on.setText('ON')
 checkBox_on.setChecked(True)
@@ -588,6 +641,8 @@ checkBox_of = QCheckBox(groupBox_location)
 checkBox_of.setObjectName(u"checkBox_of")
 # устанавливаем положение внутри группы
 checkBox_of.setGeometry(QRect(61, 25, 42, 20))
+# вывод надписи при наведении курсора
+checkBox_of.setToolTip('Offshore')
 # указываем текст чек-бокса
 checkBox_of.setText('OF')
 # временно, пока не загрузятся другие локации
@@ -598,6 +653,8 @@ checkBox_os = QCheckBox(groupBox_location)
 checkBox_os.setObjectName(u"checkBox_os")
 # устанавливаем положение внутри группы
 checkBox_os.setGeometry(QRect(110, 25, 42, 20))
+# вывод надписи при наведении курсора
+checkBox_os.setToolTip('Off Side Shore')
 # указываем текст чек-бокса
 checkBox_os.setText('OS')
 # временно, пока не загрузятся другие локации
@@ -621,6 +678,8 @@ checkBox_utt = QCheckBox(groupBox_ndt)
 checkBox_utt.setObjectName(u"checkBox_utt")
 # устанавливаем положение внутри группы
 checkBox_utt.setGeometry(QRect(10, 25, 61, 20))
+# вывод надписи при наведении курсора
+checkBox_utt.setToolTip('Ultrasonic Testing Thickness')
 # указываем текст чек-бокса
 checkBox_utt.setText('UTT')
 # делаем чек-бокс 'UTT' активным по умолчанию
@@ -631,6 +690,8 @@ checkBox_paut = QCheckBox(groupBox_ndt)
 checkBox_paut.setObjectName(u"checkBox_paut")
 # устанавливаем положение внутри группы
 checkBox_paut.setGeometry(QRect(80, 25, 61, 20))
+# вывод надписи при наведении курсора
+checkBox_paut.setToolTip('Phased Array Ultrasonic Testing')
 # указываем текст чек-бокса
 checkBox_paut.setText('PAUT')
 
@@ -639,6 +700,8 @@ groupBox_year = QGroupBox(window)
 groupBox_year.setObjectName(u"groupBox_year")
 # устанавливаем размер группы радио-кнопок
 groupBox_year.setGeometry(QRect(360, 180, 561, 56))
+# вывод надписи при наведении курсора
+groupBox_year.setToolTip('Год контроля')
 # устанавливаем название группы чек-боксов
 groupBox_year.setTitle('Год контроля')
 groupBox_year.setStyleSheet('''QGroupBox {border: 0.5px solid grey;};
@@ -1290,6 +1353,30 @@ def ru():
     button_ru.setChecked(True)
     button_en.setCheckable(False)
     button_kz.setCheckable(False)
+    line_search_line.setToolTip('Полный или частичный номер линии/ёмкости, таговый номер')
+    line_search_drawing.setToolTip('Полный или частичный номер чертежа')
+    line_search_unit.setToolTip('Трёхзначный номер юнита')
+    line_search_item_description.setToolTip('Полный(-ое) или частичный(-ое) номер/название локации')
+    line_search_number_report.setToolTip('Полный или частичный номер отчёта')
+    button_search.setToolTip('Поиск')
+    button_print.setToolTip('Печать')
+    button_add.setToolTip('Добавить таблицы в БД')
+    button_exit.setToolTip('Выход из программы')
+    button_ru.setToolTip('Русский язык')
+    button_en.setToolTip('Английский язык')
+    button_kz.setToolTip('Казахский язык')
+    button_faq.setToolTip('Часто задаваемые вопросы')
+    line_login.setToolTip('Поле для ввода логина')
+    line_password.setToolTip('Поле для ввода пароля')
+    button_log_in.setToolTip('Войти в систему')
+    button_log_out.setToolTip('Выйти из системы')
+    button_delete_table.setToolTip('Удалить выбранную таблицу целиком')
+    button_delete_row.setToolTip('Удалить строку из таблицы, на которой находится курсор')
+    button_add_row.setToolTip('Добавить строку в конец таблицы')
+    button_save.setToolTip('Сохранить изменения')
+    button_verification.setToolTip('Автоматическая проверка данных в БД')
+    button_statistic_master.setToolTip('Общие данные из БД')
+    groupBox_year.setToolTip('Год контроля')
     label_line.setText('Линия/Ёмкость')
     label_drawing.setText('Номер чертежа')
     label_unit.setText('Юнит')
@@ -1345,6 +1432,30 @@ def en():
     button_en.setCheckable(True)
     button_en.setChecked(True)
     button_kz.setCheckable(False)
+    line_search_line.setToolTip('Full or partial line/equipment number, tag number')
+    line_search_drawing.setToolTip('Full or partial drawing number')
+    line_search_unit.setToolTip('Three-digit unit number')
+    line_search_item_description.setToolTip('Full or partial number/name of location')
+    line_search_number_report.setToolTip('Full or partial report number')
+    button_search.setToolTip('Search')
+    button_print.setToolTip('Print')
+    button_add.setToolTip('Add tables to the database')
+    button_exit.setToolTip('Exit the program')
+    button_ru.setToolTip('Russian language')
+    button_en.setToolTip('English language')
+    button_kz.setToolTip('Kazakh language')
+    button_faq.setToolTip('Frequently Asked Questions')
+    line_login.setToolTip('Login field')
+    line_password.setToolTip('Password field')
+    button_log_in.setToolTip('Sign in')
+    button_log_out.setToolTip('Sign out')
+    button_delete_table.setToolTip('Delete the entire selected table')
+    button_delete_row.setToolTip('Delete a row from the table where the cursor is located')
+    button_add_row.setToolTip('Add a row to the end of the table')
+    button_save.setToolTip('Save changes')
+    button_verification.setToolTip('Automatic data verification in the database')
+    button_statistic_master.setToolTip('General data from the database')
+    groupBox_year.setToolTip('Year of control   ')
     label_line.setText('Line/Equipment')
     label_drawing.setText('Drawing')
     label_unit.setText('Unit')
@@ -1400,6 +1511,30 @@ def kz():
     button_en.setCheckable(False)
     button_kz.setCheckable(True)
     button_kz.setChecked(True)
+    line_search_line.setToolTip('Толық немесе жартылай жол/сыйымдылық нөмірі, тег нөмірі')
+    line_search_drawing.setToolTip('Толық немесе жартылай сызба нөмірі')
+    line_search_unit.setToolTip('Үш таңбалы бірлік нөмірі')
+    line_search_item_description.setToolTip('Толық немесе ішінара нөмір/орын атауы')
+    line_search_number_report.setToolTip('Толық немесе ішінара есеп нөмірі')
+    button_search.setToolTip('Іздеу')
+    button_print.setToolTip('Мөр')
+    button_add.setToolTip('Дерекқорға кестелерді қосыңыз')
+    button_exit.setToolTip('Бағдарламадан шығыңыз')
+    button_ru.setToolTip('Орыс тілі')
+    button_en.setToolTip('Ағылшын тілі')
+    button_kz.setToolTip('Қазақ тілі')
+    button_faq.setToolTip('Жиі қойылатын сұрақтар')
+    line_login.setToolTip('Жүйеге кіру өрісі')
+    line_password.setToolTip('Құпия сөз өрісі')
+    button_log_in.setToolTip('Кіру')
+    button_log_out.setToolTip('Шығу')
+    button_delete_table.setToolTip('Таңдалған кестені толығымен жойыңыз')
+    button_delete_row.setToolTip('Курсор орналасқан кестеден жолды жойыңыз')
+    button_add_row.setToolTip('Кестенің соңына жол қосыңыз')
+    button_save.setToolTip('Өзгерістерді сақтау')
+    button_verification.setToolTip('Дерекқордағы деректерді автоматты түрде тексеру')
+    button_statistic_master.setToolTip('Мәліметтер базасынан жалпы мәліметтер')
+    groupBox_year.setToolTip('Бақылау жылы')
     label_line.setText('Сызық/Cыйымд.')
     label_drawing.setText('Сызба нөмірі')
     label_unit.setText('Бірлік')
