@@ -4,6 +4,7 @@ import time
 from PyQt5.QtSql import QSqlDatabase
 from PyQt5.QtSql import QSqlQueryModel
 from PyQt5.QtSql import QSqlTableModel
+from PyQt5 import QtWidgets
 
 import YKR.utilities_interface
 from YKR.utilities_interface import *
@@ -132,7 +133,7 @@ line_search_unit.setCursorMoveStyle(Qt.LogicalMoveStyle)
 line_search_unit.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_unit.setFocusPolicy(Qt.StrongFocus)
-line_search_unit.setText('300')
+line_search_unit.setText('')
 
 # создаём однострочное поле для ввода номера локации
 line_search_item_description = QLineEdit(window)
@@ -178,7 +179,7 @@ line_search_number_report.setCursorMoveStyle(Qt.LogicalMoveStyle)
 line_search_number_report.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_number_report.setFocusPolicy(Qt.StrongFocus)
-line_search_number_report.setText('')
+line_search_number_report.setText('010')
 
 # создаём кнопку "Поиск"
 button_search = QPushButton('Поиск', window)
@@ -818,7 +819,7 @@ def log_in():
         button_delete_table.setDisabled(False)
         # button_delete_row.setDisabled(False)
         # button_add_row.setDisabled(False)
-        # button_save.setDisabled(False)
+        button_save.setDisabled(False)
         button_log_out.setDisabled(False)
         button_add.setDisabled(False)
         button_statistic_master.setDisabled(False)
@@ -876,7 +877,7 @@ def log_out():
     button_delete_table.setDisabled(True)
     # button_delete_row.setDisabled(True)
     # button_add_row.setDisabled(True)
-    # button_save.setDisabled(True)
+    button_save.setDisabled(True)
     button_log_out.setDisabled(True)
     button_add.setDisabled(True)
     button_statistic_master.setDisabled(True)
@@ -1079,7 +1080,8 @@ def search():
                 # sqm = QSqlQueryModel(parent=window)
                 if authorization:
                     sqm = QSqlTableModel(parent=window)
-                    # sqm.setEditStrategy(QSqlTableModel.OnManualSubmit)
+                    # sqm.setEditStrategy(QSqlTableModel.OnFieldChange)
+                    sqm.setEditStrategy(QSqlTableModel.OnManualSubmit)
                 else:
                     sqm = QSqlQueryModel(parent=window)
 
@@ -1103,11 +1105,12 @@ def search():
                     # sqm.setQuery('SELECT * FROM {}'.format(table))
                     if authorization:
                         sqm.setTable(table)
-                        sqm.setEditStrategy(QSqlTableModel.OnManualSubmit)
+                        # sqm.setEditStrategy(QSqlTableModel.OnManualSubmit)
                         # sqm.submit()
                         sqm.select()
-
-                        # lambda: button_save.clicked.connect(sqm.submitAll())
+                        # lambda: button_save.clicked.connect(save)
+                        # print(sqm.database().commit())
+                        # table_index.setModel(sqm)
                     else:
                         sqm.setQuery('SELECT * FROM {}'.format(table))
 
@@ -1866,7 +1869,7 @@ def freeze_button():
     button_delete_table.setDisabled(True)
     # button_delete_row.setDisabled(True)
     # button_add_row.setDisabled(True)
-    # button_save.setDisabled(True)
+    button_save.setDisabled(True)
     button_statistic_master.setDisabled(True)
     button_exit.setDisabled(True)
     button_verification.setDisabled(True)
@@ -1906,7 +1909,7 @@ def unfreeze_button():
         button_delete_table.setDisabled(False)
         # button_delete_row.setDisabled(False)
         # button_add_row.setDisabled(False)
-        # button_save.setDisabled(False)
+        button_save.setDisabled(False)
         button_statistic_master.setDisabled(False)
         button_exit.setDisabled(False)
         button_verification.setDisabled(False)
@@ -2129,16 +2132,24 @@ def verification_data():
 
 
 # внесение изменений в БД после нажатия на кнопку "Сохранить"
-# def save():
-#     # if window.findChildren(QTableView):
-#     #     open_tableview = window.findChildren(QTableView)
-#     #     for tableview in open_tableview:
-#     #         print(tableview)
-#     for i in list_sqm:
-#         print(i.tableName())
-#         print(i.isDirty())
-#         # print(i.dataChanged)
-#         i.submitAll()
+def save():
+    # if window.findChildren(QTableView):
+    #     open_tableview = window.findChildren(QTableView)
+    #     for tableview in open_tableview:
+    #         print(tableview)
+    for i in list_sqm:
+        # print(i.tableName())
+        # print(i.isDirty())
+        if i.isDirty():
+            print(i.tableName())
+            print(type(i))
+            print(i.fieldIndex('Line'))
+            i.setEditStrategy(QSqlTableModel.OnManualSubmit)
+
+            # print(i.dataChanged(QModelIndex, QModelIndex, []))
+            # i.dataChanged.connect(i.submitAll())
+            i.submitAll()
+            # i.database().commit()
 
 
 # нажатие кнопки "Войти"
@@ -2174,7 +2185,7 @@ button_delete_table.clicked.connect(delete_report)
 # button_add_row.clicked.connect(add_row)
 
 # нажатие на кнопку "Сохранить"
-# button_save.clicked.connect(save)
+button_save.clicked.connect(save)
 
 # нажатие на кнопку "Печать"
 button_print.clicked.connect(print_report)
@@ -2192,6 +2203,19 @@ button_verification.clicked.connect(verification_data)
 
 def main():
     try:
+        # запускаем заставку
+        splash_pix = QPixmap(f'{os.path.abspath(os.getcwd())}\\Images\\splash_screen.png')
+        splash = QtWidgets.QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
+        opaqueness = 0.0
+        step = 0.005
+        splash.setWindowOpacity(opaqueness)
+        splash.show()
+        while opaqueness < 2.3:
+            splash.setWindowOpacity(opaqueness)
+            time.sleep(step)
+            opaqueness += step
+        splash.close()
+        # запуск основной программы
         window.show()
         sys.exit(app.exec_())
     finally:
