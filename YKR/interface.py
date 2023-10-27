@@ -200,7 +200,7 @@ button_search.setFocusPolicy(Qt.StrongFocus)
 # создаём кнопку печати
 button_print = QPushButton('Печать', window)
 # устанавливаем положение и размер кнопки печати в родительском окне (window)
-button_print.setGeometry(QRect(760, 70, 161, 41))
+button_print.setGeometry(QRect(760, 75, 161, 41))
 # вывод надписи при наведении курсора
 button_print.setToolTip('Печать')
 # присваиваем уникальное объектное имя кнопке "Печать"
@@ -219,7 +219,7 @@ button_print.setDisabled(True)
 # создаём кнопку "Добавить"
 button_add = QPushButton('Добавить', window)
 # устанавливаем положение и размер кнопки "Добавить" в родительском окне (window)
-button_add.setGeometry(QRect(760, 120, 161, 41))
+button_add.setGeometry(QRect(760, 130, 161, 41))
 # вывод надписи при наведении курсора
 button_add.setToolTip('Добавить таблицы в БД')
 # присваиваем уникальное объектное имя кнопке "Добавить"
@@ -257,7 +257,7 @@ button_exit.clicked.connect(qApp.exit)
 # создаём кнопку "RU"
 button_ru = QPushButton('RU', window)
 # устанавливаем положение и размер кнопки "RU"
-button_ru.setGeometry(QRect(1623, 10, 26, 26))
+button_ru.setGeometry(QRect(1623, 20, 26, 26))
 # вывод надписи при наведении курсора
 button_ru.setToolTip('Русский язык')
 button_ru.setCheckable(True)
@@ -266,7 +266,7 @@ button_ru.setChecked(True)
 # создаём кнопку "EN"
 button_en = QPushButton('EN', window)
 # устанавливаем положение и размер кнопки "EN"
-button_en.setGeometry(QRect(1649, 10, 26, 26))
+button_en.setGeometry(QRect(1649, 20, 26, 26))
 # вывод надписи при наведении курсора
 button_en.setToolTip('Английский язык')
 # включаем возможность быть нажатой
@@ -277,7 +277,7 @@ button_en.setChecked(False)
 # создаём кнопку "KZ"
 button_kz = QPushButton('KZ', window)
 # устанавливаем положение и размер кнопки "KZ"
-button_kz.setGeometry(QRect(1675, 10, 26, 26))
+button_kz.setGeometry(QRect(1675, 20, 26, 26))
 # вывод надписи при наведении курсора
 button_kz.setToolTip('Казахский язык')
 # включаем возможность быть нажатой
@@ -305,7 +305,7 @@ line_login = QLineEdit(window)
 # присваиваем уникальное объектное имя полю для ввода логина
 line_login.setObjectName(u"line_login")
 # устанавливаем положение и размер поля для ввода логина в родительском окне (window)
-line_login.setGeometry(QRect(1470, 45, 111, 31))
+line_login.setGeometry(QRect(1470, 55, 111, 31))
 # вывод надписи при наведении курсора
 line_login.setToolTip('Поле для ввода логина')
 # задаём параметры стиля и оформления поля для ввода логина
@@ -325,7 +325,7 @@ line_password = QLineEdit(window)
 # присваиваем уникальное объектное имя полю для ввода пароля
 line_password.setObjectName(u"line_password")
 # устанавливаем положение и размер поля для ввода пароля в родительском окне (window)
-line_password.setGeometry(QRect(1470, 85, 111, 31))
+line_password.setGeometry(QRect(1470, 95, 111, 31))
 # вывод надписи при наведении курсора
 line_password.setToolTip('Поле для ввода пароля')
 # задаём параметры стиля и оформления поля для ввода пароля
@@ -345,7 +345,7 @@ label_login = QLabel('Логин', window)
 # присваиваем уникальное объектное имя надписи "Логин"
 label_login.setObjectName(u"label_login")
 # устанавливаем положение и размер поля для надписи "Логин" в родительском окне (window)
-label_login.setGeometry(QRect(1400, 50, 61, 26))
+label_login.setGeometry(QRect(1400, 60, 61, 26))
 # задаём параметры стиля и оформления поля для надписи "Логин"
 font_label_login = QFont()
 font_label_login.setFamily(u"Arial")
@@ -358,7 +358,7 @@ label_password = QLabel('Пароль', window)
 # присваиваем уникальное объектное имя надписи "Пароль"
 label_password.setObjectName(u"label_password")
 # устанавливаем положение и размер поля для надписи "Пароль" в родительском окне (window)
-label_password.setGeometry(QRect(1390, 90, 81, 26))
+label_password.setGeometry(QRect(1390, 100, 81, 26))
 # задаём параметры стиля и оформления поля для надписи "Пароль"
 font_label_password = QFont()
 font_label_password.setFamily(u"Arial")
@@ -440,7 +440,7 @@ label_number_report.setAlignment(Qt.AlignRight)
 # создаём кнопку "Войти"
 button_log_in = QPushButton('Войти', window)
 # устанавливаем положение и размер кнопки "Войти" в родительском окне (window)
-button_log_in.setGeometry(QRect(1590, 45, 111, 31))
+button_log_in.setGeometry(QRect(1590, 55, 111, 31))
 # вывод надписи при наведении курсора
 button_log_in.setToolTip('Войти в систему')
 # присваиваем уникальное объектное имя кнопке "Войти"
@@ -456,7 +456,7 @@ button_log_in.setFocusPolicy(Qt.ClickFocus)
 # создаём кнопку "Выйти"
 button_log_out = QPushButton('Выйти', window)
 # устанавливаем положение и размер кнопки "Выйти" в родительском окне (window)
-button_log_out.setGeometry(QRect(1590, 85, 111, 31))
+button_log_out.setGeometry(QRect(1590, 95, 111, 31))
 # вывод надписи при наведении курсора
 button_log_out.setToolTip('Выйти из системы')
 # присваиваем уникальное объектное имя кнопке "Выйти"
@@ -579,10 +579,12 @@ button_statistic_master.setFocusPolicy(Qt.ClickFocus)
 # делаем неактивной кнопку "Сводные данные" до авторизации
 button_statistic_master.setDisabled(True)
 
+#53
 # вставляем картинку YKR
 label_ykr = QLabel(window)
 label_ykr.setObjectName(u"YKR")
-label_ykr.setGeometry(QRect(990, 10, 111, 121))
+label_ykr.setGeometry(QRect(974, 20, 111, 121))
+# label_ykr.setGeometry(QRect(990, 10, 111, 121))
 # вывод надписи при наведении курсора
 label_ykr.setToolTip('Yeskert Kyzmet Rutledge')
 label_ykr.setPixmap(QPixmap(f'{os.path.abspath(os.getcwd())}\\Images\\logo_ykr.png'))
@@ -592,7 +594,8 @@ label_nca = QLabel(window)
 label_nca.setObjectName(u"NCA")
 # вывод надписи при наведении курсора
 label_nca.setToolTip('National Accreditation Center')
-label_nca.setGeometry(QRect(1120, 10, 111, 121))
+label_nca.setGeometry(QRect(1105, 20, 111, 121))
+# label_nca.setGeometry(QRect(1120, 10, 111, 121))
 label_nca.setPixmap(QPixmap(f'{os.path.abspath(os.getcwd())}\\Images\\logo_nca.png'))
 
 # вставляем картинку NCOC
@@ -600,7 +603,8 @@ label_ncoc = QLabel(window)
 label_ncoc.setObjectName(u"NCOC")
 # вывод надписи при наведении курсора
 label_ncoc.setToolTip('North Caspian Operating Company')
-label_ncoc.setGeometry(QRect(1250, 13, 111, 115))
+label_ncoc.setGeometry(QRect(1236, 20, 111, 121))
+# label_ncoc.setGeometry(QRect(1250, 13, 111, 115))
 label_ncoc.setPixmap(QPixmap(f'{os.path.abspath(os.getcwd())}\\Images\\logo_ncoc.png'))
 
 # общая область с боковой полосой прокрутки
@@ -1394,7 +1398,7 @@ def ru():
     label_number_report.setText('Номер отчёта')
     label_login.setText('Логин')
     label_password.setText('Пароль')
-    label_password.setGeometry(QRect(1390, 90, 81, 26))
+    label_password.setGeometry(QRect(1390, 100, 81, 26))
     button_search.setText('Поиск')
     button_print.setText('Печать')
     button_add.setText('Добавить')
@@ -1473,7 +1477,7 @@ def en():
     label_number_report.setText('Number of report')
     label_login.setText('Login')
     label_password.setText('Password')
-    label_password.setGeometry(QRect(1370, 90, 90, 26))
+    label_password.setGeometry(QRect(1370, 100, 90, 26))
     button_search.setText('Search')
     button_print.setText('Print')
     button_add.setText('Add reports')
@@ -1552,7 +1556,7 @@ def kz():
     label_number_report.setText('Есеп нөмірі')
     label_login.setText('Кіру')
     label_password.setText('Құпия сөз')
-    label_password.setGeometry(QRect(1370, 90, 100, 26))
+    label_password.setGeometry(QRect(1370, 100, 100, 26))
     button_search.setText('Іздеу')
     button_print.setText('Мөр')
     button_add.setText('Қосу')
@@ -2204,17 +2208,7 @@ button_verification.clicked.connect(verification_data)
 def main():
     try:
         # запускаем заставку
-        splash_pix = QPixmap(f'{os.path.abspath(os.getcwd())}\\Images\\splash_screen.png')
-        splash = QtWidgets.QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
-        opaqueness = 0.0
-        step = 0.005
-        splash.setWindowOpacity(opaqueness)
-        splash.show()
-        while opaqueness < 2.3:
-            splash.setWindowOpacity(opaqueness)
-            time.sleep(step)
-            opaqueness += step
-        splash.close()
+        splash_screen()
         # запуск основной программы
         window.show()
         sys.exit(app.exec_())

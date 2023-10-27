@@ -2,6 +2,7 @@
 
 import datetime
 import itertools
+import time
 
 from YKR.utilities_db import *
 from YKR.utilities_add_reports import *
@@ -465,3 +466,18 @@ def name_table_for_excel_print(full_name_button: str) -> str:
     check_to = full_name_button.index(',')
     name = full_name_button[check_since:check_to]
     return name
+
+
+# заставка перед запуском программы
+def splash_screen():
+    splash_pix = QPixmap(f'{os.path.abspath(os.getcwd())}\\Images\\splash_screen.png')
+    splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
+    opaqueness = 0.0
+    step = 0.005
+    splash.setWindowOpacity(opaqueness)
+    splash.show()
+    while opaqueness < 2.3:
+        splash.setWindowOpacity(opaqueness)
+        time.sleep(step)
+        opaqueness += step
+    splash.close()

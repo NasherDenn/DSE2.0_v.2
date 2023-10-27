@@ -94,8 +94,13 @@ def number_report_wo_date(path_to_report: str) -> dict:
         data_header[i] = [[] for _ in range(0, len(table.rows))]
         # проходимся по строкам таблицы `i`
         for j, row in enumerate(table.rows):
-            for cell in row.cells:
-                data_header[i][j].append(cell.text)
+            try:
+                for cell in row.cells:
+                    data_header[i][j].append(cell.text)
+            except:
+                logger_with_user.warning(f'Не могу обработать верхний колонтитул в отчёте {path_to_report}!!!!\n'
+                                         f'{traceback.format_exc()}')
+                sys.exit()
     return get_number_report_wo_date(data_header), must_check_head_paragraph
 
 
@@ -962,6 +967,14 @@ def unit_definition(pure_data_table: dict, number_report: str) -> str:
 
 
 # приводим дату репорта к нормальному виду
+# 25.06-29.06.2021
+# 30 June – 03 July, 2021
+# 03-05 July, 2021
+# 24 & 25 July, 2021
+# 23, 26.08.2021
+# 1-2.09.2021
+# 3.09.2021
+# 11-14 September, 2021
 def format_date_to_normal_form(date: str) -> str:
     date = date.replace(' ', '.')
     date = date.replace(',', '.')
