@@ -82,6 +82,7 @@ line_search_line.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
 line_search_line.setEchoMode(QLineEdit.Normal)
 line_search_line.setCursorPosition(0)
 line_search_line.setCursorMoveStyle(Qt.LogicalMoveStyle)
+line_search_line.setMaxLength(40)
 line_search_line.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_line.setFocusPolicy(Qt.StrongFocus)
@@ -106,6 +107,7 @@ line_search_drawing.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
 line_search_drawing.setEchoMode(QLineEdit.Normal)
 line_search_drawing.setCursorPosition(0)
 line_search_drawing.setCursorMoveStyle(Qt.LogicalMoveStyle)
+line_search_drawing.setMaxLength(40)
 line_search_drawing.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_drawing.setFocusPolicy(Qt.StrongFocus)
@@ -130,6 +132,7 @@ line_search_unit.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
 line_search_unit.setEchoMode(QLineEdit.Normal)
 line_search_unit.setCursorPosition(0)
 line_search_unit.setCursorMoveStyle(Qt.LogicalMoveStyle)
+line_search_unit.setMaxLength(10)
 line_search_unit.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_unit.setFocusPolicy(Qt.StrongFocus)
@@ -153,6 +156,7 @@ line_search_item_description.setLocale(QLocale(QLocale.English, QLocale.UnitedSt
 line_search_item_description.setEchoMode(QLineEdit.Normal)
 line_search_item_description.setCursorPosition(0)
 line_search_item_description.setCursorMoveStyle(Qt.LogicalMoveStyle)
+line_search_item_description.setMaxLength(10)
 line_search_item_description.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_item_description.setFocusPolicy(Qt.StrongFocus)
@@ -176,6 +180,7 @@ line_search_number_report.setLocale(QLocale(QLocale.English, QLocale.UnitedState
 line_search_number_report.setEchoMode(QLineEdit.Normal)
 line_search_number_report.setCursorPosition(0)
 line_search_number_report.setCursorMoveStyle(Qt.LogicalMoveStyle)
+line_search_number_report.setMaxLength(40)
 line_search_number_report.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_number_report.setFocusPolicy(Qt.StrongFocus)
@@ -316,6 +321,7 @@ font_line_login.setItalic(True)
 line_login.setFont(font_line_login)
 # дополнительные параметры
 line_login.setEchoMode(QLineEdit.Normal)
+line_login.setMaxLength(10)
 # устанавливаем исчезающий текст
 line_login.setPlaceholderText('login')
 line_login.setText('admin')
@@ -336,6 +342,7 @@ font_line_password.setItalic(True)
 line_password.setFont(font_line_password)
 # дополнительные параметры
 line_password.setEchoMode(QLineEdit.Password)
+line_password.setMaxLength(10)
 # устанавливаем исчезающий текст
 line_password.setPlaceholderText('password')
 line_password.setText('0751')
@@ -2015,8 +2022,6 @@ def verification_data():
     checkbox_drawings_uploaded = QCheckBox(ver_window)
     checkbox_drawings_uploaded.setObjectName(u"checkbox_drawings_uploaded")
     checkbox_drawings_uploaded.setGeometry(QRect(20, 152, 321, 28))
-    checkbox_drawings_uploaded.setDisabled(True)
-    checkbox_drawings_uploaded.setCheckable(False)
 
     # создаем checkbox с опциями
     checkbox_unit_column = QCheckBox(ver_window)

@@ -975,6 +975,7 @@ def unit_definition(pure_data_table: dict, number_report: str) -> str:
 # 1-2.09.2021
 # 3.09.2021
 # 11-14 September, 2021
+# 19 - 20 January 2021
 def format_date_to_normal_form(date: str) -> str:
     date = date.replace(' ', '.')
     date = date.replace(',', '.')
