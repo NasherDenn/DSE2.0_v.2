@@ -1802,6 +1802,10 @@ def faq():
     faq_window.exec_()
 
 
+# создаём пул потока для долгого процесса добавления репортов в БД
+threadpool = QThreadPool()
+
+
 # запускаем добавление новых репортов, замораживаем все окна, поля для ввода и отображаем картинку "Loading"
 def start_add_table():
     if window.findChildren(QTableView):
@@ -1817,15 +1821,39 @@ def start_add_table():
             open_check_box = scroll.findChildren(QCheckBox)
             for check_box in open_check_box:
                 check_box.setParent(None)
-    freeze_button()
+
+    # получаем список файлов отчётов, которые надо обработать
+    dir_files = take_dir_files()
     loading = Loading()
-    loading.start_loading()
-    stop_loading = add_table()
-    while not stop_loading:
-        time.sleep(0.5)
-    else:
+
+    # класс сигнала о завершении работы
+    class WorkerSignals(QObject):
+        finished = pyqtSignal()
+
+    # разморозка окна приложения по сигналу о завершении процесса добавления репортов в БД в рабочем потоке
+    def unfreeze():
         unfreeze_button()
         loading.stop_loading()
+
+    # создаём рабочий поток для добавления репортов
+    class Worker(QRunnable):
+        def __init__(self, *args, **kwargs):
+            super(Worker, self).__init__()
+            self.args = args
+            self.kwargs = kwargs
+            self.signals = WorkerSignals()
+
+        @pyqtSlot()
+        def run(self):
+            go_add_table(dir_files)
+            self.signals.finished.emit()
+
+    worker = Worker()
+    worker.signals.finished.connect(unfreeze)
+    threadpool.start(worker)
+    # замораживаем окно приложения
+    freeze_button()
+    loading.start_loading()
 
 
 # класс для отображения и скрытия изображения "Loading"
