@@ -654,3 +654,17 @@ def ver(list_db: list, all_reports_loading, all_tables_loading, duplicate_report
 
         conn.close()
     logger_with_user.info(f'Верификации данных завершена\n')
+
+
+# обновление значения ячейки в БД при нажатии на кнопку "Сохранить"
+def update_cell(list_db_update, name_table_update, row_number_update, name_column_update, value_update):
+    for name_db in list_db_update:
+        # подключаемся к БД
+        conn = sqlite3.connect(f'{os.path.abspath(os.getcwd())}\\DB\\{name_db}')
+        cur = conn.cursor()
+        # определяем  БД
+        if cur.execute('''SELECT name FROM sqlite_master WHERE type='table' AND name="{}"'''.format(name_table_update)).fetchone():
+            # вносим изменения
+            cur.execute('''UPDATE {} SET {}="{}" WHERE ROWID="{}"'''.format(name_table_update, name_column_update, value_update, row_number_update))
+            conn.commit()
+        cur.close()

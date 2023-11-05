@@ -14,7 +14,8 @@ logger = logging.getLogger()
 logger_with_user = logging.LoggerAdapter(logger, {'user': uname})
 
 
-def add_table():
+# получаем список репортов для дальнейшей обработки
+def take_dir_files():
     logger_with_user.info(f'\n\nНачало загрузки данных\n\n')
     # для продакшн
     # проверяем наличие всех БД (с 2019 по 2026 года) во всех вариациях в папке "DB"
@@ -31,7 +32,11 @@ def add_table():
     # для продакшн
     dir_files = QFileDialog.getOpenFileNames(None, 'Выбрать папку', 'C:/Users/Andrei/Documents/NDT/NDT UTT/REPORTS 2021 (OFF)/OFFSHORE/PAUT/', "docx(*.docx)")
     # dir_files = QFileDialog.getOpenFileNames(None, 'Выбрать папку', '/home', "docx(*.docx)")
+    return dir_files
 
+
+# обрабатываем репорты и добавляем данные в БД
+def go_add_table(dir_files):
     # список путей и названий репортов для дальнейшей обработки
     list_name_reports_for_future_work = dir_files[:-1]
     # выбор только репортов в названиях которых есть "04-YKR"
@@ -273,8 +278,6 @@ def add_table():
             # передаём очищенные таблицы, номер репорта, имя БД для записи, номер таблицы в репорте для записи, unit
             write_report_in_db(pure_data_table, clear_rep_number, name_reports_db, first_actual_table, unit, report)
     logger_with_user.info(f'Загрузка данных завершена\n')
-    stop_add_reports = True
-    return stop_add_reports
 
 
 def main():

@@ -184,7 +184,7 @@ line_search_number_report.setMaxLength(40)
 line_search_number_report.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_number_report.setFocusPolicy(Qt.StrongFocus)
-line_search_number_report.setText('010')
+line_search_number_report.setText('ut-22-010')
 
 # создаём кнопку "Поиск"
 button_search = QPushButton('Поиск', window)
@@ -2170,23 +2170,22 @@ def verification_data():
 
 # внесение изменений в БД после нажатия на кнопку "Сохранить"
 def save():
-    # if window.findChildren(QTableView):
-    #     open_tableview = window.findChildren(QTableView)
-    #     for tableview in open_tableview:
-    #         print(tableview)
     for i in list_sqm:
-        # print(i.tableName())
-        # print(i.isDirty())
-        if i.isDirty():
-            print(i.tableName())
-            print(type(i))
-            print(i.fieldIndex('Line'))
-            i.setEditStrategy(QSqlTableModel.OnManualSubmit)
-
-            # print(i.dataChanged(QModelIndex, QModelIndex, []))
-            # i.dataChanged.connect(i.submitAll())
-            i.submitAll()
-            # i.database().commit()
+        for row in range(i.rowCount()):
+            for column in range(i.columnCount()):
+                if i.isDirty(i.index(row, column)):
+                    # имя таблицы в которой надо изменить значение ячейки
+                    name_table_update = i.tableName()
+                    # номер строки и столбца
+                    row_number_update = row + 1
+                    # имя столбца в котором есть изменения
+                    name_column_update = i.record().field(column).name()
+                    # значение в ячейке, которое надо записать в БД
+                    value_update = i.index(row, column).data()
+                    # БД по выбранным фильтрам
+                    list_db_update = define_db_for_search(data_filter_for_search)
+                    # вносим изменения
+                    update_cell(list_db_update, name_table_update, row_number_update, name_column_update, value_update)
 
 
 # нажатие кнопки "Войти"
