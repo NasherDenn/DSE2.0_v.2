@@ -3,6 +3,7 @@
 import datetime
 import itertools
 import time
+import hashlib
 
 from YKR.utilities_db import *
 from YKR.utilities_add_reports import *

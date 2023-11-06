@@ -174,9 +174,17 @@ faq_text_ru = '- Для чего эта программа?\n' \
            'Это сведения о номерах отчётов, номерах таблиц с данными в этих отчётах, их количестве и номерах юнитов.\n' \
            'По умолчанию сформированный отчёт сохраняется в папке "Statistic for print".\n'\
            'Достоверность этих и других данных ВАЖНЫ для корректной работы всей программы!!!\n\n' \
+           '- Что такое верификация?\n' \
+           'Это проверка загруженных данных в базе (на основании выбранных фильтров) на корректность.\n\n' \
            '- Как удалять данные?\n' \
-           'Удалять можно только таблицы целиком. Для этого поставьте флажок напротив интересующей таблицы и нажмите кнопку "Удалить".\n'\
-           '!!!Внимание!!! При удалении проверьте выбранные фильтры. Возможны Вы хотите удалить только часть данных, а не всю таблицу!'
+           'Удалять можно таблицы целиком или построчно.\n' \
+           'Для удаления таблицы целиком поставьте флажок напротив интересующей таблицы и нажмите кнопку "Удалить таблицу".\n' \
+           '!!!Внимание!!! При удалении проверьте выбранные фильтры, т.к. возможно отображается не вся таблица, а только данные в соответствии с ' \
+           'выбранными фильтрами. Возможны Вы хотите удалить только часть данных, а не всю таблицу!\n' \
+           'Для построчного удаления выберите любую ячейку в удаляемой строке и нажмите кнопку "Удалить строку".\n' \
+           'Примечание! После такого удаления нажмите заново кнопку "Поиск" для обновления таблицы (отображение без удалённой строки).\n' \
+           'Упс... Для корректного построчного удаления придётся удалять по одной строке за раз и каждый раз производить поиск заново. Данную ' \
+           'опцию исправлю позже))))'
 
 # FAQ на английском языке
 faq_text_en = '- What is this program for??\n' \
@@ -202,9 +210,17 @@ faq_text_en = '- What is this program for??\n' \
            'This is information about report numbers, numbers of tables with data in these reports, their count and numbers of units.\n' \
            'By default, the generated report is saved in the "Statistic for print" folder.\n'\
            'The reliability of these and other data is IMPORTANT for the correct operation of the entire program!!!\n\n' \
+           '- What is verification?\n' \
+           'This is a check of the loaded data in the database (based on the selected filters) for correctness.\n\n' \
            '- How to delete data?\n' \
-           'You can only delete entire tables. To do this, check the box next to the table of interest and click the "Delete" button.\n'\
-           '!!!Attention!!! When deleting, check the selected filters. Possible You want to delete only part of the data, not the entire table!'
+           'You can delete tables entirely or row by row.\n' \
+           'To delete an entire table, check the box next to the table of interest and click the "Delete table" button.\n' \
+           '!!!Attention!!! When deleting, check the selected filters, because perhaps not the entire table is displayed, but only the data ' \
+           'in accordance with selected filters. Possible You want to delete only part of the data, not the entire table!\n' \
+           'To delete row by row, select any cell in the row to be deleted and click the "Delete row" button.\n' \
+           'Note! After such deletion, click the "Search" button again to update the table (display without the deleted row).\n' \
+           'Oops... For correct line-by-line deletion, you will have to delete one line at a time and search again each time. This I\'ll fix the ' \
+           'option later))))' \
 
 # FAQ на казахском языке
 faq_text_kz = '- Бұл бағдарлама не үшін?\n' \
@@ -231,8 +247,16 @@ faq_text_kz = '- Бұл бағдарлама не үшін?\n' \
            'Әдепкі бойынша жасалған есеп қалтада сақталады "Statistic for print".\n'\
            'Осы және басқа деректердің дәлдігі бүкіл бағдарламаның дұрыс жұмыс істеуі үшін МАҢЫЗДЫ.!!!\n\n' \
            '- Деректерді қалай жоюға болады?\n' \
-           'Сіз тек толық кестелерді жоя аласыз. Ол үшін қызықтыратын кестенің жанындағы құсбелгіні қойып, «Жою» түймесін басыңыз.\n'\
-           '!!!Назар аударыңыз!!! Жою кезінде таңдалған сүзгілерді тексеріңіз. Мүмкін сіз бүкіл кестені емес, деректердің бір бөлігін ғана жойғыңыз келеді!'
+           '- Тексеру дегеніміз не?\n' \
+           'Бұл дерекқордағы (таңдалған сүзгілер негізінде) жүктелген деректердің дұрыстығын тексеру.\n\n' \
+           '- Деректерді қалай жоюға болады?\n' \
+           'Кестелерді толығымен немесе жолдар бойынша жоюға болады.\n' \
+           'Толық кестені жою үшін қызықты кестенің жанындағы құсбелгіні қойып, "Кестені жою" түймесін басыңыз.\n' \
+           '!!!Назар аударыңыз!!! Жою кезінде таңдалған сүзгілерді тексеріңіз, себебі мүмкін бүкіл кесте көрсетілмейді, бірақ сәйкес деректер ғана ' \
+           'көрсетіледі таңдалған сүзгілер. Мүмкін сіз бүкіл кестені емес, деректердің бір бөлігін ғана жойғыңыз келеді!\n' \
+           'Жол бойынша жолды жою үшін жойылатын жолдағы кез келген ұяшықты таңдап, "Жолды жою" түймесін басыңыз.\n' \
+           'Ескерту! Осындай жоюдан кейін кестені жаңарту үшін «Іздеу» түймесін қайта басыңыз (жойылған жолсыз көрсету).\n' \
+           'Қап... Жол бойынша дұрыс жою үшін бір жолды бір уақытта жойып, әр жолы қайта іздеу керек болады. Бұл Мен опцияны кейінірек түзетемін))))'
 
 # количество репортов, которое должно бы ть в каждой БД
 count_reports_in_ndt = {'reports_db_OF_PAUT_19.sqlite': 0, 'reports_db_OF_PAUT_20.sqlite': 0, 'reports_db_OF_PAUT_21.sqlite': 0, 'reports_db_OF_PAUT_22.sqlite': 7,

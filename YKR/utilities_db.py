@@ -664,7 +664,49 @@ def update_cell(list_db_update, name_table_update, row_number_update, name_colum
         cur = conn.cursor()
         # определяем  БД
         if cur.execute('''SELECT name FROM sqlite_master WHERE type='table' AND name="{}"'''.format(name_table_update)).fetchone():
+            # получаем ROWID по номеру строки (row_number_update)
+            list_row_id = []
+            for row_id in cur.execute('''SELECT ROWID FROM {}'''.format(name_table_update)).fetchall():
+                list_row_id.append(row_id[0])
             # вносим изменения
-            cur.execute('''UPDATE {} SET {}="{}" WHERE ROWID="{}"'''.format(name_table_update, name_column_update, value_update, row_number_update))
+            cur.execute('''UPDATE {} SET {}="{}" WHERE ROWID="{}"'''.format(name_table_update, name_column_update, value_update, list_row_id[row_number_update - 1]))
+            conn.commit()
+        cur.close()
+
+
+# добавление пустой строки в таблицу
+def update_add_row(list_db_update, name_table_update):
+    for name_db in list_db_update:
+        # подключаемся к БД
+        conn = sqlite3.connect(f'{os.path.abspath(os.getcwd())}\\DB\\{name_db}')
+        cur = conn.cursor()
+        # определяем  БД
+        if cur.execute('''SELECT name FROM sqlite_master WHERE type='table' AND name="{}"'''.format(name_table_update)).fetchone():
+            # кортеж названий столбцов в таблице
+            list_name_column = conn.execute(f'select * from {name_table_update}').description
+            name_column = ()
+            for i in list_name_column:
+                name_column += (i[0],)
+            # кортеж пустых значений для добавления в пустую строку
+            list_values = ('',) * len(name_column)
+            # вносим изменения
+            cur.execute('''INSERT INTO {} {} VALUES {}'''.format(name_table_update, name_column, list_values))
+            conn.commit()
+        cur.close()
+
+
+# удаляем строку из таблицы
+def update_delete_row(list_db_update, name_table_update, number_row_delete):
+    for name_db in list_db_update:
+        # подключаемся к БД
+        conn = sqlite3.connect(f'{os.path.abspath(os.getcwd())}\\DB\\{name_db}')
+        cur = conn.cursor()
+        # получаем ROWID по номеру строки (row_number_update)
+        list_row_id = []
+        for row_id in cur.execute('''SELECT ROWID FROM {}'''.format(name_table_update)).fetchall():
+            list_row_id.append(row_id[0])
+        # определяем  БД
+        if cur.execute('''SELECT name FROM sqlite_master WHERE type='table' AND name="{}"'''.format(name_table_update)).fetchone():
+            cur.execute('''DELETE FROM {} WHERE ROWID="{}"'''.format(name_table_update, list_row_id[number_row_delete - 1]))
             conn.commit()
         cur.close()

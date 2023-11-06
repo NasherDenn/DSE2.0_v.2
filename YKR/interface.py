@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import time
+import hashlib
 
 from PyQt5.QtSql import QSqlDatabase
 from PyQt5.QtSql import QSqlQueryModel
@@ -586,7 +587,6 @@ button_statistic_master.setFocusPolicy(Qt.ClickFocus)
 # делаем неактивной кнопку "Сводные данные" до авторизации
 button_statistic_master.setDisabled(True)
 
-#53
 # вставляем картинку YKR
 label_ykr = QLabel(window)
 label_ykr.setObjectName(u"YKR")
@@ -828,8 +828,8 @@ def log_in():
     elif line_login.text() == 'admin' and line_password.text() == '0751':
         # делаем активными кнопки "Добавить", "Удалить", "Выйти", "Сводные данные", "Верификация"
         button_delete_table.setDisabled(False)
-        # button_delete_row.setDisabled(False)
-        # button_add_row.setDisabled(False)
+        button_delete_row.setDisabled(False)
+        button_add_row.setDisabled(False)
         button_save.setDisabled(False)
         button_log_out.setDisabled(False)
         button_add.setDisabled(False)
@@ -886,8 +886,8 @@ def log_in():
 def log_out():
     # делаем НЕ активными кнопки "Добавить", "Удалить", "Выйти", "Сводные данные", "Выйти", "Верификация"
     button_delete_table.setDisabled(True)
-    # button_delete_row.setDisabled(True)
-    # button_add_row.setDisabled(True)
+    button_delete_row.setDisabled(True)
+    button_add_row.setDisabled(True)
     button_save.setDisabled(True)
     button_log_out.setDisabled(True)
     button_add.setDisabled(True)
@@ -970,6 +970,8 @@ for button in groupBox_year.findChildren(QCheckBox):
 
 # список найденных данных
 list_sqm = []
+# список областей для вывода таблиц
+list_table_view = []
 # список всех наёденных чертежей в рамках одного запроса
 all_list_button_for_drawing = []
 # активатор остановки изменения ширины фрейма, если хоть в одном найденном репорте больше, чем девять чертежй
@@ -979,8 +981,9 @@ all_list_button_for_drawing = []
 # нажатие на кнопку "Поиск"
 def search():
     # список найденных данных
-    global list_sqm, all_list_button_for_drawing
+    global list_sqm, all_list_button_for_drawing, list_table_view
     list_sqm = []
+    list_table_view = []
     all_list_button_for_drawing = []
 
     # сбрасывание ширины фрейма на 1680
@@ -1051,8 +1054,8 @@ def search():
     all_count_row_in_search = 0
     # счётчик общего количества всех таблиц с искомыми данными
     all_count_table_in_search = 0
-    # список областей для вывода таблиц
-    list_table_view = []
+    # # список областей для вывода таблиц
+    # list_table_view = []
     # список всех найденных таблиц
     list_button_for_table = []
     # словарь последовательностей пути и чертежей
@@ -1086,16 +1089,12 @@ def search():
                 # задаём поле для вывода данных из базы данных, размещённую в области с полосой прокрутки
                 table_index = QTableView(frame_for_table)
 
-
                 # создаём модель
-                # sqm = QSqlQueryModel(parent=window)
                 if authorization:
                     sqm = QSqlTableModel(parent=window)
-                    # sqm.setEditStrategy(QSqlTableModel.OnFieldChange)
                     sqm.setEditStrategy(QSqlTableModel.OnManualSubmit)
                 else:
                     sqm = QSqlQueryModel(parent=window)
-
 
                 # устанавливаем ширину столбцов под содержимое
                 table_index.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
@@ -1109,23 +1108,15 @@ def search():
                 # find_data[2] - place_for_search (поля для поиска, которые заполнены)
                 # find_data[3] - values (введённые значения в поля для поиска)
                 # find_data[4] - list_date (список дат каждого репорта)
+
                 if find_data[1] == 1:
-
-
                     # делаем запрос в модели
-                    # sqm.setQuery('SELECT * FROM {}'.format(table))
                     if authorization:
                         sqm.setTable(table)
-                        # sqm.setEditStrategy(QSqlTableModel.OnManualSubmit)
-                        # sqm.submit()
                         sqm.select()
-                        # lambda: button_save.clicked.connect(save)
-                        # print(sqm.database().commit())
-                        # table_index.setModel(sqm)
+
                     else:
                         sqm.setQuery('SELECT * FROM {}'.format(table))
-
-
                     # количество строк в найденной таблице
                     count_row_in_table = sqm.rowCount()
                     # сумма всех строк при поиске
@@ -1184,10 +1175,7 @@ def search():
 
                 # если заполнено одно поле, кроме unit или номера репорта
                 if find_data[1] == 2:
-
-
                     # делаем запрос в модели
-                    # sqm.setQuery('''SELECT * FROM {} WHERE "{}" LIKE "%{}%"'''.format(table, find_data[2], find_data[3]))
                     if authorization:
                         conn = sqlite3.connect(f'{os.path.abspath(os.getcwd())}\\DB\\{db}')
                         cur = conn.cursor()
@@ -1195,14 +1183,7 @@ def search():
                             if len(cur.execute('''SELECT * FROM {} WHERE "{}" LIKE "%{}%"'''.format(table, find_data[2], find_data[3])).fetchall()) > 0:
                                 sqm.setTable(table)
                                 sqm.setFilter('"{}" LIKE "%{}%"'.format(find_data[2], find_data[3]))
-                                # sqm.setEditStrategy(QSqlTableModel.OnFieldChange)
-                                # sqm.submitAll()
-                                # rec = sqm.record(1)
                                 sqm.select()
-                                # rec.setValue('Line', '454645466')
-                                # sqm.setRecord(0, rec)
-                                # sqm.submitAll()
-                                # lambda: button_save.clicked.connect(sqm.submitAll())
                         except:
                             continue
                         cur.close()
@@ -1270,7 +1251,6 @@ def search():
                 # если заполнен номер unit или report_number и любая(-ые) другие данные (номер линии, номер чертежа, номер локации)
                 if find_data[1] == 3:
                     # делаем запрос в модели
-                    # sqm.setQuery('''SELECT * FROM {} WHERE {}'''.format(table, find_data[3]))
                     if authorization:
                         conn = sqlite3.connect(f'{os.path.abspath(os.getcwd())}\\DB\\{db}')
                         cur = conn.cursor()
@@ -1278,10 +1258,7 @@ def search():
                             if len(cur.execute('''SELECT * FROM {} WHERE {}'''.format(table, find_data[3])).fetchall()) > 0:
                                 sqm.setTable(table)
                                 sqm.setFilter(f'{find_data[3]}')
-                                # sqm.setEditStrategy(QSqlTableModel.OnFieldChange)
                                 sqm.select()
-                                # lambda: button_save.clicked.connect(sqm.submitAll())
-                                # lambda: button_save.clicked.connect(sqm.submitAll())
                         except:
                             continue
                         cur.close()
@@ -1773,8 +1750,20 @@ def faq():
     font_faq_window_text.setFamily(u"Arial")
     font_faq_window_text.setPointSize(11)
     faq_window_text.setFont(font_faq_window_text)
-    faq_window_text.setGeometry(QRect(10, 0, 1290, 760))
+    faq_window_text.setGeometry(QRect(0, 0, 1260, 900))
     faq_window_text.setWordWrap(True)
+
+    # область с боковой полосой прокрутки в окне FAQ
+    scroll_area_faq = QScrollArea(faq_window)
+    scroll_area_faq.setObjectName(u'Scroll_Area_FAQ')
+    # полоса прокрутки появляется, только если таблицы больше самой области прокрутки
+    scroll_area_faq.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+    # задаём размер области с полосой прокрутки
+    scroll_area_faq.setGeometry(10, 10, 1280, 700)
+    # помещаем frame в область с полосой прокрутки
+    scroll_area_faq.setWidget(faq_window_text)
+    scroll_area_faq.show()
+
     # текст кнопки "Понятно" в зависимости от выбранного языка
     if button_ru.isChecked():
         button_close_faq = QPushButton('Понятно', faq_window)
@@ -1906,8 +1895,8 @@ def freeze_button():
     button_print.setDisabled(True)
     button_add.setDisabled(True)
     button_delete_table.setDisabled(True)
-    # button_delete_row.setDisabled(True)
-    # button_add_row.setDisabled(True)
+    button_delete_row.setDisabled(True)
+    button_add_row.setDisabled(True)
     button_save.setDisabled(True)
     button_statistic_master.setDisabled(True)
     button_exit.setDisabled(True)
@@ -1946,8 +1935,8 @@ def unfreeze_button():
         button_print.setDisabled(False)
         button_add.setDisabled(False)
         button_delete_table.setDisabled(False)
-        # button_delete_row.setDisabled(False)
-        # button_add_row.setDisabled(False)
+        button_delete_row.setDisabled(False)
+        button_add_row.setDisabled(False)
         button_save.setDisabled(False)
         button_statistic_master.setDisabled(False)
         button_exit.setDisabled(False)
@@ -2176,16 +2165,53 @@ def save():
                 if i.isDirty(i.index(row, column)):
                     # имя таблицы в которой надо изменить значение ячейки
                     name_table_update = i.tableName()
-                    # номер строки и столбца
+                    # номер строки
                     row_number_update = row + 1
                     # имя столбца в котором есть изменения
                     name_column_update = i.record().field(column).name()
+                    print(name_column_update)
+                    print(row_number_update)
                     # значение в ячейке, которое надо записать в БД
                     value_update = i.index(row, column).data()
+                    print(value_update)
                     # БД по выбранным фильтрам
                     list_db_update = define_db_for_search(data_filter_for_search)
                     # вносим изменения
                     update_cell(list_db_update, name_table_update, row_number_update, name_column_update, value_update)
+
+
+# добавление строки в таблицу по нажатию на кнопку "Добавить строку"
+def add_row():
+    # перебираем области для вывода наёденных данных
+    for index, open_table_view in enumerate(list_table_view):
+        # если выбрана ячейка в таблице
+        if open_table_view.selectionModel().selectedIndexes():
+            # вставляем вконец таблицы пустую строку
+            list_sqm[index].insertRow(list_sqm[index].rowCount())
+            # БД по выбранным фильтрам
+            list_db_update = define_db_for_search(data_filter_for_search)
+            # имя таблицы в которой надо изменить значение ячейки
+            name_table_update = list_sqm[index].tableName()
+            # добавляем пустую строку в таблицу в БД
+            update_add_row(list_db_update, name_table_update)
+
+
+# удаление строки из таблицы
+def delete_row():
+    # перебираем области для вывода наёденных данных
+    for index, open_table_view in enumerate(list_table_view):
+        # если выбрана ячейка в таблице
+        if open_table_view.selectionModel().selectedIndexes():
+            # номер строки для удаления
+            number_row_delete = open_table_view.selectionModel().selectedIndexes()[0].row() + 1
+            # удаляем выделенную строку
+            list_sqm[index].removeRow(number_row_delete)
+            open_table_view.update()
+            # БД по выбранным фильтрам
+            list_db_update = define_db_for_search(data_filter_for_search)
+            # имя таблицы в которой надо удалить строку
+            name_table_update = list_sqm[index].tableName()
+            update_delete_row(list_db_update, name_table_update, number_row_delete)
 
 
 # нажатие кнопки "Войти"
@@ -2215,10 +2241,10 @@ button_statistic_master.clicked.connect(statistic_master)
 button_delete_table.clicked.connect(delete_report)
 
 # нажатие на кнопку "Удалить строку"
-# button_delete_row.clicked.connect(delete_row)
+button_delete_row.clicked.connect(delete_row)
 
 # нажатие на кнопку "Добавить строку"
-# button_add_row.clicked.connect(add_row)
+button_add_row.clicked.connect(add_row)
 
 # нажатие на кнопку "Сохранить"
 button_save.clicked.connect(save)
