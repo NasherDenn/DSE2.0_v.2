@@ -677,4 +677,19 @@ class TestUnitDefinition(unittest.TestCase):
             self.assertEqual(YKR.utilities_add_reports.unit_definition(i, number_report[index]), true_test_test_unit_definition[index])
 
 
+# тестовые данный TestUnitDate
+expected_test_date = ['01.01.2020', '25.06-29.06.2021', '30 June – 03 July, 2021', '03-05 July, 2021', '24 & 25 July, 2021', '23, 26.08.2021',
+                      '1-2.09.2021', '3.09.2021', '11-14 September, 2021', '19 - 20 January 2021']
+# ожидаемые данные TestUnitDate
+true_test_date = ['01.01.2020', '25-29.06.2021', '30.06.2021', '03-05.07.2021', '24-25.07.2021', '26-26.08.2021',
+                  '01-02.09.2021', '03.09.2021', '11-14.09.2021', '19-20.01.2021']
+
+
+# приводим в порядок формат даты
+class TestDate(unittest.TestCase):
+    def test_date(self):
+        for index, i in enumerate(expected_test_date):
+            self.assertEqual(YKR.utilities_add_reports.format_date_to_normal_form(i), true_test_date[index])
+
+
 var = unittest.main

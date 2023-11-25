@@ -7,7 +7,10 @@ import zipfile
 import aspose.words as aw
 import openpyxl
 from PyQt5.QtWidgets import *
+
+import YKR.utilities_interface
 from YKR.props import *
+from YKR.utilities_interface import *
 import PIL
 from PIL import Image
 import imagehash
@@ -170,7 +173,7 @@ def write_in_master_nonreports(report_number: str, name_db: str, welding: bool, 
     cur.close()
 
 
-# сохраняем чертежи из репорта
+# извлекаем и сохраняем чертежи из репорта
 def extract_drawing(name_db, report, number_report):
     # определяем название папки для чертежей по номеру репорта
     drawing_number_report = number_report
@@ -217,12 +220,12 @@ def delete_unnecessary_drawing(path):
                 and not image.endswith('.PNG') and not image.endswith('.JPG') and not image.endswith('.JPEG') and not image.endswith('.BMP'):
             os.remove(f'{path}\\{image}')
             continue
-        # если размер файла меньше, чем 50 кБ
-        if os.path.getsize(f'{path}\\{image}') < 50000:
-            os.remove(f'{path}\\{image}')
+        # # если размер файла меньше, чем 50 кБ
+        # if os.path.getsize(f'{path}\\{image}') < 50000:
+        #     os.remove(f'{path}\\{image}')
 
     # путь к проверяемой папке с номером репорта, где хранятся изображения
-    remaining_files_image = os.listdir(f'{path}\\')
+    # remaining_files_image = os.listdir(f'{path}\\')
     # удаляем дубликаты
     remove_duplicate = DuplicateRemover(path)
     remove_duplicate.find_duplicates()
@@ -540,8 +543,13 @@ def ver(list_db: list, all_reports_loading, all_tables_loading, duplicate_report
                     of = one_of[1][index_slash + 1:]
                     if int(one) < int(of):
                         logger_with_user.info(f'Не все таблицы {one}/{of} загружены в репорте {one_of[0]}')
+
+                        # YKR.utilities_interface.print_verification(name_excel_report_verificarion[0], name_excel_report_verificarion[1], 'Количество загруженный таблиц', one, of, one_of[0])
+
                     if int(one) > int(of):
                         logger_with_user.info(f'{one}/{of} - Такого не может быть {one_of[0]}')
+
+                        # YKR.utilities_interface.print_verification(name_excel_report_verificarion[0], name_excel_report_verificarion[1], 'Количество загруженный таблиц', one, of, one_of[0])
 
         # уникальны ли номера репортов
         if duplicate_report:

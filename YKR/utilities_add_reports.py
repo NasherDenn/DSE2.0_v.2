@@ -101,56 +101,61 @@ def number_report_wo_date(path_to_report: str) -> dict:
                 logger_with_user.warning(f'Не могу обработать верхний колонтитул в отчёте {path_to_report}!!!!\n'
                                          f'{traceback.format_exc()}')
                 sys.exit()
-    return get_number_report_wo_date(data_header), must_check_head_paragraph
+    return get_number_report_wo_date(data_header, path_to_report), must_check_head_paragraph
 
 
 # получение фактического номера репорта, номера work order и даты
-def get_number_report_wo_date(data_header: dict) -> dict:
+def get_number_report_wo_date(data_header: dict, path_to_report: str) -> dict:
     # словарь номера репорта, даты репорта, номера Work Order
     rep_number = {}
     # перебираем полученные данные из первого верхнего колонтитула
     # проходим по нему как по таблице
     for index_row, i in enumerate(data_header[0]):
         for index_column, ii in enumerate(i):
-            # если слова "Report No:" и фактический номер репорта в одной ячейке
-            if 'Report' in ii and any(map(str.isdigit, data_header[0][index_row][index_column])):
-                # индекс начала номера репорта в той же ячейке
-                index_start_number_report = re.search("\\d", ii).start()
-                rep_number['report_number'] = data_header[0][index_row][index_column][index_start_number_report:]
-            # иначе если слова "Report No:" и фактический номер репорта в разных ячейках
-            elif 'Report' in ii and any(map(str.isdigit, data_header[0][index_row][index_column + 1])):
-                # индекс начала номера репорта в соседней ячейке
-                index_start_number_report = re.search("\\d", data_header[0][index_row][index_column + 1]).start()
-                rep_number['report_number'] = data_header[0][index_row][index_column + 1][index_start_number_report:]
-            # если слово "Date" и фактическая дата репорта в одной ячейке
-            if 'Date' in ii and any(map(str.isdigit, data_header[0][index_row][index_column])):
-                # индекс начала даты репорта в той же ячейке
-                index_start_number_report = re.search("\\d", ii).start()
-                rep_number['report_date'] = data_header[0][index_row][index_column][index_start_number_report:]
-                # приводим номер репорта к стандарту
-                rep_number['report_date'] = format_date_to_normal_form(rep_number['report_date'])
-            # иначе если слово "Date" и фактическая дата репорта в разных ячейках
-            elif 'Date' in ii and any(map(str.isdigit, data_header[0][index_row][index_column + 1])):
-                # индекс начала даты репорта в соседней ячейке
-                index_start_number_report = re.search("\\d", data_header[0][index_row][index_column + 1]).start()
-                rep_number['report_date'] = data_header[0][index_row][index_column + 1][index_start_number_report:]
-                # приводим номер репорта к стандарту
-                rep_number['report_date'] = format_date_to_normal_form(rep_number['report_date'])
-            # если слово "order" и номер work order в одной ячейке
-            if 'order' in ii and any(map(str.isdigit, data_header[0][index_row][index_column])):
-                # индекс начала номера work order в той же ячейке
-                index_start_number_report = re.search("\\d", ii).start()
-                rep_number['work_order'] = data_header[0][index_row][index_column][index_start_number_report:]
-            elif 'REQU' in ii.upper():
-                rep_number['work_order'] = 'NCOC Request'
-            # иначе если слова "order" и номер work order в разных ячейках
-            elif 'order' in ii and any(map(str.isdigit, data_header[0][index_row][index_column + 1])):
-                # индекс начала номера work order в соседней ячейке
-                index_start_number_report = re.search("\\d", data_header[0][index_row][index_column + 1]).start()
-                rep_number['work_order'] = data_header[0][index_row][index_column + 1][index_start_number_report:]
-            # иначе если слова "order" и номер work order в разных ячейках и нет цифр, значит номер work order - NCOC Request
-            elif 'order' in ii and not any(map(str.isdigit, data_header[0][index_row][index_column + 1])):
-                rep_number['work_order'] = data_header[0][index_row][index_column + 1]
+            try:
+                # если слова "Report No:" и фактический номер репорта в одной ячейке
+                if 'Report' in ii and any(map(str.isdigit, data_header[0][index_row][index_column])):
+                    # индекс начала номера репорта в той же ячейке
+                    index_start_number_report = re.search("\\d", ii).start()
+                    rep_number['report_number'] = data_header[0][index_row][index_column][index_start_number_report:]
+                # иначе если слова "Report No:" и фактический номер репорта в разных ячейках
+                elif 'Report' in ii and any(map(str.isdigit, data_header[0][index_row][index_column + 1])):
+                    # индекс начала номера репорта в соседней ячейке
+                    index_start_number_report = re.search("\\d", data_header[0][index_row][index_column + 1]).start()
+                    rep_number['report_number'] = data_header[0][index_row][index_column + 1][index_start_number_report:]
+                # если слово "Date" и фактическая дата репорта в одной ячейке
+                if 'Date' in ii and any(map(str.isdigit, data_header[0][index_row][index_column])):
+                    # индекс начала даты репорта в той же ячейке
+                    index_start_number_report = re.search("\\d", ii).start()
+                    rep_number['report_date'] = data_header[0][index_row][index_column][index_start_number_report:]
+                    # приводим номер репорта к стандарту
+                    rep_number['report_date'] = format_date_to_normal_form(rep_number['report_date'])
+                # иначе если слово "Date" и фактическая дата репорта в разных ячейках
+                elif 'Date' in ii and any(map(str.isdigit, data_header[0][index_row][index_column + 1])):
+                    # индекс начала даты репорта в соседней ячейке
+                    index_start_number_report = re.search("\\d", data_header[0][index_row][index_column + 1]).start()
+                    rep_number['report_date'] = data_header[0][index_row][index_column + 1][index_start_number_report:]
+                    # приводим номер репорта к стандарту
+                    rep_number['report_date'] = format_date_to_normal_form(rep_number['report_date'])
+                # если слово "order" и номер work order в одной ячейке
+                if 'order' in ii and any(map(str.isdigit, data_header[0][index_row][index_column])):
+                    # индекс начала номера work order в той же ячейке
+                    index_start_number_report = re.search("\\d", ii).start()
+                    rep_number['work_order'] = data_header[0][index_row][index_column][index_start_number_report:]
+                elif 'REQU' in ii.upper():
+                    rep_number['work_order'] = 'NCOC Request'
+                # иначе если слова "order" и номер work order в разных ячейках
+                elif 'order' in ii and any(map(str.isdigit, data_header[0][index_row][index_column + 1])):
+                    # индекс начала номера work order в соседней ячейке
+                    index_start_number_report = re.search("\\d", data_header[0][index_row][index_column + 1]).start()
+                    rep_number['work_order'] = data_header[0][index_row][index_column + 1][index_start_number_report:]
+                # иначе если слова "order" и номер work order в разных ячейках и нет цифр, значит номер work order - NCOC Request
+                elif 'order' in ii and not any(map(str.isdigit, data_header[0][index_row][index_column + 1])):
+                    rep_number['work_order'] = data_header[0][index_row][index_column + 1]
+            except:
+                logger_with_user.warning(f'Что-то не так в верхнем колонтитуле файла {path_to_report}\n'
+                                         f'{traceback.format_exc()}')
+                sys.exit()
     # возвращаем не очищенные значения номера репорта, номера work order и даты
     return rep_number
 
@@ -637,6 +642,18 @@ def cleaning_name_column(list_dirty_name_column: list, method: str) -> list:
                 list_dirty_name_column.insert(i, new_column)
             if ':' in column:
                 new_column = column.replace(':', '_')
+                list_dirty_name_column.pop(i)
+                list_dirty_name_column.insert(i, new_column)
+            if '(' in column:
+                new_column = column.replace('(', '_')
+                list_dirty_name_column.pop(i)
+                list_dirty_name_column.insert(i, new_column)
+            if ')' in column:
+                new_column = column.replace(')', '_')
+                list_dirty_name_column.pop(i)
+                list_dirty_name_column.insert(i, new_column)
+            if 'mm' in column:
+                new_column = column.replace('mm', '')
                 list_dirty_name_column.pop(i)
                 list_dirty_name_column.insert(i, new_column)
     return list_dirty_name_column

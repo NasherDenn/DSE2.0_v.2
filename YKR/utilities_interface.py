@@ -3,7 +3,8 @@
 import datetime
 import itertools
 import time
-import hashlib
+import openpyxl
+from PIL import Image
 
 from YKR.utilities_db import *
 from YKR.utilities_add_reports import *
@@ -482,3 +483,101 @@ def splash_screen():
         time.sleep(step)
         opaqueness += step
     splash.close()
+
+
+# создаём файл Excel после начала верификации
+# def create_print_verification():
+#     wbb = openpyxl.Workbook()
+#     # дата и время формирования файла Excel для печати
+#     date_time_for_print = datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")
+#     # путь сохранения в папке с программой
+#     new_path_report_verification = os.path.abspath(os.getcwd()) + '\\Print\\Report of verification\\' + date_time_for_print[:7] + '\\'
+#     # переменная имени файла с расширением для сохранения и последующего открытия
+#     name_report_verification = str(date_time_for_print) + ' Report of verification' + '.xlsx'
+#     if not os.path.exists(new_path_report_verification):
+#         # то создаём эту папку
+#         os.makedirs(new_path_report_verification)
+#     # сохраняем файл
+#     wbb.save(new_path_report_verification + name_report_verification)
+#     wbb.close()
+#     return new_path_report_verification, name_report_verification
+#
+#
+# # вывод на лист Excel результатов верификации
+# # args[0] - путь к файлу Excel
+# # args[1] - имя файла Excel
+# # args[2] - название закладки по выбранной опции верификации
+# def print_verification(*args):
+#     wb = openpyxl.load_workbook(args[0] + args[1])
+#     # создаём новый лист, если его нет, на каждую выбранную опцию верификации
+#     if args[2] not in wb.sheetnames:
+#         sheet_for_print = wb.create_sheet(args[2])
+#     # вставляем в первую строку заголовка
+#     sheet_for_print.cell(row=1, column=1, value=str('Всего загружено'))
+#     sheet_for_print.cell(row=1, column=2, value=str('Таблицы'))
+#
+#
+#
+#
+#
+#
+#     wb.save(args[0] + args[1])
+#     # thin = Side(border_style="thin", color="000000")
+#
+#         #         # название листа для таблицы
+#         #         name_table = name_table_for_excel_print(push_button.text())
+#         #         # создаём новый лист на каждую таблицу
+#         #         sheet_for_print = wbb.create_sheet(name_table)
+#         #         # вставляем в первую строку название кнопки по выбранной таблицу
+#         #         sheet_for_print.cell(row=1, column=1, value=str(push_button.text()))
+#         #         # выделяем её жирным
+#         #         sheet_for_print.cell(row=1, column=1).font = Font(bold=True)
+#         #         # объединяем в первой строке столбцы 'A:J'
+#         #         sheet_for_print.merge_cells('A1:J1')
+#         #         # вставляем во вторую строку названия столбцов
+#         #         # перебираем названия столбцов
+#         #         for index_column in range(full_sqm[index_push_button].columnCount()):
+#         #             sheet_for_print.cell(row=2, column=index_column + 1,
+#         #                                  value=str(full_sqm[index_push_button].query().record().fieldName(index_column)))
+#         #             # выделяем её жирным
+#         #             sheet_for_print.cell(row=2, column=index_column + 1).font = Font(bold=True)
+#         #             # центрируем запись внутри
+#         #             sheet_for_print.cell(row=2, column=index_column + 1).alignment = Alignment(horizontal='center', vertical='center')
+#         #             # заполняем лист Excel
+#         #             for index_row in range(full_sqm[index_push_button].rowCount()):
+#         #                 sheet_for_print.cell(row=index_row + 3, column=index_column + 1,
+#         #                                      value=str(full_sqm[index_push_button].record(index_row).value(index_column)))
+#         #                 # выделяем основные данные границами
+#         #                 sheet_for_print.cell(row=index_row + 3, column=index_column + 1).border = Border(top=thin, left=thin, right=thin,
+#         #                                                                                                  bottom=thin)
+#         #             # закрепляем первую строку с названием кнопки, по которой выбрана таблица, и вторую с названиями столбцов
+#         #             sheet_for_print.freeze_panes = "A3"
+#         #             # выделяем её границами
+#         #             sheet_for_print.cell(row=2, column=index_column + 1).border = Border(top=thin, left=thin, right=thin, bottom=thin)
+#         #         # ручной автоподбор ширины столбцов по содержимому
+#         #         ascii_range = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+#         #                        'S', 'T', 'V', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI',
+#         #                        'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR', 'AS', 'AT', 'AV', 'AX', 'AY', 'AZ']
+#         #         # перебираем все заполненные столбцы
+#         #         for collumn in range(1, full_sqm[index_push_button].columnCount() + 1):
+#         #             max_length_column = 0
+#         #             # перебираем все заполненные строки
+#         #             for roww in range(2, full_sqm[index_push_button].rowCount() + 1):
+#         #                 if len(str(sheet_for_print.cell(row=roww, column=collumn).value)) > max_length_column:
+#         #                     max_length_column = len(str(sheet_for_print.cell(row=roww, column=collumn).value))
+#         #             # устанавливаем ширину заполненных столбцов по их содержимому
+#         #             sheet_for_print.column_dimensions[ascii_range[collumn]].width = max_length_column + 2
+#         #     # путь сохранения в папке с программой
+#         #     new_path_for_print = os.path.abspath(os.getcwd()) + '\\Print\\Report for print\\' + date_time_for_print[:7] + '\\'
+#         #     if not os.path.exists(new_path_for_print):
+#         #         # то создаём эту папку
+#         #         os.makedirs(new_path_for_print)
+#         #     # переменная имени файла с расширением для сохранения и последующего открытия
+#         #     name_for_print = str(date_time_for_print) + ' Report for print' + '.xlsx'
+#         # # Удаление листа, создаваемого по умолчанию, при создании документа
+#         # del wbb['Sheet']
+#         # # сохраняем файл
+#         # wbb.save(new_path_for_print + name_for_print)
+#         # wbb.close()
+#         # # и открываем его
+#         # os.startfile(new_path_for_print + name_for_print)

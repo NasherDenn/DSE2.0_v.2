@@ -54,8 +54,8 @@ window.setFixedSize(1722, 965)
 
 # устанавливаем favicon в окне приложения
 icon = QIcon()
-icon.addFile(u"icon.ico", QSize(), QIcon.Normal, QIcon.Off)
-icon.addFile(u"icon.ico", QSize(), QIcon.Active, QIcon.On)
+icon.addFile(f'{os.path.abspath(os.getcwd())}\\Images\\icon.ico', QSize(), QIcon.Normal, QIcon.Off)
+icon.addFile(f'{os.path.abspath(os.getcwd())}\\Images\\icon.ico', QSize(), QIcon.Active, QIcon.On)
 
 app.setWindowIcon(icon)
 
@@ -220,7 +220,6 @@ button_print.setFont(font_button_print)
 button_print.setFocusPolicy(Qt.ClickFocus)
 # включаем переход фокуса по кнопке Tab
 button_print.setFocusPolicy(Qt.TabFocus)
-button_print.setDisabled(True)
 
 # создаём кнопку "Добавить"
 button_add = QPushButton('Добавить', window)
@@ -776,7 +775,7 @@ checkBox_2020.setGeometry(QRect(290, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2020.setText('2020')
 # временно, пока не загрузятся другие локации
-checkBox_2020.setEnabled(True)
+checkBox_2020.setEnabled(False)
 
 # создаём чек-бокс года '2019'
 checkBox_2019 = QCheckBox(groupBox_year)
@@ -2120,6 +2119,8 @@ def verification_data():
 
     # запуск верификации
     def start_ver():
+        # создаём файл Excel для вывода результатов верификации
+        # name_excel_report_verificarion = create_print_verification()
         # закрываем окно верификации
         ver_window.accept()
         # замораживаем приложение
@@ -2152,6 +2153,7 @@ def verification_data():
         verificat.stop_loading()
         window.repaint()
 
+
     # нажатие на кнопку "Начать" для запуска верификации
     button_start_ver.clicked.connect(start_ver)
     ver_window.exec_()
@@ -2169,11 +2171,8 @@ def save():
                     row_number_update = row + 1
                     # имя столбца в котором есть изменения
                     name_column_update = i.record().field(column).name()
-                    print(name_column_update)
-                    print(row_number_update)
                     # значение в ячейке, которое надо записать в БД
                     value_update = i.index(row, column).data()
-                    print(value_update)
                     # БД по выбранным фильтрам
                     list_db_update = define_db_for_search(data_filter_for_search)
                     # вносим изменения
