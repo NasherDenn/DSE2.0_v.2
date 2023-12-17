@@ -142,6 +142,8 @@ def get_number_report_wo_date(data_header: dict, path_to_report: str) -> dict:
                     # индекс начала номера work order в той же ячейке
                     index_start_number_report = re.search("\\d", ii).start()
                     rep_number['work_order'] = data_header[0][index_row][index_column][index_start_number_report:]
+                elif 'order' in ii and 'N/A' in ii.upper():
+                    rep_number['work_order'] = 'n/a'
                 elif 'REQU' in ii.upper():
                     rep_number['work_order'] = 'NCOC Request'
                 # иначе если слова "order" и номер work order в разных ячейках
@@ -528,6 +530,7 @@ def search_number_row_name_column(table: list, method: str) -> int:
                 # print(f'check_index_row {check_index_row}')
                 # print(f'index_row {index_row}')
                 # print(f'last_number_name_column {last_number_name_column}')
+                # print(last_number_name_column)
                 return last_number_name_column
     if method == 'paut':
         # print('it\'s paut')
@@ -627,31 +630,38 @@ def cleaning_name_column(list_dirty_name_column: list, method: str) -> list:
                 new_column = column.replace('-', 'minus_', 1)
                 list_dirty_name_column.pop(i)
                 list_dirty_name_column.insert(i, new_column)
+                column = new_column
             # заменяем все возможные символ "+" ('+50')
             if column[0] == '+':
                 new_column = column.replace('+', 'plus_', 1)
                 list_dirty_name_column.pop(i)
                 list_dirty_name_column.insert(i, new_column)
+                column = new_column
             if column[-1] == '-':
                 new_column = column.replace(column[-1], '_')
                 list_dirty_name_column.pop(i)
                 list_dirty_name_column.insert(i, new_column)
+                column = new_column
             if '-' in column:
                 new_column = column.replace('-', '_')
                 list_dirty_name_column.pop(i)
                 list_dirty_name_column.insert(i, new_column)
+                column = new_column
             if ':' in column:
                 new_column = column.replace(':', '_')
                 list_dirty_name_column.pop(i)
                 list_dirty_name_column.insert(i, new_column)
+                column = new_column
             if '(' in column:
                 new_column = column.replace('(', '_')
                 list_dirty_name_column.pop(i)
                 list_dirty_name_column.insert(i, new_column)
+                column = new_column
             if ')' in column:
                 new_column = column.replace(')', '_')
                 list_dirty_name_column.pop(i)
                 list_dirty_name_column.insert(i, new_column)
+                column = new_column
             if 'mm' in column:
                 new_column = column.replace('mm', '')
                 list_dirty_name_column.pop(i)
