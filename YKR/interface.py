@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-import time
-import hashlib
+# import time
+# import hashlib
 
 from PyQt5.QtSql import QSqlDatabase
 from PyQt5.QtSql import QSqlQueryModel
 from PyQt5.QtSql import QSqlTableModel
-from PyQt5 import QtWidgets
+# from PyQt5 import QtWidgets
 
 import YKR.utilities_interface
 from YKR.utilities_interface import *
@@ -78,7 +78,7 @@ line_search_line.setFont(font)
 line_search_line.setMouseTracking(False)
 line_search_line.setContextMenuPolicy(Qt.NoContextMenu)
 line_search_line.setAcceptDrops(True)
-line_search_line.setStyleSheet(u"")
+# line_search_line.setStyleSheet(u"")
 line_search_line.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
 line_search_line.setEchoMode(QLineEdit.Normal)
 line_search_line.setCursorPosition(0)
@@ -103,7 +103,7 @@ line_search_drawing.setFont(font)
 line_search_drawing.setMouseTracking(False)
 line_search_drawing.setContextMenuPolicy(Qt.NoContextMenu)
 line_search_drawing.setAcceptDrops(True)
-line_search_drawing.setStyleSheet(u"")
+# line_search_drawing.setStyleSheet(u"")
 line_search_drawing.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
 line_search_drawing.setEchoMode(QLineEdit.Normal)
 line_search_drawing.setCursorPosition(0)
@@ -128,7 +128,7 @@ line_search_unit.setFont(font)
 line_search_unit.setMouseTracking(False)
 line_search_unit.setContextMenuPolicy(Qt.NoContextMenu)
 line_search_unit.setAcceptDrops(True)
-line_search_unit.setStyleSheet(u"")
+# line_search_unit.setStyleSheet(u"")
 line_search_unit.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
 line_search_unit.setEchoMode(QLineEdit.Normal)
 line_search_unit.setCursorPosition(0)
@@ -152,7 +152,7 @@ line_search_item_description.setFont(font)
 line_search_item_description.setMouseTracking(False)
 line_search_item_description.setContextMenuPolicy(Qt.NoContextMenu)
 line_search_item_description.setAcceptDrops(True)
-line_search_item_description.setStyleSheet(u"")
+# line_search_item_description.setStyleSheet(u"")
 line_search_item_description.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
 line_search_item_description.setEchoMode(QLineEdit.Normal)
 line_search_item_description.setCursorPosition(0)
@@ -176,7 +176,7 @@ line_search_number_report.setFont(font)
 line_search_number_report.setMouseTracking(False)
 line_search_number_report.setContextMenuPolicy(Qt.NoContextMenu)
 line_search_number_report.setAcceptDrops(True)
-line_search_number_report.setStyleSheet(u"")
+# line_search_number_report.setStyleSheet(u"")
 line_search_number_report.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
 line_search_number_report.setEchoMode(QLineEdit.Normal)
 line_search_number_report.setCursorPosition(0)
@@ -731,7 +731,7 @@ checkBox_2024.setGeometry(QRect(10, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2024.setText('2024')
 # временно, пока не загрузятся другие локации
-checkBox_2024.setEnabled(False)
+checkBox_2024.setEnabled(True)
 
 # создаём чек-бокс года '2023'
 checkBox_2023 = QCheckBox(groupBox_year)
@@ -775,7 +775,7 @@ checkBox_2020.setGeometry(QRect(290, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2020.setText('2020')
 # временно, пока не загрузятся другие локации
-checkBox_2020.setEnabled(False)
+checkBox_2020.setEnabled(True)
 
 # создаём чек-бокс года '2019'
 checkBox_2019 = QCheckBox(groupBox_year)
@@ -786,7 +786,7 @@ checkBox_2019.setGeometry(QRect(360, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2019.setText('2019')
 # временно, пока не загрузятся другие локации
-checkBox_2019.setEnabled(False)
+checkBox_2019.setEnabled(True)
 
 # метка авторизации
 authorization = False
@@ -1918,7 +1918,7 @@ def freeze_button():
     checkBox_of.setDisabled(True)
     checkBox_utt.setDisabled(True)
     checkBox_paut.setDisabled(True)
-    # checkBox_2024.setDisabled(True)
+    checkBox_2024.setDisabled(True)
     checkBox_2023.setDisabled(True)
     checkBox_2022.setDisabled(True)
     checkBox_2021.setDisabled(True)
@@ -1957,12 +1957,12 @@ def unfreeze_button():
         checkBox_of.setDisabled(False)
         checkBox_utt.setDisabled(False)
         checkBox_paut.setDisabled(False)
-        # checkBox_2024.setDisabled(False)
+        checkBox_2024.setDisabled(False)
         checkBox_2023.setDisabled(False)
         checkBox_2022.setDisabled(False)
         checkBox_2021.setDisabled(False)
         checkBox_2020.setDisabled(False)
-        # checkBox_2019.setDisabled(False)
+        checkBox_2019.setDisabled(False)
     # если пользователь НЕ авторизовался
     else:
         button_search.setDisabled(False)
@@ -1985,12 +1985,12 @@ def unfreeze_button():
         checkBox_of.setDisabled(False)
         checkBox_utt.setDisabled(False)
         checkBox_paut.setDisabled(False)
-        # checkBox_2024.setDisabled(False)
+        checkBox_2024.setDisabled(False)
         checkBox_2023.setDisabled(False)
         checkBox_2022.setDisabled(False)
         checkBox_2021.setDisabled(False)
         checkBox_2020.setDisabled(False)
-        # checkBox_2019.setDisabled(False)
+        checkBox_2019.setDisabled(False)
 
 
 # создание окна выбора опций верификаций
@@ -2276,3 +2276,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+# ToDo: Поиск по номеру локации (Location - TML-001, CML-002 DL-01) и описанию (Item_description - Pipe, Elbow, Shell)
+# ToDo: При поиске может не быть в таблицах БД столбцов drawing, item_description, location

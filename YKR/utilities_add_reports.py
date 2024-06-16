@@ -361,7 +361,12 @@ def converted_mesh(data_table_equal_row: dict, mesh_table: list, number_report: 
                         name_column = 'Item_description'
                     else:
                         value = future_column
-                name_value_converted[name_column] = value
+                try:
+                    name_value_converted[name_column] = value
+                except UnboundLocalError:
+                    logger_with_user.error(f'Не могу записать таблицы в репорте {number_report}\n'
+                                           f'{traceback.format_exc()}')
+                    sys.exit()
         # проверка на то, что мы получили все четыре строки (Line, Diameter, Nominal_thickness, Item_description)
         if len(name_value_converted) != 4:
             logger_with_user.error(f'В таблице {index_table} репорта {number_report} не могу найти Line или Diameter, '

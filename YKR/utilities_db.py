@@ -26,14 +26,13 @@ logger = logging.getLogger()
 logger_with_user = logging.LoggerAdapter(logger, {'user': uname})
 
 
-
-
 # записываем очищенный репорт в базу данных
 # clear_report - очищенные таблицы
 # number_report - номер репорта
 # name_db - имя БД для записи
 # first_actual_table - номер таблицы в репорте для записи
-def write_report_in_db(clear_report: dict, number_report: dict, name_db: str, first_actual_table: list, unit: str, report: str):
+def write_report_in_db(clear_report: dict, number_report: dict, name_db: str, first_actual_table: list, unit: str,
+                       report: str):
     # меняем все "-" на "_" что бы записать в БД
     true_number_report = number_report['report_number'].replace('-', '_')
     true_number_report = true_number_report.replace('.', '_')
@@ -53,26 +52,30 @@ def write_report_in_db(clear_report: dict, number_report: dict, name_db: str, fi
         can_write_rep_number_in_master = False
         # собираем имя таблицы для записи
         name_table_for_write = f'_{number_table}_{true_number_report}'
-        if not cur.execute('''SELECT * FROM sqlite_master WHERE  tbl_name="{}"'''.format(name_table_for_write)).fetchone():
+        if not cur.execute(
+                '''SELECT * FROM sqlite_master WHERE  tbl_name="{}"'''.format(name_table_for_write)).fetchone():
             try:
                 rep = (",".join(clear_report[number_table][0]))
                 cur.execute('''CREATE TABLE IF NOT EXISTS {} ({})'''.format(name_table_for_write, rep))
                 conn.commit()
             except sqlite3.OperationalError:
-                logger_with_user.error(f'В репорте {number_report["report_number"]} таблице {name_table_for_write} какая-то ошибка! А именно:\n'
-                                       f'{name_table_for_write}\n'
-                                       f'{rep}\n'
-                                       f'{traceback.format_exc()}')
+                logger_with_user.error(
+                    f'В репорте {number_report["report_number"]} таблице {name_table_for_write} какая-то ошибка! А именно:\n'
+                    f'{name_table_for_write}\n'
+                    f'{rep}\n'
+                    f'{traceback.format_exc()}')
                 continue
             for values in clear_report[number_table][1]:
                 try:
-                    cur.execute('INSERT INTO ' + name_table_for_write + ' VALUES (%s)' % ','.join('?' * len(values)), values)
+                    cur.execute('INSERT INTO ' + name_table_for_write + ' VALUES (%s)' % ','.join('?' * len(values)),
+                                values)
                     conn.commit()
                     can_write_rep_number_in_master = True
                 except sqlite3.OperationalError:
-                    logger_with_user.error(f'В репорте {number_report["report_number"]} таблице {name_table_for_write} какая-то ошибка! А именно:\n'
-                                           f'{values}'
-                                           f'{traceback.format_exc()}')
+                    logger_with_user.error(
+                        f'В репорте {number_report["report_number"]} таблице {name_table_for_write} какая-то ошибка! А именно:\n'
+                        f'{values}'
+                        f'{traceback.format_exc()}')
                     continue
         # если таблица удачно записана в БД, то записываем номер репорта, wo, дату в таблицу master
         # number_report - словарь номера репорта, даты, wo
@@ -85,7 +88,8 @@ def write_report_in_db(clear_report: dict, number_report: dict, name_db: str, fi
 
 
 # запись в таблицу master unit, номера репорта, wo, даты, количества таблиц в репорте
-def write_rep_number_in_master(number_report: dict, count_table: list, name_table: str, name_db: str, unit: str, report: str):
+def write_rep_number_in_master(number_report: dict, count_table: list, name_table: str, name_db: str, unit: str,
+                               report: str):
     # форматируем номер таблицы для лучшей визуализации (меняем "_" на "-")
     name_table = name_table.replace("_", "-")[1:]
     # подключаемся к БД
@@ -93,10 +97,12 @@ def write_rep_number_in_master(number_report: dict, count_table: list, name_tabl
     cur = conn.cursor()
     # создаём таблицу master со столбцами из clear_rep_number, количества таблиц, списка таблиц ЕСЛИ ещё не существует
     if not cur.execute('''SELECT * FROM sqlite_master WHERE type="table" AND name="master"''').fetchall():
-        cur.execute('''CREATE TABLE IF NOT EXISTS master (unit, report_number, report_date, work_order, one_of, list_table_report)''')
+        cur.execute(
+            '''CREATE TABLE IF NOT EXISTS master (unit, report_number, report_date, work_order, one_of, list_table_report)''')
         conn.commit()
     # если в master нет такого номера репорта, то записываем его первым со значением one_of (1/...) и номером таблицы
-    if not cur.execute('''SELECT * FROM master WHERE report_number="{}"'''.format(number_report['report_number'])).fetchone():
+    if not cur.execute(
+            '''SELECT * FROM master WHERE report_number="{}"'''.format(number_report['report_number'])).fetchone():
         try:
             cur.execute('INSERT INTO master VALUES (?, ?, ?, ?, ?, ?)',
                         (unit,
@@ -112,9 +118,11 @@ def write_rep_number_in_master(number_report: dict, count_table: list, name_tabl
     # иначе проверяем номер unit
     else:
         # если номер unit такой же, то обновляем строчку с записью в master
-        if unit == cur.execute('''SELECT unit FROM master WHERE report_number = "{}"'''.format(number_report['report_number'])).fetchall()[0][0]:
+        if unit == cur.execute('''SELECT unit FROM master WHERE report_number = "{}"'''.format(
+                number_report['report_number'])).fetchall()[0][0]:
             # пересчитываем и переписываем one_of и дописываем list_table_report номером новой таблицы
-            old_one_of = cur.execute('''SELECT one_of FROM master WHERE report_number = "{}"'''.format(number_report['report_number'])).fetchall()[0][
+            old_one_of = cur.execute('''SELECT one_of FROM master WHERE report_number = "{}"'''.format(
+                number_report['report_number'])).fetchall()[0][
                 0]
             index_slash_old_one_of = old_one_of.find('/')
             old_one_of_left_slash = int(old_one_of[:index_slash_old_one_of])
@@ -123,11 +131,12 @@ def write_rep_number_in_master(number_report: dict, count_table: list, name_tabl
             old_list_table_report = cur.execute('''SELECT list_table_report FROM master WHERE report_number = "{}"'''
                                                 .format(number_report['report_number'])).fetchall()[0][0]
             update_list_table_report = f'{old_list_table_report}\n{name_table}'
-            cur.execute('''UPDATE  master set one_of='{}', list_table_report='{}' WHERE report_number="{}" AND unit="{}"'''
-                        .format(update_one_of,
-                                update_list_table_report,
-                                number_report['report_number'],
-                                unit))
+            cur.execute(
+                '''UPDATE  master set one_of='{}', list_table_report='{}' WHERE report_number="{}" AND unit="{}"'''
+                .format(update_one_of,
+                        update_list_table_report,
+                        number_report['report_number'],
+                        unit))
             conn.commit()
         # иначе записываем новую строчку
         else:
@@ -194,7 +203,8 @@ def extract_drawing(name_db, report, number_report):
         # сохраняем в неё изображения из репорта
         archive = zipfile.ZipFile(report)
         for file in archive.filelist:
-            new_path = f'{os.path.abspath(os.getcwd())}\\Drawings\\{name_folder}\\{drawing_number_report}'.replace('\\', '/')
+            new_path = f'{os.path.abspath(os.getcwd())}\\Drawings\\{name_folder}\\{drawing_number_report}'.replace('\\',
+                                                                                                                   '/')
             if file.filename.startswith('word/media/'):
                 archive.extract(file, path=new_path)
         # удаляем ненужные изображения
@@ -216,8 +226,10 @@ def delete_unnecessary_drawing(path):
     files_image = os.listdir(f'{path}\\')
     for image in files_image:
         # если файл не PNG, JPEG, BMP
-        if not image.endswith('.png') and not image.endswith('.jpg') and not image.endswith('.jpeg') and not image.endswith('.bmp')\
-                and not image.endswith('.PNG') and not image.endswith('.JPG') and not image.endswith('.JPEG') and not image.endswith('.BMP'):
+        if not image.endswith('.png') and not image.endswith('.jpg') and not image.endswith(
+                '.jpeg') and not image.endswith('.bmp') \
+                and not image.endswith('.PNG') and not image.endswith('.JPG') and not image.endswith(
+            '.JPEG') and not image.endswith('.BMP'):
             os.remove(f'{path}\\{image}')
             continue
         # # если размер файла меньше, чем 50 кБ
@@ -306,8 +318,9 @@ def look_up_data(db_for_search: list, values_for_search: dict):
             # поиск, если заполнено только поле unit или number_report
             if (values_for_search['number_report'] != '' or values_for_search['unit'] != '') and count_value == 1:
                 # находим названия таблиц
-                find_tables_by_unit_or_report_number = cur.execute('''SELECT "list_table_report", "report_date" FROM master WHERE "{}" LIKE "%{}%"'''.
-                                                                   format(place_for_search, unit_or_number_report_for_search)).fetchall()
+                find_tables_by_unit_or_report_number = cur.execute(
+                    '''SELECT "list_table_report", "report_date" FROM master WHERE "{}" LIKE "%{}%"'''.
+                    format(place_for_search, unit_or_number_report_for_search)).fetchall()
                 # преобразуем найденные названия таблиц в вид, в котором они записаны в БД
                 list_table = transform_name_table(find_tables_by_unit_or_report_number)
                 find_data[name_db] = list_table
@@ -318,7 +331,8 @@ def look_up_data(db_for_search: list, values_for_search: dict):
             # если заполнено одно поле, кроме unit или номера репорта
             else:
                 # находим названия таблиц
-                find_tables_by_unit_or_report_number = cur.execute('''SELECT "list_table_report", "report_date" FROM master''').fetchall()
+                find_tables_by_unit_or_report_number = cur.execute(
+                    '''SELECT "list_table_report", "report_date" FROM master''').fetchall()
                 # преобразуем найденные названия таблиц в вид, в котором они записаны в БД
                 list_table = transform_name_table(find_tables_by_unit_or_report_number)
                 find_data[name_db] = list_table
@@ -360,8 +374,9 @@ def look_up_data(db_for_search: list, values_for_search: dict):
                     place_for_search = 'report_number'
                 # находим названия таблиц
                 find_tables_by_unit_or_report_number = cur.execute(
-                    '''SELECT "list_table_report", "report_date" FROM master WHERE "{}" LIKE "%{}%"'''.format(place_for_search,
-                                                                                                       unit_or_number_report_for_search)). \
+                    '''SELECT "list_table_report", "report_date" FROM master WHERE "{}" LIKE "%{}%"'''.format(
+                        place_for_search,
+                        unit_or_number_report_for_search)). \
                     fetchall()
                 # преобразуем найденные названия таблиц в вид, в котором они записаны в БД
                 list_table = transform_name_table(find_tables_by_unit_or_report_number)
@@ -377,7 +392,8 @@ def look_up_data(db_for_search: list, values_for_search: dict):
             # если заполнены любые поля (номер линии, номер чертежа, номер локации), КРОМЕ номера unit и номера репорта
             if (values_for_search['unit'] == '' and values_for_search['number_report'] == '') and count_value > 1:
                 # находим названия таблиц
-                find_tables_by_unit_or_report_number = cur.execute('''SELECT "list_table_report", "report_date" FROM master''').fetchall()
+                find_tables_by_unit_or_report_number = cur.execute(
+                    '''SELECT "list_table_report", "report_date" FROM master''').fetchall()
                 # преобразуем найденные названия таблиц в вид, в котором они записаны в БД
                 list_table = transform_name_table(find_tables_by_unit_or_report_number)
                 find_data[name_db] = list_table
@@ -481,7 +497,8 @@ def delete_table_from_db(list_table_and_db_for_delete):
                 logger_with_user.warning(f'БЫЛА УДАЛЕНА ТАБЛИЦА {table}')
                 # обновляем данные в таблице master
                 # если в sqlite_master не осталось таблиц из этого репорта, то удаляем номер репорта из master
-                if not cur.execute('SELECT * FROM sqlite_master WHERE  name LIKE "%{}%"'.format(f'{table}'[2:])).fetchall():
+                if not cur.execute(
+                        'SELECT * FROM sqlite_master WHERE  name LIKE "%{}%"'.format(f'{table}'[2:])).fetchall():
                     cur.execute('DELETE from master WHERE report_number="{}"'.format(f'{table.replace("_", "-")}'[3:]))
                     conn.commit()
                 # иначе обновляем данные в таблице master - уменьшаем на единицу one_of и удаляем строчку номера репорта из list_table_report
@@ -502,13 +519,15 @@ def update_master_by_delete(table, db):
     variable_report_for_delete_from_master = cur.execute(
         'SELECT list_table_report FROM master WHERE list_table_report LIKE "%{}%"'.format(table)).fetchall()
     # определяем номер репорта для удаления
-    variable = cur.execute('SELECT report_number FROM master WHERE list_table_report LIKE "%{}%"'.format(table)).fetchall()[0][0]
+    variable = \
+    cur.execute('SELECT report_number FROM master WHERE list_table_report LIKE "%{}%"'.format(table)).fetchall()[0][0]
     # удаляем в найденной строке, с номерами всех записанных таблиц, выбранную таблицу
     variable_report_for_delete_from_master_intermediate = variable_report_for_delete_from_master[0][0].split('\n')
     variable_report_for_delete_from_master_intermediate.remove(table)
     variable_report_for_delete_from_master_new = '\n'.join(variable_report_for_delete_from_master_intermediate)
     # получаем количество репортов в столбце 'one_of'
-    one_of_column = cur.execute('SELECT one_of FROM master WHERE list_table_report LIKE "%{}%"'.format(table)).fetchall()[0][0]
+    one_of_column = \
+    cur.execute('SELECT one_of FROM master WHERE list_table_report LIKE "%{}%"'.format(table)).fetchall()[0][0]
     # получаем номер позиции символа '/'
     index_one_of_load = one_of_column.index('/')
     # уменьшаем на 1 количество записанных таблиц в столбце 'one_of'
@@ -526,13 +545,15 @@ def update_master_by_delete(table, db):
 
 
 # верификация данных
-def ver(list_db: list, all_reports_loading, all_tables_loading, duplicate_report, column_in_the_table, drawings_uploaded, unit_column):
+def ver(list_db: list, all_reports_loading, all_tables_loading, duplicate_report, column_in_the_table,
+        drawings_uploaded, unit_column):
     logger_with_user.info(f'Начало верификации данных\n')
     for db in list_db:
         # подключаемся в базе данных
         conn = sqlite3.connect(f'{os.path.abspath(os.getcwd())}\\DB\\{db}')
         cur = conn.cursor()
-        list_report_number_one_of = cur.execute('''SELECT report_number, one_of, unit, report_date, list_table_report FROM master''').fetchall()
+        list_report_number_one_of = cur.execute(
+            '''SELECT report_number, one_of, unit, report_date, list_table_report FROM master''').fetchall()
 
         # все ли таблицы в репортах загружены
         if all_tables_loading:
@@ -583,14 +604,16 @@ def ver(list_db: list, all_reports_loading, all_tables_loading, duplicate_report
                         for line_value in line_in_table:
                             # если прочерк
                             if line_value[0] == '-':
-                                logger_with_user.warning(f'Ошибка в указании номера линии в таблице {table[0]} - знак "-"!')
+                                logger_with_user.warning(
+                                    f'Ошибка в указании номера линии в таблице {table[0]} - знак "-"!')
                                 break
                             # если не совпадает с шаблоном или
                             if not re.findall('\D\d-\d{3,4}\D?-\D{2}-(\d{3}|\D{2})', line_value[0]):
                                 if 'FRACK' not in line_value[0].upper():
                                     if 'TANK' not in line_value[0].upper():
-                                        logger_with_user.warning(f'Ошибка в указании номера линии ({line_value[0]}) в таблице {table[0]} - не похож '
-                                                              f'на номер линии или сосуда или пропущены буквы/цифры!')
+                                        logger_with_user.warning(
+                                            f'Ошибка в указании номера линии ({line_value[0]}) в таблице {table[0]} - не похож '
+                                            f'на номер линии или сосуда или пропущены буквы/цифры!')
                                         break
 
                     # если в таблице НЕТ столбца "Line"
@@ -601,12 +624,14 @@ def ver(list_db: list, all_reports_loading, all_tables_loading, duplicate_report
                         for drawing_value in drawing_in_table:
                             # если прочерк
                             if drawing_value[0] == '-':
-                                logger_with_user.warning(f'Ошибка в указании номера чертежа в таблице {table[0]} - знак "-"!')
+                                logger_with_user.warning(
+                                    f'Ошибка в указании номера чертежа в таблице {table[0]} - знак "-"!')
                                 break
                             # если не совпадает с шаблоном
                             if not re.findall('\D{2}\d{2}-\D\d-\d{3,4}\D?-\D{2}', drawing_value[0]):
-                                logger_with_user.warning(f'Ошибка в указании номера чертежа ({drawing_value[0]}) в таблице {table[0]} - не похож '
-                                                         f'на номер чертежа или пропущены буквы/цифры!')
+                                logger_with_user.warning(
+                                    f'Ошибка в указании номера чертежа ({drawing_value[0]}) в таблице {table[0]} - не похож '
+                                    f'на номер чертежа или пропущены буквы/цифры!')
                                 break
 
         # совпадает ли количество папок с чертежами с количеством загруженных репортов
@@ -627,9 +652,11 @@ def ver(list_db: list, all_reports_loading, all_tables_loading, duplicate_report
                         # есть ли в папке с чертежами сами чертежи
                         lll = os.listdir(f'{path_dir_drawing}{number_report[0]}')
                         if len(lll) == 0:
-                            logger_with_user.info(f'В БД чертежей {name_folder_drawing} в папке {number_report[0]} отсутствуют чертежи!')
+                            logger_with_user.info(
+                                f'В БД чертежей {name_folder_drawing} в папке {number_report[0]} отсутствуют чертежи!')
                 if not drawing_dir_equal_number_report:
-                    logger_with_user.info(f'В БД чертежей {name_folder_drawing} отсутствует папка с чертежами для репорта {number_report[0]}!')
+                    logger_with_user.info(
+                        f'В БД чертежей {name_folder_drawing} отсутствует папка с чертежами для репорта {number_report[0]}!')
 
         # Верно ли заполнен столбец "Unit", "Report Date" в таблице master
         if unit_column:
@@ -637,19 +664,23 @@ def ver(list_db: list, all_reports_loading, all_tables_loading, duplicate_report
                 # столбец "Unit"
                 if unit[2] == '-':
                     if 'WELDING' not in unit[4] and 'SHAER WAVE' not in unit[4]:
-                        logger_with_user.warning(f'Не указан номер юнита ({unit[2]}) в отчёте {unit[0]} в сводных данных БД {db}!')
+                        logger_with_user.warning(
+                            f'Не указан номер юнита ({unit[2]}) в отчёте {unit[0]} в сводных данных БД {db}!')
                 elif len(unit[2]) < 3:
-                    logger_with_user.warning(f'Не полный номер юнита ({unit[2]}) в отчёте {unit[0]} в сводных данных БД {db}!')
+                    logger_with_user.warning(
+                        f'Не полный номер юнита ({unit[2]}) в отчёте {unit[0]} в сводных данных БД {db}!')
                 elif 'FRACK' not in unit[2].upper():
                     for letter in unit[2]:
                         if not letter.isdigit():
-                            logger_with_user.warning(f'В номере юнита ({unit[2]}) не должно быть букв, отчёт {unit[0]} в сводных данных БД {db}!')
+                            logger_with_user.warning(
+                                f'В номере юнита ({unit[2]}) не должно быть букв, отчёт {unit[0]} в сводных данных БД {db}!')
                             break
                 # столбец "Report Date"
                 if not re.findall('\d{2}(-\d{2})?\.\d{2}\.\d{4}', unit[3]):
                     if 'WELDING' not in unit[4] and 'SHAER WAVE' not in unit[4]:
-                        logger_with_user.warning(f'Дата ({unit[3]}) отчёта {unit[0]} в сводных данных БД {db} не соответствует шаблону '
-                                                 f'(ХХ.ХХ.ХХХХ или ХХ-ХХ.ХХ.ХХХХ)!')
+                        logger_with_user.warning(
+                            f'Дата ({unit[3]}) отчёта {unit[0]} в сводных данных БД {db} не соответствует шаблону '
+                            f'(ХХ.ХХ.ХХХХ или ХХ-ХХ.ХХ.ХХХХ)!')
 
         # все ли репорты загружены
         if all_reports_loading:
@@ -671,13 +702,16 @@ def update_cell(list_db_update, name_table_update, row_number_update, name_colum
         conn = sqlite3.connect(f'{os.path.abspath(os.getcwd())}\\DB\\{name_db}')
         cur = conn.cursor()
         # определяем  БД
-        if cur.execute('''SELECT name FROM sqlite_master WHERE type='table' AND name="{}"'''.format(name_table_update)).fetchone():
+        if cur.execute('''SELECT name FROM sqlite_master WHERE type='table' AND name="{}"'''.format(
+                name_table_update)).fetchone():
             # получаем ROWID по номеру строки (row_number_update)
             list_row_id = []
             for row_id in cur.execute('''SELECT ROWID FROM {}'''.format(name_table_update)).fetchall():
                 list_row_id.append(row_id[0])
             # вносим изменения
-            cur.execute('''UPDATE {} SET {}="{}" WHERE ROWID="{}"'''.format(name_table_update, name_column_update, value_update, list_row_id[row_number_update - 1]))
+            cur.execute(
+                '''UPDATE {} SET {}="{}" WHERE ROWID="{}"'''.format(name_table_update, name_column_update, value_update,
+                                                                    list_row_id[row_number_update - 1]))
             conn.commit()
         cur.close()
 
@@ -689,7 +723,8 @@ def update_add_row(list_db_update, name_table_update):
         conn = sqlite3.connect(f'{os.path.abspath(os.getcwd())}\\DB\\{name_db}')
         cur = conn.cursor()
         # определяем  БД
-        if cur.execute('''SELECT name FROM sqlite_master WHERE type='table' AND name="{}"'''.format(name_table_update)).fetchone():
+        if cur.execute('''SELECT name FROM sqlite_master WHERE type='table' AND name="{}"'''.format(
+                name_table_update)).fetchone():
             # кортеж названий столбцов в таблице
             list_name_column = conn.execute(f'select * from {name_table_update}').description
             name_column = ()
@@ -714,7 +749,9 @@ def update_delete_row(list_db_update, name_table_update, number_row_delete):
         for row_id in cur.execute('''SELECT ROWID FROM {}'''.format(name_table_update)).fetchall():
             list_row_id.append(row_id[0])
         # определяем  БД
-        if cur.execute('''SELECT name FROM sqlite_master WHERE type='table' AND name="{}"'''.format(name_table_update)).fetchone():
-            cur.execute('''DELETE FROM {} WHERE ROWID="{}"'''.format(name_table_update, list_row_id[number_row_delete - 1]))
+        if cur.execute('''SELECT name FROM sqlite_master WHERE type='table' AND name="{}"'''.format(
+                name_table_update)).fetchone():
+            cur.execute(
+                '''DELETE FROM {} WHERE ROWID="{}"'''.format(name_table_update, list_row_id[number_row_delete - 1]))
             conn.commit()
         cur.close()
