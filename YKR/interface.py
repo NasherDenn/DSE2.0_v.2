@@ -69,8 +69,6 @@ font.setItalic(False)
 line_search_line = QLineEdit(window)
 # устанавливаем положение окна ввода и его размеры в родительском окне
 line_search_line.setGeometry(QRect(181, 20, 561, 31))
-# вывод надписи при наведении курсора
-line_search_line.setToolTip('Полный или частичный номер линии/ёмкости, таговый номер')
 # присваиваем уникальное объектное имя однострочному полю для ввода
 line_search_line.setObjectName(u"line_search_line")
 # дополнительные параметры
@@ -78,7 +76,6 @@ line_search_line.setFont(font)
 line_search_line.setMouseTracking(False)
 line_search_line.setContextMenuPolicy(Qt.NoContextMenu)
 line_search_line.setAcceptDrops(True)
-# line_search_line.setStyleSheet(u"")
 line_search_line.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
 line_search_line.setEchoMode(QLineEdit.Normal)
 line_search_line.setCursorPosition(0)
@@ -94,8 +91,6 @@ line_search_line.setFocus()
 line_search_drawing = QLineEdit(window)
 # устанавливаем положение окна ввода и его размеры в родительском окне
 line_search_drawing.setGeometry(QRect(181, 60, 561, 31))
-# вывод надписи при наведении курсора
-line_search_drawing.setToolTip('Полный или частичный номер чертежа')
 # присваиваем уникальное объектное имя однострочному полю для ввода
 line_search_drawing.setObjectName(u"line_search_drawing")
 # дополнительные параметры
@@ -103,7 +98,6 @@ line_search_drawing.setFont(font)
 line_search_drawing.setMouseTracking(False)
 line_search_drawing.setContextMenuPolicy(Qt.NoContextMenu)
 line_search_drawing.setAcceptDrops(True)
-# line_search_drawing.setStyleSheet(u"")
 line_search_drawing.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
 line_search_drawing.setEchoMode(QLineEdit.Normal)
 line_search_drawing.setCursorPosition(0)
@@ -119,8 +113,6 @@ line_search_drawing.setText('')
 line_search_unit = QLineEdit(window)
 # устанавливаем положение окна ввода и его размеры в родительском окне
 line_search_unit.setGeometry(QRect(181, 100, 170, 31))
-# вывод надписи при наведении курсора
-line_search_unit.setToolTip('Трёхзначный номер юнита')
 # присваиваем уникальное объектное имя однострочному полю для ввода
 line_search_unit.setObjectName(u"line_search_unit")
 # дополнительные параметры
@@ -128,23 +120,41 @@ line_search_unit.setFont(font)
 line_search_unit.setMouseTracking(False)
 line_search_unit.setContextMenuPolicy(Qt.NoContextMenu)
 line_search_unit.setAcceptDrops(True)
-# line_search_unit.setStyleSheet(u"")
 line_search_unit.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
 line_search_unit.setEchoMode(QLineEdit.Normal)
 line_search_unit.setCursorPosition(0)
 line_search_unit.setCursorMoveStyle(Qt.LogicalMoveStyle)
-line_search_unit.setMaxLength(10)
+line_search_unit.setMaxLength(7)
 line_search_unit.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_unit.setFocusPolicy(Qt.StrongFocus)
 line_search_unit.setText('')
 
 # создаём однострочное поле для ввода номера локации
+line_search_location = QLineEdit(window)
+# устанавливаем положение окна ввода и его размеры в родительском окне
+line_search_location.setGeometry(QRect(427, 100, 120, 31))
+# присваиваем уникальное объектное имя однострочному полю для ввода
+line_search_location.setObjectName(u"line_search_location")
+# дополнительные параметры
+line_search_location.setFont(font)
+line_search_location.setMouseTracking(False)
+line_search_location.setContextMenuPolicy(Qt.NoContextMenu)
+line_search_location.setAcceptDrops(True)
+line_search_location.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
+line_search_location.setEchoMode(QLineEdit.Normal)
+line_search_location.setCursorPosition(0)
+line_search_location.setCursorMoveStyle(Qt.LogicalMoveStyle)
+line_search_location.setMaxLength(15)
+line_search_location.setClearButtonEnabled(True)
+# включаем переход фокуса по кнопке Tab или по клику мыши
+line_search_location.setFocusPolicy(Qt.StrongFocus)
+line_search_location.setText('')
+
+# создаём однострочное поле для ввода названия локации
 line_search_item_description = QLineEdit(window)
 # устанавливаем положение окна ввода и его размеры в родительском окне
-line_search_item_description.setGeometry(QRect(521, 100, 220, 31))
-# вывод надписи при наведении курсора
-line_search_item_description.setToolTip('Полный(-ое) или частичный(-ое) номер/название локации')
+line_search_item_description.setGeometry(QRect(635, 100, 107, 31))
 # присваиваем уникальное объектное имя однострочному полю для ввода
 line_search_item_description.setObjectName(u"line_search_item_description")
 # дополнительные параметры
@@ -152,7 +162,6 @@ line_search_item_description.setFont(font)
 line_search_item_description.setMouseTracking(False)
 line_search_item_description.setContextMenuPolicy(Qt.NoContextMenu)
 line_search_item_description.setAcceptDrops(True)
-# line_search_item_description.setStyleSheet(u"")
 line_search_item_description.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
 line_search_item_description.setEchoMode(QLineEdit.Normal)
 line_search_item_description.setCursorPosition(0)
@@ -167,8 +176,6 @@ line_search_item_description.setText('')
 line_search_number_report = QLineEdit(window)
 # устанавливаем положение окна ввода и его размеры в родительском окне
 line_search_number_report.setGeometry(QRect(181, 140, 561, 31))
-# вывод надписи при наведении курсора
-line_search_number_report.setToolTip('Полный или частичный номер отчёта')
 # присваиваем уникальное объектное имя однострочному полю для ввода
 line_search_number_report.setObjectName(u"line_search_number_report")
 # дополнительные параметры
@@ -378,6 +385,8 @@ label_password.setFont(font_label_password)
 label_line = QLabel('Линия/Ёмкость', window)
 # присваиваем уникальное объектное имя надписи "Линия"
 label_line.setObjectName(u"label_line")
+# вывод надписи при наведении курсора
+label_line.setToolTip('Полный или частичный номер линии/ёмкости, таговый номер')
 # устанавливаем положение и размер поля для надписи "Линия" в родительском окне (window)
 label_line.setGeometry(QRect(15, 25, 156, 26))
 # задаём параметры стиля и оформления поля для надписи "Линия"
@@ -392,6 +401,8 @@ label_line.setAlignment(Qt.AlignRight)
 label_drawing = QLabel('Номер чертежа', window)
 # присваиваем уникальное объектное имя надписи "Чертёж"
 label_drawing.setObjectName(u"label_drawing")
+# вывод надписи при наведении курсора
+label_drawing.setToolTip('Полный или частичный номер чертежа')
 # устанавливаем положение и размер поля для надписи "Чертёж" в родительском окне (window)
 label_drawing.setGeometry(QRect(20, 65, 151, 26))
 # задаём параметры стиля и оформления поля для надписи "Чертёж"
@@ -406,6 +417,8 @@ label_drawing.setAlignment(Qt.AlignRight)
 label_unit = QLabel('Юнит', window)
 # присваиваем уникальное объектное имя надписи "Юнит"
 label_unit.setObjectName(u"label_label_unit")
+# вывод надписи при наведении курсора
+label_unit.setToolTip('Трёхзначный номер юнита')
 # устанавливаем положение и размер поля для надписи "Юнит" в родительском окне (window)
 label_unit.setGeometry(QRect(20, 105, 151, 26))
 # задаём параметры стиля и оформления поля для надписи "Юнит"
@@ -417,15 +430,35 @@ label_unit.setFont(font_label_unit)
 label_unit.setAlignment(Qt.AlignRight)
 
 # устанавливаем надпись "Номер локации"
-label_item_description = QLabel('Номер локации', window)
+label_location = QLabel('Номер\nлокации', window)
 # присваиваем уникальное объектное имя надписи "Номер локации"
-label_item_description.setObjectName(u"label_item_description")
+label_location.setObjectName(u"label_location")
+# вывод надписи при наведении курсора
+label_location.setToolTip('Полный или частичный номер локации')
 # устанавливаем положение и размер поля для надписи "Номер локации" в родительском окне (window)
-label_item_description.setGeometry(QRect(360, 105, 151, 26))
+label_location.setGeometry(QRect(361, 100, 56, 31))
 # задаём параметры стиля и оформления поля для надписи "Номер локации"
+font_label_label_location = QFont()
+font_label_label_location.setFamily(u"Arial")
+font_label_label_location.setPointSize(8)
+font_label_label_location.setBold(True)
+font_label_label_location.setItalic(True)
+label_location.setFont(font_label_label_location)
+label_location.setAlignment(Qt.AlignRight)
+
+# устанавливаем надпись "Название локации"
+label_item_description = QLabel('Название\nлокации', window)
+# присваиваем уникальное объектное имя надписи "Название локации"
+label_item_description.setObjectName(u"label_item_description")
+# вывод надписи при наведении курсора
+label_item_description.setToolTip('Полное или частичное название локации')
+# устанавливаем положение и размер поля для надписи "Название локации" в родительском окне (window)
+label_item_description.setGeometry(QRect(557, 100, 68, 31))
+# задаём параметры стиля и оформления поля для надписи "Название локации"
 font_label_item_description = QFont()
 font_label_item_description.setFamily(u"Arial")
-font_label_item_description.setPointSize(12)
+font_label_item_description.setPointSize(8)
+font_label_item_description.setBold(True)
 font_label_item_description.setItalic(True)
 label_item_description.setFont(font_label_item_description)
 label_item_description.setAlignment(Qt.AlignRight)
@@ -434,9 +467,11 @@ label_item_description.setAlignment(Qt.AlignRight)
 label_number_report = QLabel('Номер отчёта', window)
 # присваиваем уникальное объектное имя надписи "Номер локации"
 label_number_report.setObjectName(u"label_number_report")
-# устанавливаем положение и размер поля для надписи "Номер локации" в родительском окне (window)
+# вывод надписи при наведении курсора
+label_number_report.setToolTip('Полный или частичный номер отчёта')
+# устанавливаем положение и размер поля для надписи "Номер отчёта" в родительском окне (window)
 label_number_report.setGeometry(QRect(20, 145, 151, 26))
-# задаём параметры стиля и оформления поля для надписи "Номер локации"
+# задаём параметры стиля и оформления поля для надписи "Номер отчёта"
 font_label_number_report = QFont()
 font_label_number_report.setFamily(u"Arial")
 font_label_number_report.setPointSize(12)
@@ -723,11 +758,21 @@ groupBox_year.setStyleSheet('''QGroupBox {border: 0.5px solid grey;};
                                padding: 0 3px 0 3px;
                             }''')
 
+# создаём чек-бокс года '2025'
+checkBox_2025 = QCheckBox(groupBox_year)
+checkBox_2025.setObjectName(u"checkBox_2025")
+# устанавливаем положение внутри группы
+checkBox_2025.setGeometry(QRect(10, 25, 61, 20))
+# указываем текст чек-бокса
+checkBox_2025.setText('2025')
+# временно, пока не загрузятся другие локации
+checkBox_2025.setEnabled(False)
+
 # создаём чек-бокс года '2024'
 checkBox_2024 = QCheckBox(groupBox_year)
 checkBox_2024.setObjectName(u"checkBox_2024")
 # устанавливаем положение внутри группы
-checkBox_2024.setGeometry(QRect(10, 25, 61, 20))
+checkBox_2024.setGeometry(QRect(80, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2024.setText('2024')
 # временно, пока не загрузятся другие локации
@@ -737,8 +782,7 @@ checkBox_2024.setEnabled(True)
 checkBox_2023 = QCheckBox(groupBox_year)
 checkBox_2023.setObjectName(u"checkBox_2023")
 # устанавливаем положение внутри группы
-checkBox_2023.setGeometry(QRect(80, 25, 61, 20))
-# checkBox_2023.setGeometry(QRect(10, 25, 61, 20))
+checkBox_2023.setGeometry(QRect(150, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2023.setText('2023')
 # временно, пока не загрузятся другие локации
@@ -748,8 +792,7 @@ checkBox_2023.setEnabled(True)
 checkBox_2022 = QCheckBox(groupBox_year)
 checkBox_2022.setObjectName(u"checkBox_2022")
 # устанавливаем положение внутри группы
-checkBox_2022.setGeometry(QRect(150, 25, 61, 20))
-# checkBox_2022.setGeometry(QRect(80, 25, 61, 20))
+checkBox_2022.setGeometry(QRect(220, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2022.setText('2022')
 # делаем чек-бокс '2022' активным по умолчанию
@@ -759,8 +802,7 @@ checkBox_2022.setChecked(True)
 checkBox_2021 = QCheckBox(groupBox_year)
 checkBox_2021.setObjectName(u"checkBox_2021")
 # устанавливаем положение внутри группы
-checkBox_2021.setGeometry(QRect(220, 25, 61, 20))
-# checkBox_2021.setGeometry(QRect(150, 25, 61, 20))
+checkBox_2021.setGeometry(QRect(290, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2021.setText('2021')
 # временно, пока не загрузятся другие локации
@@ -770,8 +812,7 @@ checkBox_2021.setEnabled(True)
 checkBox_2020 = QCheckBox(groupBox_year)
 checkBox_2020.setObjectName(u"checkBox_2020")
 # устанавливаем положение внутри группы
-checkBox_2020.setGeometry(QRect(290, 25, 61, 20))
-# checkBox_2020.setGeometry(QRect(220, 25, 61, 20))
+checkBox_2020.setGeometry(QRect(360, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2020.setText('2020')
 # временно, пока не загрузятся другие локации
@@ -781,12 +822,21 @@ checkBox_2020.setEnabled(True)
 checkBox_2019 = QCheckBox(groupBox_year)
 checkBox_2019.setObjectName(u"checkBox_2019")
 # устанавливаем положение внутри группы
-checkBox_2019.setGeometry(QRect(360, 25, 61, 20))
-# checkBox_2019.setGeometry(QRect(290, 25, 61, 20))
+checkBox_2019.setGeometry(QRect(430, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2019.setText('2019')
 # временно, пока не загрузятся другие локации
 checkBox_2019.setEnabled(True)
+
+# создаём чек-бокс года '2018'
+checkBox_2018 = QCheckBox(groupBox_year)
+checkBox_2018.setObjectName(u"checkBox_2018")
+# устанавливаем положение внутри группы
+checkBox_2018.setGeometry(QRect(500, 25, 61, 20))
+# указываем текст чек-бокса
+checkBox_2018.setText('2018')
+# временно, пока не загрузятся другие локации
+checkBox_2018.setEnabled(False)
 
 # метка авторизации
 authorization = False
@@ -1377,7 +1427,8 @@ def ru():
     label_line.setText('Линия/Ёмкость')
     label_drawing.setText('Номер чертежа')
     label_unit.setText('Юнит')
-    label_item_description.setText('Номер локации')
+    label_location.setText('Номер\nлокации')
+    label_item_description.setText('Название\nлокации')
     label_number_report.setText('Номер отчёта')
     label_login.setText('Логин')
     label_password.setText('Пароль')
@@ -1456,7 +1507,8 @@ def en():
     label_line.setText('Line/Equipment')
     label_drawing.setText('Drawing')
     label_unit.setText('Unit')
-    label_item_description.setText('Item description')
+    label_location.setText('Number\nlocation')
+    label_item_description.setText('Item\ndescription')
     label_number_report.setText('Number of report')
     label_login.setText('Login')
     label_password.setText('Password')
@@ -1535,7 +1587,8 @@ def kz():
     label_line.setText('Сызық/Cыйымд.')
     label_drawing.setText('Сызба нөмірі')
     label_unit.setText('Бірлік')
-    label_item_description.setText('Орын нөмірі')
+    label_location.setText('Орын\nнөмірі')
+    label_item_description.setText('Орын\nатауы')
     label_number_report.setText('Есеп нөмірі')
     label_login.setText('Кіру')
     label_password.setText('Құпия сөз')
@@ -1918,12 +1971,14 @@ def freeze_button():
     checkBox_of.setDisabled(True)
     checkBox_utt.setDisabled(True)
     checkBox_paut.setDisabled(True)
+    # checkBox_2025.setDisabled(True)
     checkBox_2024.setDisabled(True)
     checkBox_2023.setDisabled(True)
     checkBox_2022.setDisabled(True)
     checkBox_2021.setDisabled(True)
     checkBox_2020.setDisabled(True)
     checkBox_2019.setDisabled(True)
+    # checkBox_2018.setDisabled(True)
 
 
 # разморозка кнопок и полей для ввода
@@ -1957,12 +2012,14 @@ def unfreeze_button():
         checkBox_of.setDisabled(False)
         checkBox_utt.setDisabled(False)
         checkBox_paut.setDisabled(False)
+        # checkBox_2025.setDisabled(False)
         checkBox_2024.setDisabled(False)
         checkBox_2023.setDisabled(False)
         checkBox_2022.setDisabled(False)
         checkBox_2021.setDisabled(False)
         checkBox_2020.setDisabled(False)
         checkBox_2019.setDisabled(False)
+        # checkBox_2018.setDisabled(False)
     # если пользователь НЕ авторизовался
     else:
         button_search.setDisabled(False)
@@ -1985,12 +2042,14 @@ def unfreeze_button():
         checkBox_of.setDisabled(False)
         checkBox_utt.setDisabled(False)
         checkBox_paut.setDisabled(False)
+        # checkBox_2025.setDisabled(False)
         checkBox_2024.setDisabled(False)
         checkBox_2023.setDisabled(False)
         checkBox_2022.setDisabled(False)
         checkBox_2021.setDisabled(False)
         checkBox_2020.setDisabled(False)
         checkBox_2019.setDisabled(False)
+        # checkBox_2018.setDisabled(False)
 
 
 # создание окна выбора опций верификаций
@@ -2278,4 +2337,3 @@ if __name__ == '__main__':
     main()
 
 # ToDo: Поиск по номеру локации (Location - TML-001, CML-002 DL-01) и описанию (Item_description - Pipe, Elbow, Shell)
-# ToDo: При поиске может не быть в таблицах БД столбцов drawing, item_description, location
