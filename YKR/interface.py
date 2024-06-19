@@ -46,7 +46,7 @@ app = QApplication(sys.argv)
 # создаём окно приложения
 window = QWidget()
 # название приложения
-window.setWindowTitle('Data Search Engine')
+window.setWindowTitle('Data Search Engine v.2.2')
 # задаём стиль приложения Fusion
 app.setStyle('Fusion')
 # размер окна приложения
@@ -183,7 +183,6 @@ line_search_number_report.setFont(font)
 line_search_number_report.setMouseTracking(False)
 line_search_number_report.setContextMenuPolicy(Qt.NoContextMenu)
 line_search_number_report.setAcceptDrops(True)
-# line_search_number_report.setStyleSheet(u"")
 line_search_number_report.setLocale(QLocale(QLocale.English, QLocale.UnitedStates))
 line_search_number_report.setEchoMode(QLineEdit.Normal)
 line_search_number_report.setCursorPosition(0)
@@ -192,7 +191,7 @@ line_search_number_report.setMaxLength(40)
 line_search_number_report.setClearButtonEnabled(True)
 # включаем переход фокуса по кнопке Tab или по клику мыши
 line_search_number_report.setFocusPolicy(Qt.StrongFocus)
-line_search_number_report.setText('ut-22-010')
+line_search_number_report.setText('')
 
 # создаём кнопку "Поиск"
 button_search = QPushButton('Поиск', window)
@@ -729,8 +728,8 @@ checkBox_utt.setGeometry(QRect(10, 25, 61, 20))
 checkBox_utt.setToolTip('Ultrasonic Testing Thickness')
 # указываем текст чек-бокса
 checkBox_utt.setText('UTT')
-# делаем чек-бокс 'UTT' активным по умолчанию
-checkBox_utt.setChecked(True)
+# ставим галочку (выбираем) чек-бокс 'UTT'
+# checkBox_utt.setChecked(True)
 
 # создаём чек-бокс метода контроля 'PAUT'
 checkBox_paut = QCheckBox(groupBox_ndt)
@@ -795,8 +794,8 @@ checkBox_2022.setObjectName(u"checkBox_2022")
 checkBox_2022.setGeometry(QRect(220, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2022.setText('2022')
-# делаем чек-бокс '2022' активным по умолчанию
-checkBox_2022.setChecked(True)
+# временно, пока не загрузятся другие локации
+checkBox_2022.setEnabled(True)
 
 # создаём чек-бокс года '2021'
 checkBox_2021 = QCheckBox(groupBox_year)
@@ -1402,12 +1401,6 @@ def ru():
     button_ru.setChecked(True)
     button_en.setCheckable(False)
     button_kz.setCheckable(False)
-    line_search_line.setToolTip('Полный или частичный номер линии/ёмкости, таговый номер')
-    line_search_drawing.setToolTip('Полный или частичный номер чертежа')
-    line_search_unit.setToolTip('Трёхзначный номер юнита')
-    line_search_location.setToolTip('Полный или частичный номер локации')
-    line_search_item_description.setToolTip('Полное или частичное название локации')
-    line_search_number_report.setToolTip('Полный или частичный номер отчёта')
     button_search.setToolTip('Поиск')
     button_print.setToolTip('Печать')
     button_add.setToolTip('Добавить таблицы в БД')
@@ -1427,6 +1420,12 @@ def ru():
     button_verification.setToolTip('Автоматическая проверка данных в БД')
     button_statistic_master.setToolTip('Общие данные из БД')
     groupBox_year.setToolTip('Год контроля')
+    label_line.setToolTip('Полный или частичный номер линии/ёмкости, таговый номер')
+    label_drawing.setToolTip('Полный или частичный номер чертежа')
+    label_unit.setToolTip('Трёхзначный номер юнита')
+    label_location.setToolTip('Полный или частичный номер локации')
+    label_item_description.setToolTip('Полное или частичное название локации')
+    label_number_report.setToolTip('Полный или частичный номер отчёта')
     label_line.setText('Линия/Ёмкость')
     label_drawing.setText('Номер чертежа')
     label_unit.setText('Юнит')
@@ -1483,12 +1482,6 @@ def en():
     button_en.setCheckable(True)
     button_en.setChecked(True)
     button_kz.setCheckable(False)
-    # line_search_line.setToolTip('Full or partial line/equipment number, tag number')
-    # line_search_drawing.setToolTip('Full or partial drawing number')
-    # line_search_unit.setToolTip('Three-digit unit number')
-    # line_search_location.setToolTip('Full or partial number of location')
-    # line_search_item_description.setToolTip('Full or partial name of location')
-    # line_search_number_report.setToolTip('Full or partial report number')
     button_search.setToolTip('Search')
     button_print.setToolTip('Print')
     button_add.setToolTip('Add tables to the database')
@@ -1508,6 +1501,12 @@ def en():
     button_verification.setToolTip('Automatic data verification in the database')
     button_statistic_master.setToolTip('General data from the database')
     groupBox_year.setToolTip('Year of control   ')
+    label_line.setToolTip('Full or partial line/capacity number, tag number')
+    label_drawing.setToolTip('Full or partial drawing number')
+    label_unit.setToolTip('Three-digit unit number')
+    label_location.setToolTip('Full or partial location number')
+    label_item_description.setToolTip('Full or partial name of the location')
+    label_number_report.setToolTip('Full or partial report number')
     label_line.setText('Line/Equipment')
     label_drawing.setText('Drawing')
     label_unit.setText('Unit')
@@ -1564,12 +1563,6 @@ def kz():
     button_en.setCheckable(False)
     button_kz.setCheckable(True)
     button_kz.setChecked(True)
-    # line_search_line.setToolTip('Толық немесе жартылай жол/сыйымдылық нөмірі, тег нөмірі')
-    # line_search_drawing.setToolTip('Толық немесе жартылай сызба нөмірі')
-    # line_search_unit.setToolTip('Үш таңбалы бірлік нөмірі')
-    # line_search_location.setToolTip('Толық немесе ішінара нөмір атауы')
-    # line_search_item_description.setToolTip('Толық немесе ішінара орын атауы')
-    # line_search_number_report.setToolTip('Толық немесе ішінара есеп нөмірі')
     button_search.setToolTip('Іздеу')
     button_print.setToolTip('Мөр')
     button_add.setToolTip('Дерекқорға кестелерді қосыңыз')
@@ -1589,6 +1582,12 @@ def kz():
     button_verification.setToolTip('Дерекқордағы деректерді автоматты түрде тексеру')
     button_statistic_master.setToolTip('Мәліметтер базасынан жалпы мәліметтер')
     groupBox_year.setToolTip('Бақылау жылы')
+    label_line.setToolTip('Толық немесе жартылай жол/сыйымдылық нөмірі, тег нөмірі')
+    label_drawing.setToolTip('Толық немесе жартылай сызба нөмірі')
+    label_unit.setToolTip('Үш таңбалы бірлік нөмірі')
+    label_location.setToolTip('Толық немесе жартылай орналасу нөмірі')
+    label_item_description.setToolTip('Орналасқан жердің толық немесе жартылай атауы')
+    label_number_report.setToolTip('Толық немесе ішінара есеп нөмірі')
     label_line.setText('Сызық/Cыйымд.')
     label_drawing.setText('Сызба нөмірі')
     label_unit.setText('Бірлік')
@@ -2346,4 +2345,3 @@ if __name__ == '__main__':
     main()
 
 # ToDo: Если в найденном репорте одна строка, то недостаточно высоты открытого поля
-# ToDo: Перевод label на en и kz не выполняется при смене языка. Т.к. вначале по умолчанию toolTip на русском языке
