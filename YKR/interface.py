@@ -1063,6 +1063,7 @@ def search():
     data_for_search['line_search'] = [line_search_line.text()]
     data_for_search['drawing_search'] = [line_search_drawing.text()]
     data_for_search['unit'] = [line_search_unit.text()]
+    data_for_search['location_search'] = [line_search_location.text()]
     data_for_search['item_description_search'] = [line_search_item_description.text()]
     data_for_search['number_report_search'] = [line_search_number_report.text()]
     # проверка - введены ли данные для поиска и выбраны ли все фильтры
@@ -1088,6 +1089,7 @@ def search():
     values_for_search['line'] = line_search_line.text()
     values_for_search['drawing'] = line_search_drawing.text()
     values_for_search['unit'] = line_search_unit.text()
+    values_for_search['location'] = line_search_location.text()
     values_for_search['item_description'] = line_search_item_description.text()
     values_for_search['number_report'] = line_search_number_report.text()
 
@@ -1403,7 +1405,8 @@ def ru():
     line_search_line.setToolTip('Полный или частичный номер линии/ёмкости, таговый номер')
     line_search_drawing.setToolTip('Полный или частичный номер чертежа')
     line_search_unit.setToolTip('Трёхзначный номер юнита')
-    line_search_item_description.setToolTip('Полный(-ое) или частичный(-ое) номер/название локации')
+    line_search_location.setToolTip('Полный или частичный номер локации')
+    line_search_item_description.setToolTip('Полное или частичное название локации')
     line_search_number_report.setToolTip('Полный или частичный номер отчёта')
     button_search.setToolTip('Поиск')
     button_print.setToolTip('Печать')
@@ -1480,11 +1483,12 @@ def en():
     button_en.setCheckable(True)
     button_en.setChecked(True)
     button_kz.setCheckable(False)
-    line_search_line.setToolTip('Full or partial line/equipment number, tag number')
-    line_search_drawing.setToolTip('Full or partial drawing number')
-    line_search_unit.setToolTip('Three-digit unit number')
-    line_search_item_description.setToolTip('Full or partial number/name of location')
-    line_search_number_report.setToolTip('Full or partial report number')
+    # line_search_line.setToolTip('Full or partial line/equipment number, tag number')
+    # line_search_drawing.setToolTip('Full or partial drawing number')
+    # line_search_unit.setToolTip('Three-digit unit number')
+    # line_search_location.setToolTip('Full or partial number of location')
+    # line_search_item_description.setToolTip('Full or partial name of location')
+    # line_search_number_report.setToolTip('Full or partial report number')
     button_search.setToolTip('Search')
     button_print.setToolTip('Print')
     button_add.setToolTip('Add tables to the database')
@@ -1560,11 +1564,12 @@ def kz():
     button_en.setCheckable(False)
     button_kz.setCheckable(True)
     button_kz.setChecked(True)
-    line_search_line.setToolTip('Толық немесе жартылай жол/сыйымдылық нөмірі, тег нөмірі')
-    line_search_drawing.setToolTip('Толық немесе жартылай сызба нөмірі')
-    line_search_unit.setToolTip('Үш таңбалы бірлік нөмірі')
-    line_search_item_description.setToolTip('Толық немесе ішінара нөмір/орын атауы')
-    line_search_number_report.setToolTip('Толық немесе ішінара есеп нөмірі')
+    # line_search_line.setToolTip('Толық немесе жартылай жол/сыйымдылық нөмірі, тег нөмірі')
+    # line_search_drawing.setToolTip('Толық немесе жартылай сызба нөмірі')
+    # line_search_unit.setToolTip('Үш таңбалы бірлік нөмірі')
+    # line_search_location.setToolTip('Толық немесе ішінара нөмір атауы')
+    # line_search_item_description.setToolTip('Толық немесе ішінара орын атауы')
+    # line_search_number_report.setToolTip('Толық немесе ішінара есеп нөмірі')
     button_search.setToolTip('Іздеу')
     button_print.setToolTip('Мөр')
     button_add.setToolTip('Дерекқорға кестелерді қосыңыз')
@@ -1962,6 +1967,7 @@ def freeze_button():
     line_search_line.setDisabled(True)
     line_search_drawing.setDisabled(True)
     line_search_unit.setDisabled(True)
+    line_search_location.setDisabled(True)
     line_search_item_description.setDisabled(True)
     line_login.setDisabled(True)
     line_password.setDisabled(True)
@@ -2003,6 +2009,7 @@ def unfreeze_button():
         line_search_line.setDisabled(False)
         line_search_drawing.setDisabled(False)
         line_search_unit.setDisabled(False)
+        line_search_location.setDisabled(False)
         line_search_item_description.setDisabled(False)
         line_login.setDisabled(False)
         line_password.setDisabled(False)
@@ -2033,6 +2040,7 @@ def unfreeze_button():
         line_search_line.setDisabled(False)
         line_search_drawing.setDisabled(False)
         line_search_unit.setDisabled(False)
+        line_search_location.setDisabled(False)
         line_search_item_description.setDisabled(False)
         line_login.setDisabled(False)
         line_password.setDisabled(False)
@@ -2283,6 +2291,7 @@ button_search.clicked.connect(search)
 # нажатие на кнопку Enter когда фокус (каретка - мигающий символ "|") находится в поле для ввода номера линии, чертежа, локации или номера репорта
 line_search_line.returnPressed.connect(search)
 line_search_drawing.returnPressed.connect(search)
+line_search_location.returnPressed.connect(search)
 line_search_item_description.returnPressed.connect(search)
 line_search_number_report.returnPressed.connect(search)
 line_search_unit.returnPressed.connect(search)
@@ -2336,4 +2345,5 @@ def main():
 if __name__ == '__main__':
     main()
 
-# ToDo: Поиск по номеру локации (Location - TML-001, CML-002 DL-01) и описанию (Item_description - Pipe, Elbow, Shell)
+# ToDo: Если в найденном репорте одна строка, то недостаточно высоты открытого поля
+# ToDo: Перевод label на en и kz не выполняется при смене языка. Т.к. вначале по умолчанию toolTip на русском языке

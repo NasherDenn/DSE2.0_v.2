@@ -343,6 +343,9 @@ def look_up_data(db_for_search: list, values_for_search: dict):
                 if values_for_search['drawing'] != '':
                     place_for_search = 'drawing'
                     values = values_for_search['drawing']
+                if values_for_search['location'] != '':
+                    place_for_search = 'location'
+                    values = values_for_search['location']
                 if values_for_search['item_description'] != '':
                     place_for_search = 'item_description'
                     values = values_for_search['item_description']
