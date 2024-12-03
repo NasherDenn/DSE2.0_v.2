@@ -30,7 +30,7 @@ def take_dir_files():
     # dir_files = 'C:/Users/Андрей/Documents/NDT/Тестовые данные/'
 
     # для продакшн
-    dir_files = QFileDialog.getOpenFileNames(None, 'Выбрать файл(ы) для загрузки', 'C:/Users/Andrei/Documents/NDT/NDT UTT/REPORTS 2024/5 May/ON/UTT', "docx(*.docx)")
+    dir_files = QFileDialog.getOpenFileNames(None, 'Выбрать файл(ы) для загрузки', 'C:/Users/Andrei/Documents/NDT/NDT UTT/PDF/2019/ON/PAUT/', "docx(*.docx)")
     # dir_files = QFileDialog.getOpenFileNames(None, 'Выбрать папку', '/home', "docx(*.docx)")
     return dir_files
 

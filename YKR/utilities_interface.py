@@ -58,6 +58,7 @@ def define_db_for_search(data_filter_for_search: dict) -> list:
     all_combinations = list(itertools.product(location, method, year))
     for combination in all_combinations:
         db_for_search.append(f'reports_db_{combination[0]}_{combination[1]}_{combination[2]}.sqlite')
+    print(db_for_search)
     return db_for_search
 
 
@@ -403,11 +404,15 @@ def output_data_master(data_filter_for_search: list):
     # Удаление листа, создаваемого по умолчанию, при создании документа
     del wbb['Sheet']
 
-    # сохраняем файл
-    wbb.save(f'{new_path_for_print_statistic}{name_for_print_statistic}')
-    wbb.close()
-    # и открываем его
-    os.startfile(new_path_for_print_statistic + name_for_print_statistic)
+    try:
+        # сохраняем файл
+        wbb.save(f'{new_path_for_print_statistic}{name_for_print_statistic}')
+    except UnboundLocalError:
+        pass
+    else:
+        wbb.close()
+        # и открываем его
+        os.startfile(new_path_for_print_statistic + name_for_print_statistic)
 
 
 # достаём информацию о БД и номере(-ах) репорта(-ов) в котором(-ых) надо удалить таблицу(-ы)
@@ -501,12 +506,12 @@ def splash_screen():
 #     wbb.save(new_path_report_verification + name_report_verification)
 #     wbb.close()
 #     return new_path_report_verification, name_report_verification
-#
-#
-# # вывод на лист Excel результатов верификации
-# # args[0] - путь к файлу Excel
-# # args[1] - имя файла Excel
-# # args[2] - название закладки по выбранной опции верификации
+
+
+# вывод на лист Excel результатов верификации
+# args[0] - путь к файлу Excel
+# args[1] - имя файла Excel
+# args[2] - название закладки по выбранной опции верификации
 # def print_verification(*args):
 #     wb = openpyxl.load_workbook(args[0] + args[1])
 #     # создаём новый лист, если его нет, на каждую выбранную опцию верификации
@@ -515,21 +520,21 @@ def splash_screen():
 #     # вставляем в первую строку заголовка
 #     sheet_for_print.cell(row=1, column=1, value=str('Всего загружено'))
 #     sheet_for_print.cell(row=1, column=2, value=str('Таблицы'))
-#
-#
-#
-#
-#
-#
-#     wb.save(args[0] + args[1])
-#     # thin = Side(border_style="thin", color="000000")
-#
-#         #         # название листа для таблицы
-#         #         name_table = name_table_for_excel_print(push_button.text())
-#         #         # создаём новый лист на каждую таблицу
-#         #         sheet_for_print = wbb.create_sheet(name_table)
-#         #         # вставляем в первую строку название кнопки по выбранной таблицу
-#         #         sheet_for_print.cell(row=1, column=1, value=str(push_button.text()))
+
+
+
+
+
+
+    # wb.save(args[0] + args[1])
+    # thin = Side(border_style="thin", color="000000")
+    #
+    # # название листа для таблицы
+    # name_table = name_table_for_excel_print( push_button.text())
+    # # создаём новый лист на каждую таблицу
+    # sheet_for_print = wbb.create_sheet(name_table)
+    # # вставляем в первую строку название кнопки по выбранной таблицу
+    # sheet_for_print.cell(row=1, column=1, value=str(push_button.text()))
 #         #         # выделяем её жирным
 #         #         sheet_for_print.cell(row=1, column=1).font = Font(bold=True)
 #         #         # объединяем в первой строке столбцы 'A:J'

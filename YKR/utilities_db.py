@@ -657,7 +657,7 @@ def ver(list_db: list, all_reports_loading, all_tables_loading, duplicate_report
                         if len(lll) == 0:
                             logger_with_user.info(
                                 f'В БД чертежей {name_folder_drawing} в папке {number_report[0]} отсутствуют чертежи!')
-                if not drawing_dir_equal_number_report:
+                if not drawing_dir_equal_number_report and 'WELDING' not in number_report[4] and 'SHAER WAVE' not in number_report[4]:
                     logger_with_user.info(
                         f'В БД чертежей {name_folder_drawing} отсутствует папка с чертежами для репорта {number_report[0]}!')
 

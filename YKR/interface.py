@@ -64,6 +64,7 @@ font = QFont()
 font.setFamily(u"Arial")
 font.setPointSize(14)
 font.setItalic(False)
+font.setItalic(False)
 
 # создаём однострочное поле для ввода номера линии
 line_search_line = QLineEdit(window)
@@ -330,6 +331,7 @@ line_login.setEchoMode(QLineEdit.Normal)
 line_login.setMaxLength(10)
 # устанавливаем исчезающий текст
 line_login.setPlaceholderText('login')
+# line_login.setText('')
 line_login.setText('admin')
 
 # создаём однострочное поле для ввода пароля
@@ -351,6 +353,7 @@ line_password.setEchoMode(QLineEdit.Password)
 line_password.setMaxLength(10)
 # устанавливаем исчезающий текст
 line_password.setPlaceholderText('password')
+# line_password.setText('')
 line_password.setText('0751')
 
 # устанавливаем надпись "Логин"
@@ -740,6 +743,7 @@ checkBox_paut.setGeometry(QRect(80, 25, 61, 20))
 checkBox_paut.setToolTip('Phased Array Ultrasonic Testing')
 # указываем текст чек-бокса
 checkBox_paut.setText('PAUT')
+checkBox_paut.setChecked(True)
 
 # создаём группу из чек-боксов годов
 groupBox_year = QGroupBox(window)
@@ -776,6 +780,7 @@ checkBox_2024.setGeometry(QRect(80, 25, 61, 20))
 checkBox_2024.setText('2024')
 # временно, пока не загрузятся другие локации
 checkBox_2024.setEnabled(True)
+checkBox_2024.setChecked(True)
 
 # создаём чек-бокс года '2023'
 checkBox_2023 = QCheckBox(groupBox_year)
@@ -786,6 +791,7 @@ checkBox_2023.setGeometry(QRect(150, 25, 61, 20))
 checkBox_2023.setText('2023')
 # временно, пока не загрузятся другие локации
 checkBox_2023.setEnabled(True)
+checkBox_2023.setChecked(True)
 
 # создаём чек-бокс года '2022'
 checkBox_2022 = QCheckBox(groupBox_year)
@@ -796,6 +802,7 @@ checkBox_2022.setGeometry(QRect(220, 25, 61, 20))
 checkBox_2022.setText('2022')
 # временно, пока не загрузятся другие локации
 checkBox_2022.setEnabled(True)
+checkBox_2022.setChecked(True)
 
 # создаём чек-бокс года '2021'
 checkBox_2021 = QCheckBox(groupBox_year)
@@ -806,6 +813,7 @@ checkBox_2021.setGeometry(QRect(290, 25, 61, 20))
 checkBox_2021.setText('2021')
 # временно, пока не загрузятся другие локации
 checkBox_2021.setEnabled(True)
+checkBox_2021.setChecked(True)
 
 # создаём чек-бокс года '2020'
 checkBox_2020 = QCheckBox(groupBox_year)
@@ -816,6 +824,7 @@ checkBox_2020.setGeometry(QRect(360, 25, 61, 20))
 checkBox_2020.setText('2020')
 # временно, пока не загрузятся другие локации
 checkBox_2020.setEnabled(True)
+checkBox_2020.setChecked(True)
 
 # создаём чек-бокс года '2019'
 checkBox_2019 = QCheckBox(groupBox_year)
@@ -826,6 +835,7 @@ checkBox_2019.setGeometry(QRect(430, 25, 61, 20))
 checkBox_2019.setText('2019')
 # временно, пока не загрузятся другие локации
 checkBox_2019.setEnabled(True)
+checkBox_2019.setChecked(True)
 
 # создаём чек-бокс года '2018'
 checkBox_2018 = QCheckBox(groupBox_year)
@@ -980,8 +990,8 @@ def log_out():
 # словарь выбранных фильтров (локация, метод, год) для поиска
 data_filter_for_search = dict()
 data_filter_for_search['location'] = {'ON': True, 'OF': False, 'OS': False}
-data_filter_for_search['method'] = {'UTT': True, 'PAUT': False}
-data_filter_for_search['year'] = {'2019': False, '2020': False, '2021': False, '2022': True, '2023': False}
+data_filter_for_search['method'] = {'UTT': False, 'PAUT': True}
+data_filter_for_search['year'] = {'2018': False, '2019': True, '2020': True, '2021': True, '2022': True, '2023': True, '2024': True, '2025': False}
 
 
 # обработчик события выбора одной из локаций (on, of, os)
@@ -2084,6 +2094,8 @@ def verification_data():
     checkbox_all_reports_loading = QCheckBox(ver_window)
     checkbox_all_reports_loading.setObjectName(u"checkbox_checkbox_all_reports_loading")
     checkbox_all_reports_loading.setGeometry(QRect(20, 20, 461, 28))
+    checkbox_all_reports_loading.setDisabled(True)
+    checkbox_all_reports_loading.setChecked(False)
 
     # создаем checkbox с опциями
     checkbox_all_tables_loading = QCheckBox(ver_window)
@@ -2136,7 +2148,7 @@ def verification_data():
         checkbox_drawings_uploaded.setText('Барлық сызбалар жүктелді ме?')
         checkbox_unit_column.setText('Қорытындыда «Бірлік», «Есеп беру күні» бағанасы дұрыс толтырылған ба?')
 
-    checkbox_all_reports_loading.setChecked(True)
+    # checkbox_all_reports_loading.setChecked(True)
     checkbox_all_tables_loading.setChecked(True)
     checkbox_duplicate_report.setChecked(True)
     checkbox_column_in_the_table.setChecked(True)
@@ -2343,5 +2355,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-# ToDo: Если в найденном репорте одна строка, то недостаточно высоты открытого поля
