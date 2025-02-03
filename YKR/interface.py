@@ -331,8 +331,8 @@ line_login.setEchoMode(QLineEdit.Normal)
 line_login.setMaxLength(10)
 # устанавливаем исчезающий текст
 line_login.setPlaceholderText('login')
-# line_login.setText('')
-line_login.setText('admin')
+line_login.setText('')
+# line_login.setText('admin')
 
 # создаём однострочное поле для ввода пароля
 line_password = QLineEdit(window)
@@ -353,8 +353,8 @@ line_password.setEchoMode(QLineEdit.Password)
 line_password.setMaxLength(10)
 # устанавливаем исчезающий текст
 line_password.setPlaceholderText('password')
-# line_password.setText('')
-line_password.setText('0751')
+line_password.setText('')
+# line_password.setText('0751')
 
 # устанавливаем надпись "Логин"
 label_login = QLabel('Логин', window)
@@ -769,7 +769,8 @@ checkBox_2025.setGeometry(QRect(10, 25, 61, 20))
 # указываем текст чек-бокса
 checkBox_2025.setText('2025')
 # временно, пока не загрузятся другие локации
-checkBox_2025.setEnabled(False)
+checkBox_2025.setEnabled(True)
+checkBox_2025.setChecked(True)
 
 # создаём чек-бокс года '2024'
 checkBox_2024 = QCheckBox(groupBox_year)
