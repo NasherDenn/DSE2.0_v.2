@@ -992,7 +992,7 @@ def log_out():
 data_filter_for_search = dict()
 data_filter_for_search['location'] = {'ON': True, 'OF': False, 'OS': False}
 data_filter_for_search['method'] = {'UTT': False, 'PAUT': True}
-data_filter_for_search['year'] = {'2018': False, '2019': True, '2020': True, '2021': True, '2022': True, '2023': True, '2024': True, '2025': False}
+data_filter_for_search['year'] = {'2018': False, '2019': True, '2020': True, '2021': True, '2022': True, '2023': True, '2024': True, '2025': True}
 
 
 # обработчик события выбора одной из локаций (on, of, os)
@@ -1987,7 +1987,7 @@ def freeze_button():
     checkBox_of.setDisabled(True)
     checkBox_utt.setDisabled(True)
     checkBox_paut.setDisabled(True)
-    # checkBox_2025.setDisabled(True)
+    checkBox_2025.setDisabled(True)
     checkBox_2024.setDisabled(True)
     checkBox_2023.setDisabled(True)
     checkBox_2022.setDisabled(True)
@@ -2029,7 +2029,7 @@ def unfreeze_button():
         checkBox_of.setDisabled(False)
         checkBox_utt.setDisabled(False)
         checkBox_paut.setDisabled(False)
-        # checkBox_2025.setDisabled(False)
+        checkBox_2025.setDisabled(False)
         checkBox_2024.setDisabled(False)
         checkBox_2023.setDisabled(False)
         checkBox_2022.setDisabled(False)
@@ -2060,7 +2060,7 @@ def unfreeze_button():
         checkBox_of.setDisabled(False)
         checkBox_utt.setDisabled(False)
         checkBox_paut.setDisabled(False)
-        # checkBox_2025.setDisabled(False)
+        checkBox_2025.setDisabled(False)
         checkBox_2024.setDisabled(False)
         checkBox_2023.setDisabled(False)
         checkBox_2022.setDisabled(False)
